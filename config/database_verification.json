@@ -1,0 +1,10 @@
+{
+  "username": "string",
+  "password": "string",
+  "host": "string",
+  "database": "string",
+  "driver": "string",
+  "charset": "string",
+  "collation": "string",
+  "prefix": ""
+}
