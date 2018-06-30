@@ -10,6 +10,7 @@ namespace Colourspace\Framework;
 
 
 use Colourspace\Framework\Interfaces\ModelInterface;
+use Colourspace\Framework\Util\Debug;
 
 class Model implements ModelInterface
 {
@@ -23,6 +24,17 @@ class Model implements ModelInterface
     public function __construct()
     {
         $this->object = new \stdClass();
+    }
+
+    /**
+     * @throws \Error
+     */
+
+    public function startup()
+    {
+
+        if( DEBUG_ENABLED )
+            Debug::message("Startup class:" .  __CLASS__ );
     }
 
     /**

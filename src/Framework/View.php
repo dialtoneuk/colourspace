@@ -21,16 +21,24 @@ class View implements ViewInterface
 
     public $model;
 
+    /**
+     * @param ModelInterface $model
+     */
+
     public function setModel(ModelInterface $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @return array
+     */
+
     public function get()
     {
 
         return([
-           'default.php',
+           'default',
            $this->model->toArray()
         ]);
     }

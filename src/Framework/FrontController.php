@@ -92,7 +92,18 @@ class FrontController
         $controller = $this->get(  MVC_TYPE_CONTROLLER, $payload[ MVC_TYPE_CONTROLLER ] );
         $view = $this->get(  MVC_TYPE_VIEW, $payload[ MVC_TYPE_VIEW ] );
 
+        //Execute the startup
+        $model->startup();
         $controller->setModel( $model );
+
+        if( $controller->authentication( $request['method'], $request ) == false )
+        {
+
+            \Flight::redirect(COLOURSPACE_URL_ROOT );
+            return;
+        }
+
+        $controller->before();
         $controller->process( $request['method'], $request );
 
         $view->setModel( $model );
@@ -121,6 +132,7 @@ class FrontController
             'method'    => strtolower( $request->method ),
             'ip'        => $request->ip,
             'proxy'     => $request->proxy_ip,
+            'data'      => $request->data,
             'url'       => $request->url,
             'params'    => $route->params,
             'contents'  => $route->splat

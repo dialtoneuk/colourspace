@@ -14,11 +14,16 @@ use Colourspace\Framework\View;
 class Index extends View
 {
 
+    /**
+     * @return array
+     */
+
     public function get()
     {
 
+        //You do not need to append .php onto the end of the file for it to be read
         return([
-            'index.php',
+            'index',
             $this->model->toArray()
         ]);
     }

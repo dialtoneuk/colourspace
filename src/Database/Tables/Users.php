@@ -37,7 +37,7 @@ class Users extends Table
             'username' => LARAVEL_TYPE_STRING,
             'password' => LARAVEL_TYPE_STRING,
             'salt' => LARAVEL_TYPE_STRING,
-            'groupid' => LARAVEL_TYPE_INT,
+            'group' => LARAVEL_TYPE_STRING,
             'creation' => LARAVEL_TYPE_TIMESTAMP
         ];
     }
@@ -73,24 +73,5 @@ class Users extends Table
     {
 
         return( $this->query()->where(['username', $username ] )->get() );
-    }
-
-    /**
-     * @param $values
-     * @param bool $verify
-     * @return int
-     * @throws \Error
-     */
-
-    public function insert( $values, $verify=true )
-    {
-
-        if ( $verify )
-        {
-            if ( $this->verify( $values ) == false )
-                throw new \Error('Values are incorrect for this table');
-        }
-
-        return( $this->query()->insertGetId( $values ) );
     }
 }

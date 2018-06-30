@@ -1,0 +1,7 @@
+{
+  "name":"Default",
+  "permissions":{
+    "uploadtime":8000,
+    "admin":false
+  }
+}

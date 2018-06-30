@@ -52,7 +52,7 @@ class Constructor
             throw new \Error('No files found');
 
         if( $this->check( $files ) == false )
-            throw new \Error('Either one or more classes do not exist');
+            throw new \Error('Either one or more classes do not exist: ' . print_r( $files ));
 
         foreach ( $files as $file )
         {
@@ -221,7 +221,7 @@ class Constructor
     private function trim( $filename )
     {
 
-        $exploded = explode('/', $filename );#
+        $exploded = explode("/", $filename );#
         $file = end( $exploded );
         $filename = explode('.', $file );
 

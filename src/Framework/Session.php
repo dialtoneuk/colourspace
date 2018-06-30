@@ -59,6 +59,25 @@ class Session
     }
 
     /**
+     * @param bool $clear_session_data
+     * @throws \Error
+     */
+
+    public function destroy( $clear_session_data=true )
+    {
+
+        if( $this->isLoggedIn() == false )
+            throw new \Error('Cannot destroy if user is not logged in');
+
+        $this->table->remove( session_id() );
+
+        if( $clear_session_data )
+            $_SESSION = [];
+
+        session_regenerate_id( true );
+    }
+
+    /**
      * @return int
      * @throws \Error
      */

@@ -22,9 +22,7 @@ class Index extends Controller
     public function process(string $type, $data)
     {
 
-        $this->model->test = "test";
-        $this->model->formMessage('test','test');
-        $this->model->formError('test','test');
+
     }
 
     /**

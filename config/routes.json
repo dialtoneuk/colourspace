@@ -2,7 +2,7 @@
   {
     "url":"/",
     "mvc":{
-      "model":"Index",
+      "model":"Common",
       "view":"Index",
       "controller":"Index"
     }

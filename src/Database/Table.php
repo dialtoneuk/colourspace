@@ -44,6 +44,37 @@ class Table implements TableInterface
     }
 
     /**
+     * @param $column
+     * @param $value
+     * @return \Illuminate\Support\Collection
+     */
+
+    public function search( $column, $value )
+    {
+
+        return( $this->query()->where([ $column, $value ] )->get() );
+    }
+
+    /**
+     * @param $values
+     * @param bool $verify
+     * @return int
+     * @throws \Error
+     */
+
+    public function insert( $values, $verify=true )
+    {
+
+        if ( $verify )
+        {
+            if ( $this->verify( $values ) == false )
+                throw new \Error('Values are incorrect for this table');
+        }
+
+        return( $this->query()->insertGetId( $values ) );
+    }
+
+    /**
      * @param $values
      * @return bool
      */

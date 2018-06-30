@@ -12,6 +12,7 @@ namespace Colourspace\Framework;
 use Colourspace\Container;
 use Colourspace\Framework\Interfaces\ControllerInterface;
 use Colourspace\Framework\Interfaces\ModelInterface;
+use Colourspace\Framework\Util\Debug;
 
 class Controller implements ControllerInterface
 {
@@ -34,6 +35,27 @@ class Controller implements ControllerInterface
             throw new \Error('Model is invalid');
 
         $this->model = $model;
+    }
+
+    /**
+     * @return array
+     */
+
+    public function keyRequirements()
+    {
+
+        return [];
+    }
+
+    /**
+     * @throws \Error
+     */
+
+    public function before()
+    {
+
+        if( DEBUG_ENABLED )
+            Debug::message("Controller initiating process method");
     }
 
     /**
@@ -81,5 +103,58 @@ class Controller implements ControllerInterface
             return false;
 
         return true;
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+
+    public function check( $data )
+    {
+
+        if( empty( $data ) || is_array( $data ) == false )
+            return false;
+
+        if( empty( $this->keyRequirements() ) )
+            return true;
+
+        foreach ( $this->keyRequirements() as $requirement )
+        {
+
+            if( isset( $data[ $requirement ] ) == false )
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $data
+     * @param bool $object
+     * @return array|null|\stdClass
+     */
+
+    public function pickKeys( $data, $object=true )
+    {
+
+        if( empty( $this->keyRequirements() ) )
+            return null;
+
+        if( $object )
+            $result = [];
+        else
+            $result = new \stdClass();
+
+        foreach( $this->keyRequirements() as $requirement )
+        {
+
+            if( $object )
+                $result->$requirement = $data[ $requirement ];
+            else
+                $result[ $requirement ] = $data[ $requirement ];
+        }
+
+        return $result;
     }
 }

@@ -10,6 +10,7 @@ composer.phar
 # Colourspace
 
 /config/database_credentials.json
+/config/debug/
 
 # PHPStorm
 

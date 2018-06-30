@@ -12,6 +12,14 @@ interface ControllerInterface
 
     public function setModel( ModelInterface $model );
 
+    /**
+     * @return array
+     */
+
+    public function keyRequirements();
+
+    public function before();
+
     public function process( string $type, $data );
 
     public function authentication( string $type, $data );

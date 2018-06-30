@@ -10,6 +10,8 @@ namespace Colourspace\Framework\Interfaces;
 interface ModelInterface
 {
 
+    public function startup();
+
     public function formMessage( $name, $value );
 
     public function formError( $name, $value );

@@ -37,8 +37,11 @@ if( php_sapi_name() === 'cli' )
 
 define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
 define("COLOURSPACE_DATABASE_CREDENTIALS", "/config/database_credentials.json");
+define("COLOURSPACE_URL_ROOT", "/");
 
 define("COLOURSPACE_MVC_ROOT", "/src/Framework/");
+
+define("COLOURSPACE_GROUPS_ROOT", "/config/groups/");
 
 define("COLOURSPACE_NAMESPACE", "Colourspace\\Framework\\");
 define("COLOURSPACE_NAMESPACE_MODEL", "Models");
@@ -59,6 +62,13 @@ define("LARAVEL_TYPE_INCREMENTS","increments");
 define("LARAVEL_TYPE_STRING","string");
 define("LARAVEL_TYPE_INT","integer");
 define("LARAVEL_TYPE_TIMESTAMP","timestamp");
+
+define("FORM_ERROR_GENERAL", "general_error");
+define("FORM_ERROR_INCORRECT", "incorrect_information");
+define("FORM_ERROR_MISSING", "missing_information");
+
+define("FORM_MESSAGE_SUCCESS", "success_message");
+define("FORM_MESSAGE_INFO", "info_message");
 
 define("DEBUG_ENABLED", true );
 define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');

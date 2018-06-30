@@ -74,21 +74,22 @@ class Sessions extends Table
     }
 
     /**
-     * @param $values
-     * @param bool $verify
-     * @return int
-     * @throws \Error
+     * @param $sessionid
      */
 
-    public function insert( $values, $verify=true )
+    public function remove( $sessionid )
     {
 
-        if ( $verify )
-        {
-            if ( $this->verify( $values ) == false )
-                throw new \Error('Values are incorrect for this table');
-        }
+        $this->query()->where(["sessionid", $sessionid ] )->delete();
+    }
 
-        return( $this->query()->insertGetId( $values ) );
+    /**
+     * @param $userid
+     */
+
+    public function clear( $userid )
+    {
+
+        $this->query()->where(["userid", $userid ] )->delete();
     }
 }

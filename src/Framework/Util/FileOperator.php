@@ -112,6 +112,22 @@ class FileOperator
     }
 
     /**
+     * Gets the name of the file, alone with out the extension
+     *
+     * @return mixed
+     */
+
+    public function getBaseName()
+    {
+
+        $exploded = explode("/", $this->path );
+        $file = end( $exploded );
+        $filename = explode('.', $file );
+
+        return( $filename[0] );
+    }
+
+    /**
      * @return bool
      */
 

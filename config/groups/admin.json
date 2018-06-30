@@ -1,0 +1,7 @@
+{
+  "name":"admin",
+  "permissions":{
+    "uploadtime":0,
+    "admin":false
+  }
+}

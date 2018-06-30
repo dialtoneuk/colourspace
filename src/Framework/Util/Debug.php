@@ -208,7 +208,7 @@ class Debug
         $removed_filename = explode('/', DEBUG_MESSAGES_FILE );
         array_pop( $removed_filename );
 
-        $filename = implode( DIRECTORY_SEPARATOR, $removed_filename ) . DIRECTORY_SEPARATOR;
+        $filename = implode( "/", $removed_filename ) . "/";
 
         if( is_file( COLOURSPACE_ROOT . $filename ) )
         {
