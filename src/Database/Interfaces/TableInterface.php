@@ -6,7 +6,7 @@
  * Time: 23:34
  */
 
-namespace Colourspace\Interfaces;
+namespace Colourspace\Database\Interfaces;
 
 interface TableInterface
 {

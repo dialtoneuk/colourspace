@@ -8,7 +8,7 @@
 
 namespace Colourspace\Database;
 use Colourspace\Container;
-use Colourspace\Interfaces\TableInterface;
+use Colourspace\Database\Interfaces\TableInterface;
 
 class Table implements TableInterface
 {

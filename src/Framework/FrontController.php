@@ -7,21 +7,24 @@
  */
 namespace Colourspace\Framework;
 
-use Colourspace\Framework\Util\Factory;
+use Colourspace\Framework\Interfaces\ControllerInterface;
+use Colourspace\Framework\Interfaces\ModelInterface;
+use Colourspace\Framework\Interfaces\ViewInterface;
+use Colourspace\Framework\Util\Constructor;
 
 class FrontController
 {
 
     /**
-     * @var Factory
+     * @var Constructor
      */
     protected $models;
     /**
-     * @var Factory
+     * @var Constructor
      */
     protected $controllers;
     /**
-     * @var Factory
+     * @var Constructor
      */
     protected $views;
 
@@ -46,7 +49,7 @@ class FrontController
         else
             $this->namespace = $namespace;
 
-        if ( $filepath== null )
+        if ( $filepath == null )
             $this->filepath = COLOURSPACE_MVC_ROOT;
         else
             $this->filepath = $filepath;
@@ -54,6 +57,75 @@ class FrontController
         if( $auto_initialize == true )
             $this->initialize();
     }
+
+    /**
+     * @param array $request
+     * @param array $payload
+     * @throws \Error
+     */
+
+    public function process( array $request, array $payload )
+    {
+
+        if( count( $payload ) !== 3 )
+            throw new \Error('To many keys in payload');
+
+        foreach ( $payload as $key=>$item )
+        {
+
+            if( $key !== ( MVC_TYPE_MODEL || MVC_TYPE_CONTROLLER || MVC_TYPE_VIEW ) )
+                throw new \Error('Unknown key type: ' . $key );
+
+            if( $this->has( $key, $item ) == false )
+                throw new \Error('Class not found: ' , $key );
+        }
+
+        if( isset( $request['method'] ) == false )
+            throw new \Error('Request method invalid');
+
+        if( $request['method'] !== ( MVC_REQUEST_POST || MVC_REQUEST_DELETE || MVC_REQUEST_GET || MVC_REQUEST_PUT) )
+            throw new \Error('Request method invalid');
+
+        $model = $this->get(  MVC_TYPE_MODEL, $payload[ MVC_TYPE_MODEL ] );
+        $controller = $this->get(  MVC_TYPE_CONTROLLER, $payload[ MVC_TYPE_CONTROLLER ] );
+        $view = $this->get(  MVC_TYPE_VIEW, $payload[ MVC_TYPE_VIEW ] );
+
+        $controller->setModel( $model );
+        $controller->process( $request['method'], $request );
+
+        $view->setModel( $model );
+        $view->get();
+    }
+
+    /**
+     * @param object $route
+     * @return array
+     * @throws \Error
+     */
+
+    public function buildRequest( object $route )
+    {
+
+        $request = \Flight::request();
+
+        if( empty( $request ) )
+            throw new \Error('Flight has not been started');
+
+        if( $request->method !== ( MVC_REQUEST_POST || MVC_REQUEST_DELETE || MVC_REQUEST_GET || MVC_REQUEST_PUT) )
+            throw new \Error('Invalid method');
+
+        $array = [
+            'method'    => $request->method,
+            'ip'        => $request->ip,
+            'proxy'     => $request->proxy_ip,
+            'url'       => $request->url,
+            'params'    => $route->params,
+            'contents'  => $route->splat
+        ];
+
+        return $array;
+    }
+
 
     /**
      * @param string $type
@@ -89,7 +161,7 @@ class FrontController
     /**
      * @param string $type
      * @param string $class_name
-     * @return mixed|null
+     * @return ModelInterface|ControllerInterface|ViewInterface
      */
 
     public function get( string $type, string $class_name )
@@ -142,7 +214,7 @@ class FrontController
 
     /**
      * @param string $type
-     * @return Factory|null
+     * @return Constructor|null
      */
 
     public function getObject( string $type )
@@ -195,9 +267,9 @@ class FrontController
     public function initialize()
     {
 
-        $this->models = new Factory( $this->getFilepath(MVC_TYPE_MODEL), $this->getNamespace(MVC_TYPE_MODEL) );
-        $this->views = new Factory( $this->getFilepath(MVC_TYPE_VIEW), $this->getNamespace(MVC_TYPE_VIEW) );
-        $this->controllers = new Factory( $this->getFilepath(MVC_TYPE_CONTROLLER), $this->getNamespace(MVC_TYPE_CONTROLLER) );
+        $this->models = new Constructor( $this->getFilepath(MVC_TYPE_MODEL), $this->getNamespace(MVC_TYPE_MODEL) );
+        $this->views = new Constructor( $this->getFilepath(MVC_TYPE_VIEW), $this->getNamespace(MVC_TYPE_VIEW) );
+        $this->controllers = new Constructor( $this->getFilepath(MVC_TYPE_CONTROLLER), $this->getNamespace(MVC_TYPE_CONTROLLER) );
 
         $this->models->createAll();
         $this->views->createAll();

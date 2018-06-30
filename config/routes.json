@@ -1,0 +1,10 @@
+[
+  {
+    "url":"/",
+    "mvc":{
+      "model":"Index",
+      "view":"Index",
+      "Controller":"Index"
+    }
+  }
+]

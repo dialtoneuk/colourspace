@@ -6,5 +6,5 @@
   "driver": "string",
   "charset": "string",
   "collation": "string",
-  "prefix": ""
+  "prefix": "string"
 }

@@ -1,7 +1,16 @@
 <?php
 namespace Colourspace;
+use Colourspace\Database\Connection;
+use Colourspace\Framework\FrontController;
+use Colourspace\Framework\Session;
+use Colourspace\Framework\Router;
 
-
+/**
+ * @property Session session
+ * @property FrontController frontcontroller
+ * @property Connection connection
+ * @property Router router
+ */
 class Application
 {
 

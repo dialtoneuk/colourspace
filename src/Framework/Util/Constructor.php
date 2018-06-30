@@ -7,7 +7,7 @@
  */
 namespace Colourspace\Framework\Util;
 
-class Factory
+class Constructor
 {
 
     private $objects;
@@ -30,6 +30,7 @@ class Factory
             throw new \Error('Root filepath is invalid');
 
         $this->file_path = COLOURSPACE_ROOT . $file_path;
+        $this->namespace = $namespace;
     }
 
     /**
@@ -43,7 +44,7 @@ class Factory
         $files = $this->crawl();
 
         if ( empty( $files ) )
-            return null;
+            throw new \Error('No files found');
 
         if( $this->check( $files ) == false )
             throw new \Error('Either one or more classes do not exist');
@@ -210,9 +211,10 @@ class Factory
     private function trim( $filename )
     {
 
-        $filename = explode('.', $filename );
-        unset( $filename[ key( end( $filename ) ) ] );
+        $exploded = explode('/', $filename );#
+        $file = end( $exploded );
+        $filename = explode('.', $file );
 
-        return( implode('.', $filename ) );
+        return( $filename[0] );
     }
 }

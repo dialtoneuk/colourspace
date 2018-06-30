@@ -52,7 +52,7 @@ class Container
 
     /**
      * @param $name
-     * @return mixed
+     * @return Application
      */
 
     public static function get( $name )
