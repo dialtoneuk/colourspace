@@ -11,6 +11,7 @@ use Colourspace\Framework\Interfaces\ControllerInterface;
 use Colourspace\Framework\Interfaces\ModelInterface;
 use Colourspace\Framework\Interfaces\ViewInterface;
 use Colourspace\Framework\Util\Constructor;
+use Colourspace\Framework\Util\Debug;
 
 class FrontController
 {
@@ -61,6 +62,7 @@ class FrontController
     /**
      * @param array $request
      * @param array $payload
+     * @return mixed
      * @throws \Error
      */
 
@@ -94,7 +96,8 @@ class FrontController
         $controller->process( $request['method'], $request );
 
         $view->setModel( $model );
-        $view->get();
+
+        return $view->get();
     }
 
     /**
@@ -267,13 +270,19 @@ class FrontController
     public function initialize()
     {
 
+        Debug::message('Initializing front controller');
+
         $this->models = new Constructor( $this->getFilepath(MVC_TYPE_MODEL), $this->getNamespace(MVC_TYPE_MODEL) );
         $this->views = new Constructor( $this->getFilepath(MVC_TYPE_VIEW), $this->getNamespace(MVC_TYPE_VIEW) );
         $this->controllers = new Constructor( $this->getFilepath(MVC_TYPE_CONTROLLER), $this->getNamespace(MVC_TYPE_CONTROLLER) );
 
+        Debug::message( 'Creating instances of classes');
+
         $this->models->createAll();
         $this->views->createAll();
         $this->controllers->createAll();
+
+        Debug::message('Finished front controller setup');
     }
 
     /**

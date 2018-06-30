@@ -7,6 +7,7 @@ namespace Colourspace\Database;
  * Time: 22:56
  */
 
+use Colourspace\Framework\Util\Debug;
 use Illuminate\Database\Capsule\Manager;
 
 class Connection
@@ -36,6 +37,8 @@ class Connection
     public function __construct( $auto_create = true )
     {
 
+        Debug::message("Created connection class");
+
         $this->settings = $this->getSettings();
 
         if ( $auto_create )
@@ -49,6 +52,8 @@ class Connection
 
     public function create( $custom_settings = null )
     {
+
+        Debug::message("Creating database connection");
 
         if( $custom_settings )
         {
@@ -68,14 +73,19 @@ class Connection
 
         $this->capsule->addConnection( $settings );
         $this->connection = $this->capsule->getConnection();
+
+        Debug::message("Connection created");
     }
 
     /**
      * @return bool
+     * @throws \Error
      */
 
     public function test()
     {
+
+        Debug::message('Testing connection');
 
         if( empty( $this->connection ) )
             return false;
@@ -88,8 +98,12 @@ class Connection
         catch ( \Error $error )
         {
 
+            Debug::message('Failed: ' . $error->getMessage() );
+
             return false;
         }
+
+        Debug::message('Success');
 
         return true;
     }

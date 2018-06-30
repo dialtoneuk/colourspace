@@ -24,6 +24,9 @@ class Constructor
     public function __construct( $file_path, $namespace )
     {
 
+        Debug::message('Constructor created with file_path ' . $file_path . ' and namespace of ' . $namespace );
+
+
         $this->objects = new \stdClass();
 
         if ( file_exists( COLOURSPACE_ROOT . $file_path ) == false || is_dir( COLOURSPACE_ROOT . $file_path ) == false )
@@ -41,6 +44,8 @@ class Constructor
     public function createAll()
     {
 
+        Debug::message('Creating classes in directory');
+
         $files = $this->crawl();
 
         if ( empty( $files ) )
@@ -53,6 +58,9 @@ class Constructor
         {
 
             $namespace = $this->build( $file );
+
+            Debug::message('Working with class ' . $namespace );
+
             $class = new $namespace;
 
             $file = strtolower( $file );
@@ -66,6 +74,8 @@ class Constructor
 
             $this->objects->$file = $class;
         }
+
+        Debug::message('Finished creating classes');
 
         return $this->objects;
     }

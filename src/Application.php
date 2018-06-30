@@ -1,5 +1,6 @@
 <?php
 namespace Colourspace;
+
 use Colourspace\Database\Connection;
 use Colourspace\Framework\FrontController;
 use Colourspace\Framework\Session;
@@ -61,5 +62,17 @@ class Application
     {
 
         $this->objects->$name = $value;
+    }
+
+    public function __destruct()
+    {
+
+        foreach( $this->objects as $key=>$value )
+        {
+
+            unset( $this->objects->$key );
+        }
+
+        exit();
     }
 }

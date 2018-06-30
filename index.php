@@ -11,6 +11,7 @@ use Colourspace\Container;
 use Colourspace\Framework\FrontController;
 use Colourspace\Framework\Session;
 use Colourspace\Framework\Router;
+use Colourspace\Framework\Util\Debug;
 
 //Check current root
 if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
@@ -46,6 +47,10 @@ define("LARAVEL_TYPE_STRING","string");
 define("LARAVEL_TYPE_INT","integer");
 define("LARAVEL_TYPE_TIMESTAMP","timestamp");
 
+define("DEBUG_ENABLED", true );
+define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
+define("DEBUG_WRITE_FILE", true );
+
 
 /**
  * Initialize
@@ -55,6 +60,21 @@ try
 {
 
     $application = new Application();
+
+    /**
+     * If we have debugging enabled
+     */
+
+    if( DEBUG_ENABLED )
+    {
+
+        //This will automatically allow all the debug methods in the application to function
+        Debug::initialization();
+
+        //Lets start a timer for the application process
+        Debug::setStartTime('application');
+    }
+
 
     /**
      * Create the connection for the database
@@ -98,9 +118,25 @@ try
 
     //Now we can initialize the session
     Container::get('application')->session->initialize();
+
+    //Set the end time for our timer
+    if( DEBUG_ENABLED )
+        Debug::setEndTime('application');
+
+    /**
+     * We'd put this just after flight has finished all of its stuff when the code is wrote
+     */
+
+    if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
+        Debug::stashMessages();
+
 }
 catch ( Error $error )
 {
 
+    if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
+        Debug::stashMessages();
+
     die( print_r( $error ) );
 }
+
