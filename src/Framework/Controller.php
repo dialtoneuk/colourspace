@@ -20,7 +20,7 @@ class Controller implements ControllerInterface
      * @var ModelInterface
      */
 
-    private $model;
+    public $model;
 
     /**
      * @param ModelInterface $model

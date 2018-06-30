@@ -37,7 +37,7 @@ class Router
     public function __construct( $auto_initialize=true )
     {
 
-        $this->routes = new FileOperator( COLOURSPACE_ROOT . ROUTER_ROUTES, true );
+        $this->routes = new FileOperator( ROUTER_ROUTES, true );
 
         if( $this->routes->isEmpty() )
             throw new \Error('Route file is empty');
@@ -66,6 +66,7 @@ class Router
 
             if( isset( $this->live_routes[ $route['url'] ] ) )
                 continue;
+
 
             $this->live_routes[ $route['url'] ] = $this->lower( $route['mvc'] );
         }
@@ -159,7 +160,7 @@ class Router
         foreach( $route['mvc'] as $key=>$type )
         {
 
-            if( strtolower( $key ) !== ( MVC_TYPE_MODEL | MVC_TYPE_VIEW | MVC_TYPE_CONTROLLER ) )
+            if( strtolower( $key ) != ( MVC_TYPE_MODEL or MVC_TYPE_VIEW or MVC_TYPE_CONTROLLER ) )
                 return false;
         }
 

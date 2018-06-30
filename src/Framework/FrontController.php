@@ -75,7 +75,7 @@ class FrontController
         foreach ( $payload as $key=>$item )
         {
 
-            if( $key !== ( MVC_TYPE_MODEL || MVC_TYPE_CONTROLLER || MVC_TYPE_VIEW ) )
+            if( $key != ( MVC_TYPE_MODEL or MVC_TYPE_CONTROLLER or MVC_TYPE_VIEW ) )
                 throw new \Error('Unknown key type: ' . $key );
 
             if( $this->has( $key, $item ) == false )
@@ -85,7 +85,7 @@ class FrontController
         if( isset( $request['method'] ) == false )
             throw new \Error('Request method invalid');
 
-        if( $request['method'] !== ( MVC_REQUEST_POST || MVC_REQUEST_DELETE || MVC_REQUEST_GET || MVC_REQUEST_PUT) )
+        if( $request['method'] != ( MVC_REQUEST_POST or MVC_REQUEST_DELETE or MVC_REQUEST_GET or MVC_REQUEST_PUT) )
             throw new \Error('Request method invalid');
 
         $model = $this->get(  MVC_TYPE_MODEL, $payload[ MVC_TYPE_MODEL ] );
@@ -114,11 +114,11 @@ class FrontController
         if( empty( $request ) )
             throw new \Error('Flight has not been started');
 
-        if( $request->method !== ( MVC_REQUEST_POST || MVC_REQUEST_DELETE || MVC_REQUEST_GET || MVC_REQUEST_PUT) )
+        if( strtolower( $request->method ) != ( MVC_REQUEST_POST or  MVC_REQUEST_DELETE or MVC_REQUEST_GET or MVC_REQUEST_PUT) )
             throw new \Error('Invalid method');
 
         $array = [
-            'method'    => $request->method,
+            'method'    => strtolower( $request->method ),
             'ip'        => $request->ip,
             'proxy'     => $request->proxy_ip,
             'url'       => $request->url,
@@ -309,6 +309,8 @@ class FrontController
 
             return false;
         }
+
+        return true;
     }
 
     /**

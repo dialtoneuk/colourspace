@@ -19,7 +19,7 @@ class View implements ViewInterface
      * @var ModelInterface
      */
 
-    protected $model;
+    public $model;
 
     public function setModel(ModelInterface $model)
     {

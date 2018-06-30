@@ -128,6 +128,6 @@ class FileOperator
     private function read()
     {
 
-        return( file_get_contents( COLOURSPACE_ROOT . $this->path ) );
+        $this->contents = file_get_contents( COLOURSPACE_ROOT . $this->path );
     }
 }

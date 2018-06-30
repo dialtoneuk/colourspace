@@ -1,8 +1,11 @@
 <?php
 require_once( "vendor/autoload.php" );
 
+
 /**
- * Written by Lewis 'mkultra2018'  Lancaster in 2018
+ * Written by Lewis 'mkultra2018' Lancaster
+ * in 2018 (June to August)
+ * =======================================
  */
 
 use Colourspace\Application;
@@ -13,15 +16,25 @@ use Colourspace\Framework\Session;
 use Colourspace\Framework\Router;
 use Colourspace\Framework\Util\Debug;
 
-//Check current root
+/**
+ * Pre Checks
+ * =======================================
+ */
+
 if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
-{
-
-    //If no document root use cwd instead
     $_SERVER["DOCUMENT_ROOT"] = getcwd();
-}
 
-//Globals
+if( version_compare(PHP_VERSION, '7.0.0') == -1 )
+    die('Please upgrade to PHP 7.0.0+ to run this web-application. Your current PHP version is ' . PHP_VERSION );
+
+if( php_sapi_name() === 'cli' )
+    die('Please run this web application through a web-server. You are currently running PHP from CLI');
+
+/**
+ * Globals
+ * =======================================
+ */
+
 define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
 define("COLOURSPACE_DATABASE_CREDENTIALS", "/config/database_credentials.json");
 
@@ -51,19 +64,19 @@ define("DEBUG_ENABLED", true );
 define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_WRITE_FILE", true );
 
-
 /**
- * Initialize
+ * Colourspace Initialization
+ * =======================================
  */
 
 try
 {
 
-    $application = new Application();
-
     /**
-     * If we have debugging enabled
+     * Debug Timers
+     * =======================
      */
+
 
     if( DEBUG_ENABLED )
     {
@@ -75,67 +88,79 @@ try
         Debug::setStartTime('application');
     }
 
-
     /**
-     * Create the connection for the database
+     * Initialization
+     * =======================
      */
 
-    //Create the database
+    $application = new Application();
     $application->connection = new Connection( true );
-    //Test
+
     if( $application->connection->test() == false )
         throw new Error("Failed connection test, check settings");
 
-    /**
-     * Create the MVC Classes once the session has been initiated
-     */
-
-    //Create Front controller and initialize
     $application->frontcontroller = new FrontController( true );
-    //Test
+
     if( $application->frontcontroller->test() == false )
         throw new Error("Failed to initiate front controller, check your files");
 
-    /**
-     * Now for the routing engine to read our routes
-     */
-
-    //Create the router class and added it to the application
     $application->router = new Router( true );
-    //Test
+
     if( $application->router->test() == false )
         throw new Error('Router failed to initiate, check your router files');
 
-    /**
-     * Sessions come next
-     */
-
-    //Lets create the session, but we can't start it yet because the connection hasn't been made global yet.
     $application->session = new Session( false );
 ;
-    //Once we have added the session to the global container, we can now invoke it and initialize our session.
     Container::add("application", $application );
-
-    //Now we can initialize the session
     Container::get('application')->session->initialize();
 
-    //Set the end time for our timer
     if( DEBUG_ENABLED )
         Debug::setEndTime('application');
 
     /**
-     * We'd put this just after flight has finished all of its stuff when the code is wrote
+     * Flight
+     * =======================
      */
 
-    if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
-        Debug::stashMessages();
+    foreach( $application->router->live_routes as $url=>$payload )
+    {
 
+        Flight::route( $url, function( $route ) use ( $payload ){
+
+            $request = Container::get('application')->frontcontroller->buildRequest( $route );
+
+            if ( DEBUG_ENABLED )
+                Debug::setStartTime('flight_route');
+
+            $view = Container::get('application')->frontcontroller->process( $request, $payload );
+
+
+            if ( empty( $view ) == false && is_array( $view ) )
+                Flight::render( $view[0], $view[1] );
+            else
+                throw new Error("Unknown return type from view");
+
+        }, true );
+    }
+
+    Flight::after('route', function()
+    {
+
+        if( DEBUG_ENABLED )
+            Debug::setEndTime('flight_route' );
+    });
+
+    Flight::after('start', function()
+    {
+        if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
+            Debug::stashMessages();
+    });
+
+    //This is actually where the application starts
+    Flight::start();
 }
 catch ( Error $error )
 {
-
-    if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
-        Debug::stashMessages();
 
     die( print_r( $error ) );
 }

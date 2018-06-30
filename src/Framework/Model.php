@@ -33,7 +33,7 @@ class Model implements ModelInterface
     public function __get($name)
     {
 
-        return( $this->object[ $name ] );
+        return( $this->object->$name );
     }
 
     /**
@@ -45,7 +45,7 @@ class Model implements ModelInterface
     public function __set($name, $value)
     {
 
-        return( $this->object[ $name ] = $value );
+        return( $this->object->$name = $value );
     }
 
     /**
@@ -56,7 +56,7 @@ class Model implements ModelInterface
     public function __isset($name)
     {
 
-        return( isset( $this->object[ $name ] ) );
+        return( isset( $this->object->$name ) );
     }
 
     /**
@@ -87,7 +87,12 @@ class Model implements ModelInterface
     public function formError($name, $value)
     {
 
-        $this->object['errors'] [$name ] = $value;
+        if ( isset( $this->object->errors ) == false )
+            $this->object->errors = [];
+
+        $this->object->errors[] = [
+            $name => $value
+        ];
     }
 
     /**
@@ -98,6 +103,11 @@ class Model implements ModelInterface
     public function formMessage($name, $value)
     {
 
-        $this->object['messages'][ $name ] = $value;
+        if ( isset( $this->object->messages ) == false )
+            $this->object->messages = [];
+
+        $this->object->messages[] = [
+            $name => $value
+        ];
     }
 }

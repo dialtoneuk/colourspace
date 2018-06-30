@@ -4,7 +4,7 @@
     "mvc":{
       "model":"Index",
       "view":"Index",
-      "Controller":"Index"
+      "controller":"Index"
     }
   }
 ]
