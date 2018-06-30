@@ -15,7 +15,7 @@ if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
 }
 
 //Globals
-define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] . '/Colourspace/' );
+define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
 define("COLOURSPACE_DATABASE_CREDENTIALS", "/config/database_credentials.json");
 
 define("COLOURSPACE_MVC_ROOT", "/src/Framework/");
