@@ -8,6 +8,7 @@
 
 namespace Colourspace\Framework\Profiles;
 
+use Colourspace\Framework\Profile;
 
 class Tracks extends Profile
 {

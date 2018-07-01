@@ -11,6 +11,7 @@ namespace Colourspace\Framework;
 
 use Colourspace\Container;
 use Colourspace\Framework\Interfaces\ProfileInterface;
+use Colourspace\Framework\Util\Debug;
 
 class Profile implements ProfileInterface
 {
@@ -67,13 +68,15 @@ class Profile implements ProfileInterface
     }
 
     /**
-     * Fills up the profile with data
+     * @return null|void
+     * @throws \Error
      */
 
     public function create()
     {
 
-        $this->objects->test = "test";
+        if ( DEBUG_ENABLED )
+            Debug::message("Profile created");
     }
 
     /**

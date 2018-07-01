@@ -26,7 +26,7 @@ class FileOperator
     {
 
         if( file_exists( COLOURSPACE_ROOT . $path ) == false )
-            throw new \Error('File does not exist');
+            throw new \Error('File does not exist: ' . COLOURSPACE_ROOT . $path );
 
         if( is_dir( COLOURSPACE_ROOT . $path ) )
             throw new \Error('File operator can only operate files');
@@ -138,7 +138,7 @@ class FileOperator
     }
 
     /**
-     * @return bool|string
+     * Reads
      */
 
     private function read()

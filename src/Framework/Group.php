@@ -78,7 +78,7 @@ class Group
         unset( $this->groups->$name );
 
         if( $file_remove )
-            unlink( COLOURSPACE_ROOT .COLOURSPACE_GROUPS_ROOT . $name . ".json" );
+            unlink( COLOURSPACE_GROUPS_ROOT . $name . ".json" );
     }
 
     /**
@@ -88,14 +88,14 @@ class Group
     private function crawlGroups()
     {
 
-        $files = glob( COLOURSPACE_ROOT . COLOURSPACE_GROUPS_ROOT );
+        $files = glob( COLOURSPACE_GROUPS_ROOT );
 
 
         foreach( $files as $key=>$file )
         {
 
             $file = $this->trim( $file );
-            $file = new FileOperator( COLOURSPACE_ROOT . COLOURSPACE_GROUPS_ROOT . $file );
+            $file = new FileOperator( COLOURSPACE_GROUPS_ROOT . $file );
 
             if( $file->isJSON() == false )
                 throw new \Error('Group file is incorrect');

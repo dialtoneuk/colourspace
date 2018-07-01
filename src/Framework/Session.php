@@ -125,7 +125,10 @@ class Session
             throw new \Error('No session id, check if session has been initiated');
 
         if( $this->table->exist( session_id() ) )
+        {
+
             return false;
+        }
 
         return true;
     }

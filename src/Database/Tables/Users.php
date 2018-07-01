@@ -50,7 +50,7 @@ class Users extends Table
     public function exist( $userid )
     {
 
-        return( $this->query()->where(['userid' => $userid])->exists() );
+        return( $this->query()->where(['userid' => $userid])->get()->isEmpty() );
     }
 
     /**

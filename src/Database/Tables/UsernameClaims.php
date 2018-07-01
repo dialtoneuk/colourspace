@@ -57,7 +57,7 @@ class UsernameClaims extends Table
     public function has( $sessionid )
     {
 
-        return( $this->query()->where(['sessionid', $sessionid ] )->exists() );
+        return( $this->query()->where(['sessionid', $sessionid ] )->get()->isEmpty());
     }
 
     /**

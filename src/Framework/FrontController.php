@@ -100,7 +100,7 @@ class FrontController
         {
 
             \Flight::redirect(COLOURSPACE_URL_ROOT );
-            return;
+            return null;
         }
 
         $controller->before();

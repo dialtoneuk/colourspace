@@ -2,19 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: lewis
- * Date: 30/06/2018
- * Time: 22:49
+ * Date: 01/07/2018
+ * Time: 00:50
  */
 
 namespace Colourspace\Framework\Profiles;
 
 
-use Colourspace\Container;
-use Colourspace\Framework\Group;
 use Colourspace\Framework\Profile;
-use Colourspace\Framework\User as UserClass;
 
-class User extends Profile
+class Group extends Profile
 {
 
     /**
@@ -53,6 +50,7 @@ class User extends Profile
     }
 
     /**
+     * @return null|void
      * @throws \Error
      */
 
@@ -69,9 +67,21 @@ class User extends Profile
 
         $user = $this->user->get( Container::get('application')->session->userid() );
 
+        if( $this->group->hasGroup($user->group ) == false )
+        {
+
+            $this->objects = null;
+            return;
+        }
+
+        $group = $this->group->getGroup( $user->group );
+
         $this->objects = [
-            'username' => $user->username,
-            'email'    => $user->email
+            'name' => $group->name,
+            'admin' => $group->permissions->admin,
+            'uploadtime' => $group->permissions->uploadtime
         ];
+
+        parent::create();
     }
 }
