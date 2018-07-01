@@ -59,7 +59,7 @@ class Constructor
 
             $namespace = $this->build( $file );
 
-            Debug::message('Working with class ' . $namespace );
+            Debug::message('Working with class: ' . $namespace );
 
             $class = new $namespace;
 

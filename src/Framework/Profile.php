@@ -76,7 +76,7 @@ class Profile implements ProfileInterface
     {
 
         if ( DEBUG_ENABLED )
-            Debug::message("Profile created");
+            Debug::message("Profile create: " .  __CLASS__);
     }
 
     /**

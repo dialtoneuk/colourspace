@@ -73,5 +73,7 @@ class User extends Profile
             'username' => $user->username,
             'email'    => $user->email
         ];
+
+        parent::create();
     }
 }

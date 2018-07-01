@@ -71,8 +71,8 @@ define("FORM_MESSAGE_SUCCESS", "success_message");
 define("FORM_MESSAGE_INFO", "info_message");
 
 define("DEBUG_ENABLED", true );
-define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_WRITE_FILE", true );
+define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 
 /**
  * Colourspace Initialization
@@ -93,6 +93,8 @@ try
 
         //This will automatically allow all the debug methods in the application to function
         Debug::initialization();
+
+        Debug::message("Started");
 
         //Lets start a timer for the application process
         Debug::setStartTime('application');
@@ -123,9 +125,6 @@ try
 ;
     Container::add("application", $application );
     Container::get('application')->session->initialize();
-
-    if( DEBUG_ENABLED )
-        Debug::setEndTime('application');
 
     /**
      * Flight
@@ -162,8 +161,15 @@ try
 
     Flight::after('start', function()
     {
-        if( DEBUG_ENABLED && DEBUG_WRITE_FILE )
-            Debug::stashMessages();
+        if( DEBUG_ENABLED  )
+        {
+            Debug::message("Finished");
+            Debug::setEndTime('application');
+
+            if( DEBUG_WRITE_FILE )
+                Debug::stashMessages();
+        }
+
     });
 
     //This is actually where the application starts

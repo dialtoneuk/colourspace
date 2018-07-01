@@ -34,7 +34,7 @@ class Model implements ModelInterface
     {
 
         if( DEBUG_ENABLED )
-            Debug::message("Startup class:" .  __CLASS__ );
+            Debug::message("Startup called in model: " .  __CLASS__ );
     }
 
     /**
