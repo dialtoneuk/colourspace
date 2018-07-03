@@ -113,8 +113,6 @@ try
         Debug::initialization();
 
         Debug::message("Started");
-
-        //Lets start a timer for the application process
         Debug::setStartTime('application');
     }
 
@@ -124,24 +122,42 @@ try
      */
 
     $application = new Application();
+
+    //This must be initiated and created first as some core functions require access to a database.
     $application->connection = new Connection( true );
 
+    //We then run a test of the database connection. This simply pulls the database name from the database which will return an error if it fails
     if( $application->connection->test() == false )
         throw new Error("Failed connection test, check settings");
 
+    //We then initiate the front controller. This loads all of our MVC classes into memory so there are no load times when we process the request. It is all live from memory.
     $application->frontcontroller = new FrontController( true );
 
+    //We then test this by simply querying the stacks of Views, Models and Controllers and checking if any one of them are empty.
     if( $application->frontcontroller->test() == false )
         throw new Error("Failed to initiate front controller, check your files");
 
+    //The router file is what is then fed into Flight. Our microframework for easy http routing ( read more up on this at flightphp.com ). All this really does is read from a json file
+    //a list of arrays with a url of which to match and initiate this perticular set of MVC classes, and the prementioned MVC classes them selves. You can check out the file
+    //for how this works.
     $application->router = new Router( true );
 
+    //Same as the previous test, if we are empty. Error.
     if( $application->router->test() == false )
         throw new Error('Router failed to initiate, check your router files');
 
+    //We then create the session class, but we do not initialize. Read below for more info on this.
     $application->session = new Session( false );
-;
+
+    //After everything is done, we globalize the application class to be accessible where ever we are in the web-application. Saving on CPU overhead and memory and time
+    //when accessing these heavily used components.
     Container::add("application", $application );
+
+    //After the container has been globalized. We can then initiate the session from invoking it directly inside the container. We do it this way because the
+    //session class by default creates a table class so it can cross reference with a database to check things such as login states and the current
+    //owner of the session. if they are logged in. The table class invokves the connection class of which is contained inside the application singleton class.
+    //So in order to access the session, we first need to globalize the application. You should take this into account when working with the session class and
+    //to make sure when working with the database component that the application has been initialized, and added to this global container.
     Container::get('application')->session->initialize();
 
     /**
@@ -156,9 +172,6 @@ try
 
             $request = Container::get('application')->frontcontroller->buildRequest( $route );
 
-            if ( DEBUG_ENABLED )
-                Debug::setStartTime('flight_route');
-
             $view = Container::get('application')->frontcontroller->process( $request, $payload );
 
             if ( empty( $view ) == false && is_array( $view ) )
@@ -169,25 +182,28 @@ try
         }, true );
     }
 
-    Flight::after('route', function()
-    {
+    Flight::before('start', function(){
 
-        if( DEBUG_ENABLED )
-            Debug::setEndTime('flight_route' );
+
+        if ( DEBUG_ENABLED )
+            Debug::setStartTime('flight_route');
     });
 
     Flight::after('start', function()
     {
         if( DEBUG_ENABLED  )
         {
-            Debug::message("Finished");
-            Debug::setEndTime('application');
+            Debug::setEndTime('flight_route' );
 
             if( DEBUG_WRITE_FILE )
                 Debug::stashMessages();
+                Debug::stashTimers();
         }
 
     });
+
+    Debug::message("Finished application loading");
+    Debug::setEndTime('application');
 
     //This is actually where the application starts
     Flight::start();

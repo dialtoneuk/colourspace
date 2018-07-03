@@ -59,8 +59,8 @@ class Debug
         if( DEBUG_ENABLED == false )
             return;
 
-        if( $time=null )
-            microtime( true );
+        if( $time == null )
+            $time = microtime( true );
 
         if( self::isInit() == false )
             throw new \Error('Please enable error debugging');
@@ -97,6 +97,10 @@ class Debug
         file_put_contents(COLOURSPACE_ROOT . DEBUG_MESSAGES_FILE, json_encode( self::getMessages(), JSON_PRETTY_PRINT ) );
     }
 
+    /**
+     * @throws \Error
+     */
+
     public static function stashTimers()
     {
 
@@ -106,6 +110,10 @@ class Debug
         if( self::hasTimers() == false )
             return;
 
+        if( file_exists( COLOURSPACE_ROOT . DEBUG_TIMERS_FILE ) == false )
+            self::checkDirectory();
+
+        file_put_contents(COLOURSPACE_ROOT . DEBUG_TIMERS_FILE, json_encode( self::getTimers(), JSON_PRETTY_PRINT ) );
     }
 
     /**
@@ -120,17 +128,14 @@ class Debug
         if( DEBUG_ENABLED == false )
             return;
 
-        if( $time=null )
-            microtime( true );
+        if( $time == null )
+            $time = microtime( true );
 
         if( self::isInit() == false )
             throw new \Error('Please enable error debugging');
 
         if( isset( self::$objects->timers->$name ) )
         {
-
-            if(isset( self::$objects->timers->$name["start"] ) )
-                throw new \Error("Start time has not been set");
 
             if(isset( self::$objects->timers->$name["end"] ) )
                 throw new \Error("End time has already been set");
@@ -178,6 +183,16 @@ class Debug
     {
 
         return( self::$objects->messages );
+    }
+
+    /**
+     * @return mixed
+     */
+
+    public static function getTimers()
+    {
+
+        return( self::$objects->timers );
     }
 
     /**
