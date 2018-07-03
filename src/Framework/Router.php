@@ -37,7 +37,7 @@ class Router
     public function __construct( $auto_initialize=true )
     {
 
-        $this->routes = new FileOperator( ROUTER_ROUTES, true );
+        $this->routes = new FileOperator( MVC_ROUTE_FILE, true );
 
         if( $this->routes->isEmpty() )
             throw new \Error('Route file is empty');

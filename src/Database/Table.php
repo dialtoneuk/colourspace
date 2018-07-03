@@ -85,7 +85,7 @@ class Table implements TableInterface
         foreach ( $this->map() as $key=>$value )
         {
 
-            if( $value == LARAVEL_TYPE_INCREMENTS )
+            if( $this->ignoreFields( $value ) )
                 continue;
 
             if( isset( $values[ $key ] ) == false )
@@ -94,18 +94,58 @@ class Table implements TableInterface
             switch ( $value )
             {
 
-                case( LARAVEL_TYPE_STRING ):
+                case( FIELD_TYPE_STRING ):
                     if ( is_string( $value[ $key ] ) == false )
                         return false;
                     break;
-                case( LARAVEL_TYPE_INT ):
+                case( FIELD_TYPE_INT ):
                     if ( is_int( $value[ $key ] ) == false )
                         return false;
+                    break;
+                case( FIELD_TYPE_IPADDRESS ):
+                    if( filter_var( $value[ $key ], FILTER_VALIDATE_IP ) == false )
+                        return false;
+                    break;
+                case( FIELD_TYPE_DECIMAL ):
+                    if( is_float( $value[ $key ] ) == false )
+                        return false;
+                    break;
+                case( FIELD_TYPE_JSON ):
+                    json_decode( $value[ $key ] );
+                    if( json_last_error() !== JSON_ERROR_NONE )
+                        return false;
+                    break;
+                default:
+                    return false;
                     break;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param $field
+     * @return bool
+     */
+
+    private function ignoreFields( $field )
+    {
+
+        $ignores = [
+            FIELD_TYPE_INCREMENTS,
+            FIELD_TYPE_PRIMARY,
+            FIELD_TYPE_TIMESTAMP
+        ];
+
+        foreach( $ignores as $ignore )
+        {
+
+            if( $field == $ignore )
+                return true;
+        }
+
+        return false;
     }
 
     /**
@@ -143,10 +183,10 @@ class Table implements TableInterface
     {
 
         return [
-            'userid' => LARAVEL_TYPE_INCREMENTS,
-            'username' => LARAVEL_TYPE_STRING,
-            'email' => LARAVEL_TYPE_STRING,
-            'password' => LARAVEL_TYPE_STRING
+            'userid' => FIELD_TYPE_INCREMENTS,
+            'username' => FIELD_TYPE_STRING,
+            'email' => FIELD_TYPE_STRING,
+            'password' => FIELD_TYPE_STRING
         ];
     }
 

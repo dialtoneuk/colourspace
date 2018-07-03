@@ -11,7 +11,7 @@ namespace Colourspace\Database\Tables;
 
 use Colourspace\Database\Table;
 
-class UsernameClaims extends Table
+class TemporaryUsernames extends Table
 {
 
     /**
@@ -22,9 +22,10 @@ class UsernameClaims extends Table
     {
 
         return( [
-            "sessionid" => LARAVEL_TYPE_STRING,
-            "username"  => LARAVEL_TYPE_STRING,
-            "creation"  => LARAVEL_TYPE_TIMESTAMP
+            "sessionid" => FIELD_TYPE_STRING,
+            "username"  => FIELD_TYPE_STRING,
+            "ipaddress" => FIELD_TYPE_IPADDRESS,
+            "creation"  => FIELD_TYPE_TIMESTAMP
         ]);
     }
 
@@ -35,7 +36,7 @@ class UsernameClaims extends Table
     public function name()
     {
 
-        return "username_claims";
+        return "temporary_usernames";
     }
 
     /**

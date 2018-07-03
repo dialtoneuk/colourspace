@@ -8,6 +8,7 @@
 namespace Colourspace\Framework;
 
 use Colourspace\Database\Tables\Users;
+use Colourspace\Framework\Util\Format;
 
 class User
 {
@@ -106,9 +107,44 @@ class User
         return( $this->get( $userid )->group );
     }
 
-    public function register( $username, $email, $password, $group=null )
+    /**
+     * @param $username
+     * @param $email
+     * @param $password
+     * @param null $salt
+     * @param null $group
+     * @return int
+     * @throws \Error
+     */
+
+    public function register( $username, $email, $password, $salt=null, $group=null )
     {
 
+        if( $salt == null )
+            $salt = $this->salt();
 
+        if( $group == null )
+            $group = GROUP_DEFAULT;
+
+
+        $array = [
+            'username'  => $username,
+            'password'  => Format::saltedPassword( $salt, $password ),
+            'salt'      => $salt,
+            'group'     => $group,
+            'creation'  => Format::Timestamp()
+        ];
+
+        return( $this->table->insert( $array ) );
+    }
+
+    /**
+     * @return string
+     */
+
+    private function salt()
+    {
+
+        return( base64_encode( openssl_random_pseudo_bytes(32)));
     }
 }

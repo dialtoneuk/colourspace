@@ -22,11 +22,11 @@ class Verification extends Table
     {
 
         return( [
-            "verificationid"    => LARAVEL_TYPE_INCREMENTS,
-            "userid"            => LARAVEL_TYPE_INT,
-            "type"              => LARAVEL_TYPE_STRING,
-            "token"             => LARAVEL_TYPE_STRING,
-            "creation"          => LARAVEL_TYPE_TIMESTAMP
+            "verificationid"    => FIELD_TYPE_INCREMENTS,
+            "userid"            => FIELD_TYPE_INT,
+            "type"              => FIELD_TYPE_STRING,
+            "token"             => FIELD_TYPE_STRING,
+            "creation"          => FIELD_TYPE_TIMESTAMP
         ]);
     }
 

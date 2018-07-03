@@ -97,6 +97,17 @@ class Debug
         file_put_contents(COLOURSPACE_ROOT . DEBUG_MESSAGES_FILE, json_encode( self::getMessages(), JSON_PRETTY_PRINT ) );
     }
 
+    public static function stashTimers()
+    {
+
+        if( DEBUG_ENABLED == false )
+            return;
+
+        if( self::hasTimers() == false )
+            return;
+
+    }
+
     /**
      * @param $name
      * @param $time
@@ -180,6 +191,22 @@ class Debug
             return false;
 
         if( empty( self::$objects->messages ) )
+            return false;
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+
+    public static function hasTimers()
+    {
+
+        if( isset( self::$objects->timers ) == false )
+            return false;
+
+        if( empty( self::$objects->timers ) )
             return false;
 
         return true;

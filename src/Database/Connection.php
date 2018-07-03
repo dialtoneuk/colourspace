@@ -7,12 +7,18 @@ namespace Colourspace\Database;
  * Time: 22:56
  */
 
+use Colourspace\Database\Util\OpenSSL;
 use Colourspace\Framework\Util\Debug;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Capsule\Manager;
 
 class Connection
 {
 
+    /**
+     * @var OpenSSL
+     */
+    protected $openssl;
     //Location of the keys to cross reference our database settings with for verification
     private $verification = '/config/database_verification.json';
     /**
@@ -40,6 +46,7 @@ class Connection
         Debug::message("Created connection class");
 
         $this->settings = $this->getSettings();
+        $this->openssl = new OpenSSL();
 
         if ( $auto_create )
             $this->create();
@@ -116,18 +123,40 @@ class Connection
     private function getSettings()
     {
 
-        if ( file_exists( COLOURSPACE_ROOT . COLOURSPACE_DATABASE_CREDENTIALS ) == false )
-            throw new \Error('Database credentials file missing');
+        if( DATABASE_ENCRYPTION )
+        {
 
-        $object = json_decode( file_get_contents( COLOURSPACE_ROOT . COLOURSPACE_DATABASE_CREDENTIALS  ), true );
+            if ( file_exists( COLOURSPACE_ROOT . DATABASE_CREDENTIALS ) == false )
+                throw new \Error('Database credentials file missing');
 
-        if ( empty( $object ) )
-            throw new \Error('Database credentials empty');
+            $object = json_decode( file_get_contents( COLOURSPACE_ROOT . DATABASE_CREDENTIALS  ), true );
 
-        if( $this->verify( $object ) == false )
-            throw new \Error('Database credentials are invalid');
+            if( isset( $object['info'] ) == false )
+                throw new \Error("No decryption keys found");
 
-        return $object;
+            $decrypted = $this->openssl->decrypt( $object, $object['info']['key'], $object['info']['iv'] );
+
+            if( $this->verify( $decrypted ) == false )
+                throw new \Error('Database credentials are invalid');
+
+            return $decrypted;
+        }
+        else
+        {
+
+            if ( file_exists( COLOURSPACE_ROOT . DATABASE_CREDENTIALS ) == false )
+                throw new \Error('Database credentials file missing');
+
+            $object = json_decode( file_get_contents( COLOURSPACE_ROOT . DATABASE_CREDENTIALS  ), true );
+
+            if ( empty( $object ) )
+                throw new \Error('Database credentials empty');
+
+            if( $this->verify( $object ) == false )
+                throw new \Error('Database credentials are invalid');
+
+            return $object;
+        }
     }
 
     /**

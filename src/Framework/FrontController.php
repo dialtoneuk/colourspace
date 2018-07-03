@@ -46,12 +46,12 @@ class FrontController
     {
 
         if ( $namespace == null )
-            $this->namespace = COLOURSPACE_NAMESPACE;
+            $this->namespace = MVC_NAMESPACE;
         else
             $this->namespace = $namespace;
 
         if ( $filepath == null )
-            $this->filepath = COLOURSPACE_MVC_ROOT;
+            $this->filepath = MVC_ROOT;
         else
             $this->filepath = $filepath;
 
@@ -99,7 +99,6 @@ class FrontController
         if( $controller->authentication( $request['method'], $request ) == false )
         {
 
-            \Flight::redirect(COLOURSPACE_URL_ROOT );
             return null;
         }
 
@@ -337,13 +336,13 @@ class FrontController
         {
 
             case MVC_TYPE_MODEL:
-                return $this->filepath . COLOURSPACE_NAMESPACE_MODEL . '/';
+                return $this->filepath . MVC_NAMESPACE_MODELS . '/';
                 break;
             case MVC_TYPE_VIEW:
-                return $this->filepath . COLOURSPACE_NAMESPACE_VIEW . '/';
+                return $this->filepath . MVC_NAMESPACE_VIEWS . '/';
                 break;
             case MVC_TYPE_CONTROLLER:
-                return $this->filepath . COLOURSPACE_NAMESPACE_CONTROLLER . '/';
+                return $this->filepath . MVC_NAMESPACE_CONTROLLERS . '/';
                 break;
         }
 
@@ -362,13 +361,13 @@ class FrontController
         {
 
             case MVC_TYPE_MODEL:
-                return $this->namespace . COLOURSPACE_NAMESPACE_MODEL . "\\";
+                return $this->namespace . MVC_NAMESPACE_MODELS . "\\";
                 break;
             case MVC_TYPE_VIEW:
-                return $this->namespace . COLOURSPACE_NAMESPACE_VIEW . "\\";
+                return $this->namespace . MVC_NAMESPACE_VIEWS . "\\";
                 break;
             case MVC_TYPE_CONTROLLER:
-                return $this->namespace . COLOURSPACE_NAMESPACE_CONTROLLER . "\\";
+                return $this->namespace . MVC_NAMESPACE_CONTROLLERS . "\\";
                 break;
 
         }

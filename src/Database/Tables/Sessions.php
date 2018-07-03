@@ -33,10 +33,10 @@ class Sessions extends Table
     {
 
         return [
-            'userid' => LARAVEL_TYPE_INCREMENTS,
-            'sessionid' => LARAVEL_TYPE_STRING,
-            'ipaddress' => LARAVEL_TYPE_STRING,
-            'creation' => LARAVEL_TYPE_TIMESTAMP
+            'userid'    => FIELD_TYPE_INCREMENTS,
+            'sessionid' => FIELD_TYPE_STRING,
+            'ipaddress' => FIELD_TYPE_IPADDRESS,
+            'creation'  => FIELD_TYPE_TIMESTAMP
         ];
     }
 

@@ -33,12 +33,12 @@ class Users extends Table
     {
 
         return [
-            'userid' => LARAVEL_TYPE_INCREMENTS,
-            'username' => LARAVEL_TYPE_STRING,
-            'password' => LARAVEL_TYPE_STRING,
-            'salt' => LARAVEL_TYPE_STRING,
-            'group' => LARAVEL_TYPE_STRING,
-            'creation' => LARAVEL_TYPE_TIMESTAMP
+            'userid'    => FIELD_TYPE_INCREMENTS,
+            'username'  => FIELD_TYPE_STRING,
+            'password'  => FIELD_TYPE_STRING,
+            'salt'      => FIELD_TYPE_STRING,
+            'group'     => FIELD_TYPE_STRING,
+            'creation'  => FIELD_TYPE_TIMESTAMP
         ];
     }
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f979ae14ec28d76d0893d202147e9a4b",
+    "content-hash": "9f982cb84659161c5b8c9d07b1e02deb",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -121,16 +121,16 @@
         },
         {
             "name": "facebook/graph-sdk",
-            "version": "5.6.2",
+            "version": "5.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-graph-sdk.git",
-                "reference": "030f8c5b9b1a6c09e71719fd638b66ea4daa2f10"
+                "reference": "90e92bd1816fe718e55184ab85910dfcf488432c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/030f8c5b9b1a6c09e71719fd638b66ea4daa2f10",
-                "reference": "030f8c5b9b1a6c09e71719fd638b66ea4daa2f10",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/90e92bd1816fe718e55184ab85910dfcf488432c",
+                "reference": "90e92bd1816fe718e55184ab85910dfcf488432c",
                 "shasum": ""
             },
             "require": {
@@ -175,7 +175,7 @@
                 "facebook",
                 "sdk"
             ],
-            "time": "2018-02-14T23:24:51+00:00"
+            "time": "2018-07-03T02:25:00+00:00"
         },
         {
             "name": "illuminate/container",
@@ -527,6 +527,47 @@
             "time": "2018-06-25T13:15:16+00:00"
         },
         {
+            "name": "phelium/recaptcha",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shevabam/recaptcha.git",
+                "reference": "e94090ee7237b5e4ddc34c6f26dad43d27816985"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shevabam/recaptcha/zipball/e94090ee7237b5e4ddc34c6f26dad43d27816985",
+                "reference": "e94090ee7237b5e4ddc34c6f26dad43d27816985",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phelium\\Component\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "ShevAbam"
+                }
+            ],
+            "description": "reCAPTCHA v2 class",
+            "homepage": "https://github.com/shevabam/recaptcha",
+            "keywords": [
+                "captcha",
+                "google",
+                "recaptcha"
+            ],
+            "time": "2018-05-13T13:22:28+00:00"
+        },
+        {
             "name": "phpmailer/phpmailer",
             "version": "v5.2.26",
             "source": {
@@ -832,7 +873,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "alpha",
-    "stability-flags": [],
+    "stability-flags": {
+        "phelium/recaptcha": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
