@@ -16,3 +16,6 @@ composer.phar
 # PHPStorm
 
 /.idea/
+
+# Windows
+desktop.ini

@@ -12,7 +12,7 @@
         {
             $messages = json_decode ( json_encode( $content->messages ), true);
 
-            foreach(  $errors as $key=>$message )
+            foreach(  $messages as $key=>$message )
                 echo("<p>" . $message['type'] . " : " . $message['value'] . "</p>" );
 
         }

@@ -134,6 +134,7 @@ class User
         $array = [
             'username'  => $username,
             'password'  => Format::saltedPassword( $salt, $password ),
+            'email'     => $email,
             'salt'      => $salt,
             'group'     => $group,
             'colour'    => $colour,

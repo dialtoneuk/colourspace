@@ -95,23 +95,23 @@ class Table implements TableInterface
             {
 
                 case( FIELD_TYPE_STRING ):
-                    if ( is_string( $value[ $key ] ) == false )
+                    if ( is_string( $values[ $key ] ) == false )
                         return false;
                     break;
                 case( FIELD_TYPE_INT ):
-                    if ( is_int( $value[ $key ] ) == false )
+                    if ( is_int( $values[ $key ] ) == false )
                         return false;
                     break;
                 case( FIELD_TYPE_IPADDRESS ):
-                    if( filter_var( $value[ $key ], FILTER_VALIDATE_IP ) == false )
+                    if( filter_var( $values[ $key ], FILTER_VALIDATE_IP ) == false )
                         return false;
                     break;
                 case( FIELD_TYPE_DECIMAL ):
-                    if( is_float( $value[ $key ] ) == false )
+                    if( is_float( $values[ $key ] ) == false )
                         return false;
                     break;
                 case( FIELD_TYPE_JSON ):
-                    json_decode( $value[ $key ] );
+                    json_decode( $values[ $key ] );
                     if( json_last_error() !== JSON_ERROR_NONE )
                         return false;
                     break;

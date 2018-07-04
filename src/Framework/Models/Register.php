@@ -32,6 +32,9 @@ class Register extends DefaultModel
         $this->temporaryusername = new TemporaryUsername();
 
         if( $this->temporaryusername->has( session_id() ) )
-            $this->object->temporaryusername = $this->temporaryusername->get( session_id() )->toArray();
+        {
+
+            $this->object->temporaryusername = $this->temporaryusername->get( session_id() );
+        }
     }
 }

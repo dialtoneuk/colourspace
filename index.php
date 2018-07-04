@@ -44,9 +44,9 @@ define("ACCOUNT_RND_MAX", 8);
 define("ACCOUNT_PASSWORD_MIN", 8);
 define("ACCOUNT_PASSWORD_STRICT", false );
 
-define("GOOGLE_ENABLED", true );
-define("GOOGLE_SITE_KEY", null );
-define("GOOGLE_SITE_SECRET", null );
+define("GOOGLE_ENABLED", false );
+define("GOOGLE_SITE_KEY", "6LfIbAgUAAAAABzfN4j-MrX5ndXzjIb9jFNgg7Lv" );
+define("GOOGLE_SITE_SECRET", "6LfIbAgUAAAAAKcKKopzftATinfo9vdmjgqzS77c" );
 
 define("FLIGHT_JQUERY_FILE", "jquery-3.3.1.min.js");
 define("FLIGHT_MODEL_OBJECT", true ); //Instead, convert the model payload into an object ( which is cleaner )

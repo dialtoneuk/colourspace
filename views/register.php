@@ -7,14 +7,48 @@
             Flight::render("components/form_alerts");
         ?>
         <h1>
-            Login
+            Register
         </h1>
         <form method="POST">
-            <input type="text" value="user00000001" name="username" disabled title="Username">
-            <input type="email" name="email" title="Email">
-            <input type="text" name="password" title="Password">
-            <input type="text" name="confirm_password" title="Confirm Password">
-            <input type="submit" value="Login" title="Submit">
+            <?php
+                if( isset( $content->temporaryusername ) && empty( $content->temporaryusername ) == false )
+                {
+
+                    ?>
+                        Username
+                        <input type="text" value="<?=$content->temporaryusername->username?>" name="username" disabled title="Username">
+                    <?php
+                }
+                else
+                {
+                    ?>
+                        Username
+                        <input type="text" value="Random" id="username" name="username" disabled title="Username">
+                    <?php
+                }
+            ?>
+            <p>
+                Email
+                <input type="email" name="email" title="Email">
+            </p>
+            <p>
+                Password
+                <input type="password" name="password" title="Password">
+            </p>
+            <p>
+                Confirm Password
+                <input type="password" name="confirm_password" title="Confirm Password">
+            </p>
+            <?php
+                if( isset( $content->recaptcha ) && empty( $content->recaptcha ) == false )
+                {
+
+                    echo( $content->recaptcha->html );
+                }
+            ?>
+            <p>
+                <input type="submit" value="Login" title="Submit">
+            </p>
         </form>
         <p>
             <a href="<?=$url_root?>">Go home</a>

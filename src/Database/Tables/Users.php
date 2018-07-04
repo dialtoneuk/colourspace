@@ -73,6 +73,6 @@ class Users extends Table
     public function find( $username )
     {
 
-        return( $this->query()->where(['username', $username ] )->get() );
+        return( $this->query()->where(['username' => $username ] )->get() );
     }
 }

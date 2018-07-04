@@ -63,7 +63,7 @@ class Register extends Controller
         {
 
             $this->model->recaptcha = [
-                'script' => $this->recaptcha->html(),
+                'script' => $this->recaptcha->script(),
                 'html' => $this->recaptcha->html()
             ];
         }
@@ -86,7 +86,7 @@ class Register extends Controller
             if( GOOGLE_ENABLED )
             {
 
-                if( $this->recaptcha->isValid( $form->g_recaptcha_response ) == false )
+                if( $this->recaptcha->isValid( $form->recaptcha ) == false )
                 {
                     $this->model->formError(FORM_ERROR_GENERAL,"Recaptcha response is invalid");
                     return;
@@ -105,7 +105,7 @@ class Register extends Controller
             else
                 $username = $this->temporaryusername->get( session_id() );
 
-            if( $this->checkPassword( $form->password, $form->confim_password ) == false )
+            if( $this->checkPassword( $form->password, $form->confirm_password ) == false )
             {
 
                 if( ACCOUNT_PASSWORD_STRICT )
@@ -117,7 +117,7 @@ class Register extends Controller
             
             try
             {
-                $this->user->register($username, $form->password, $form->email);
+                $this->user->register($username, $form->email, $form->password );
             }
             catch (\Error $e)
             {
@@ -160,7 +160,7 @@ class Register extends Controller
       ];
 
       if( GOOGLE_ENABLED )
-          $array[] = "g_recaptcha_response";
+          $array[] = "g-recaptcha-response";
 
       return( $array );
     }

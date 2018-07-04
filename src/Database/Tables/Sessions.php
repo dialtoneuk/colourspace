@@ -70,7 +70,7 @@ class Sessions extends Table
     public function find( $userid )
     {
 
-        return( $this->query()->where(['userid', $userid ] )->get() );
+        return( $this->query()->where(['userid' => $userid ] )->get() );
     }
 
     /**
@@ -80,7 +80,7 @@ class Sessions extends Table
     public function remove( $sessionid )
     {
 
-        $this->query()->where(["sessionid", $sessionid ] )->delete();
+        $this->query()->where(["sessionid" => $sessionid ] )->delete();
     }
 
     /**
@@ -90,6 +90,6 @@ class Sessions extends Table
     public function clear( $userid )
     {
 
-        $this->query()->where(["userid", $userid ] )->delete();
+        $this->query()->where(["userid" => $userid ] )->delete();
     }
 }

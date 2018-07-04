@@ -48,7 +48,7 @@ class Verification extends Table
     public function get( $verificationid )
     {
 
-        return( $this->query()->where(['verificationid', $verificationid ] )->get() );
+        return( $this->query()->where(['verificationid' => $verificationid ] )->get() );
     }
 
     /**
@@ -59,7 +59,7 @@ class Verification extends Table
     public function has( $verificationid )
     {
 
-        return( $this->query()->where(['verificationid', $verificationid ] )->get()->isEmpty() );
+        return( $this->query()->where(['verificationid' => $verificationid ] )->get()->isEmpty() );
     }
 
     /**
@@ -70,7 +70,7 @@ class Verification extends Table
     public function find( $token )
     {
 
-        return( $this->query()->where(['token', $token])->get() );
+        return( $this->query()->where(['token' => $token])->get() );
     }
 
     /**
@@ -80,7 +80,7 @@ class Verification extends Table
     public function remove( $token )
     {
 
-        $this->query()->where(['token', $token ])->delete();
+        $this->query()->where(['token' => $token ])->delete();
     }
 
     /**
@@ -90,6 +90,6 @@ class Verification extends Table
     public function clear( $userid )
     {
 
-        $this->query()->where(["userid", $userid ] )->delete();
+        $this->query()->where(["userid" => $userid ] )->delete();
     }
 }

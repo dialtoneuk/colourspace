@@ -47,7 +47,7 @@ class TemporaryUsernames extends Table
     public function get( $sessionid )
     {
 
-        return( $this->query()->where(['sessionid', $sessionid ] )->get() );
+        return( $this->query()->where(['sessionid' => $sessionid ] )->get() );
     }
 
     /**
@@ -58,7 +58,7 @@ class TemporaryUsernames extends Table
     public function has( $sessionid )
     {
 
-        return( $this->query()->where(['sessionid', $sessionid ] )->get()->isEmpty());
+        return( !$this->query()->where( ['sessionid' => $sessionid ] )->get()->isEmpty() );
     }
 
     /**
@@ -69,6 +69,6 @@ class TemporaryUsernames extends Table
     public function find( $username )
     {
 
-        return( $this->query()->where(['username', $username ])->get() );
+        return( $this->query()->where(['username'  => $username ])->get() );
     }
 }

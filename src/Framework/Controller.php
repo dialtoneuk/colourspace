@@ -149,8 +149,22 @@ class Controller implements ControllerInterface
         else
             $result = new \stdClass();
 
-        foreach( $this->keyRequirements() as $requirement )
-        {
+        foreach( $this->keyRequirements() as $requirement ) {
+
+            if( GOOGLE_ENABLED )
+            {
+
+                if( $requirement = "g-recaptcha-response" )
+                {
+
+                    if( $object )
+                        $result->recaptcha = $data[ $requirement ];
+                    else
+                        $result[ "recaptcha" ] = $data[ $requirement ];
+
+                    continue;
+                }
+            }
 
             if( $object )
                 $result->$requirement = $data[ $requirement ];
