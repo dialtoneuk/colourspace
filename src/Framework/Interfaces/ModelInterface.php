@@ -16,5 +16,7 @@ interface ModelInterface
 
     public function formError($type, $value );
 
+    public function redirect($url, $delay );
+
     public function toArray();
 }

@@ -60,13 +60,13 @@ class FrontController
     }
 
     /**
-     * @param array $request
-     * @param array $payload
+     * @param $request
+     * @param $payload
      * @return mixed
      * @throws \Error
      */
 
-    public function process( array $request, array $payload )
+    public function process( $request, $payload )
     {
 
         if( count( $payload ) !== 3 )
@@ -82,10 +82,10 @@ class FrontController
                 throw new \Error('Class not found: ' . $key );
         }
 
-        if( isset( $request['method'] ) == false )
+        if( isset( $request->method ) == false )
             throw new \Error('Request method invalid');
 
-        if( $request['method'] != ( MVC_REQUEST_POST or MVC_REQUEST_DELETE or MVC_REQUEST_GET or MVC_REQUEST_PUT) )
+        if( $request->method != ( MVC_REQUEST_POST or MVC_REQUEST_DELETE or MVC_REQUEST_GET or MVC_REQUEST_PUT) )
             throw new \Error('Request method invalid');
 
         $model = $this->get(  MVC_TYPE_MODEL, $payload[ MVC_TYPE_MODEL ] );
@@ -96,14 +96,12 @@ class FrontController
         $model->startup();
         $controller->setModel( $model );
 
-        if( $controller->authentication( $request['method'], $request ) == false )
-        {
-
+        if( $controller->authentication( $request->method, $request ) == false )
             return null;
-        }
+
 
         $controller->before();
-        $controller->process( $request['method'], $request );
+        $controller->process( $request->method, $request );
 
         $view->setModel( $model );
 
@@ -112,11 +110,12 @@ class FrontController
 
     /**
      * @param object $route
-     * @return array
+     * @param bool $object
+     * @return array|mixed
      * @throws \Error
      */
 
-    public function buildRequest( object $route )
+    public function buildRequest( object $route, $object=true )
     {
 
         $request = \Flight::request();
@@ -131,11 +130,14 @@ class FrontController
             'method'    => strtolower( $request->method ),
             'ip'        => $request->ip,
             'proxy'     => $request->proxy_ip,
-            'data'      => $_POST,
+            'request'   => $_POST,
             'url'       => $request->url,
             'params'    => $route->params,
             'contents'  => $route->splat
         ];
+
+        if( $object )
+            $array = json_decode( json_encode( $array ) );
 
         return $array;
     }

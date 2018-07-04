@@ -11,6 +11,7 @@ namespace Colourspace\Framework;
 
 use Colourspace\Container;
 use Colourspace\Framework\Interfaces\ProfileInterface;
+use Colourspace\Framework\Util\Collector;
 use Colourspace\Framework\Util\Debug;
 
 class Profile implements ProfileInterface
@@ -124,7 +125,7 @@ class Profile implements ProfileInterface
      * @return mixed
      */
 
-    public function getClass( $class )
+    public function class($class )
     {
 
         return( self::$shared_classes[ $class ] );
@@ -143,11 +144,11 @@ class Profile implements ProfileInterface
 
     /**
      * @param $classes
-     *
+     * @param bool $collector
      * @throws \Error
      */
 
-    private function processClasses( $classes )
+    private function processClasses( $classes, $collector=true )
     {
 
         foreach ( $classes as $class )
@@ -156,15 +157,28 @@ class Profile implements ProfileInterface
             $namespace = $class[0];
             $class = $class[1];
 
-            if( isset( self::$shared_classes[ $namespace ] ) )
-                return;
+            foreach( self::$shared_classes as $key=>$value )
+            {
 
-            $real_namespace = $namespace . $class;
+                if( $key == $namespace && $class == $value )
+                    return;
+            }
 
-            if( class_exists( $real_namespace ) == false )
-                throw new \Error('Invalid class given');
+            if( $collector )
+            {
 
-            self::$shared_classes[ $class ] = new $real_namespace;
+                self::$shared_classes[ $class ] = Collector::new( $class, $namespace );
+            }
+            else
+            {
+
+                $real_namespace = $namespace . $class;
+
+                if( class_exists( $real_namespace ) == false )
+                    throw new \Error('Invalid class given');
+
+                self::$shared_classes[ $class ] = new $real_namespace;
+            }
         }
     }
 }

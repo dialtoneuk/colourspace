@@ -103,6 +103,8 @@ define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hou
 define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
 define("SCRIPT_BUILDER_FORCED", true ) ;//Compiles a fresh build each request regardless of frequency setting.
 
+define("COLLECTOR_DEFAULT_NAMESPACE", "Colourspace\\Framework\\");
+
 define("COLOURS_OUTPUT_HEX", 1);
 define("COLOURS_OUTPUT_RGB", 2);
 

@@ -13,8 +13,10 @@ use Colourspace\Framework\Controller;
 use Colourspace\Container;
 use Colourspace\Framework\Recaptcha;
 use Colourspace\Framework\User;
+use Colourspace\Framework\Util\Collector;
 use Colourspace\Framework\Util\Format;
 use Colourspace\Framework\Session;
+use League\OAuth2\Client\Provider\Google;
 
 class Login extends Controller
 {
@@ -31,85 +33,6 @@ class Login extends Controller
 
     protected $session;
 
-    /**
-     * @var Recaptcha
-     */
-
-    protected $recaptcha;
-
-    /**
-     * @param string $type
-     * @param $data
-     * @throws \Error
-     * @throws \Exception
-     */
-
-    public function process(string $type, $data)
-    {
-
-        if (GOOGLE_ENABLED)
-            $this->model->recaptcha = [
-                'script' => $this->recaptcha->script(),
-                'html' => $this->recaptcha->html()
-            ];
-
-        /**
-         * On Post
-         */
-
-        if( $type == MVC_REQUEST_POST )
-        {
-
-            if( empty( $data['data'] ) )
-                return;
-
-            if( $this->check( $data['data'] ) == false )
-            {
-
-                $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
-                return;
-            }
-
-            $form = $this->pickKeys( $data['data'] );
-
-            if( GOOGLE_ENABLED )
-            {
-
-                if( $this->recaptcha->isValid( $form->recaptcha ) == false )
-                {
-                    $this->model->formError(FORM_ERROR_GENERAL,"Recaptcha response is invalid");
-                    return;
-                }
-            }
-
-            if( $this->user->hasEmail( $form->email ) == false )
-            {
-
-                $this->model->formError(FORM_ERROR_INCORRECT,"Email invalid, please try again or reset your password");
-                return;
-            }
-
-            $user = $this->user->getByEmail( $form->email );
-
-            if( $this->checkPassword( $form->password, $user->password, $user->salt ) == false  )
-            {
-
-                $this->model->formError(FORM_ERROR_INCORRECT,"Email invalid, please try again or reset your password");
-                return;
-            }
-
-            $this->session->Login( $user->userid );
-
-            if( $this->session->isLoggedIn()  == false )
-            {
-
-                $this->model->formError(FORM_ERROR_GENERAL,"Failed to login");
-                return;
-            }
-
-            $this->model->formMessage( FORM_MESSAGE_SUCCESS,"Successfully logged in");
-        }
-    }
 
     /**
      * @return array
@@ -130,20 +53,105 @@ class Login extends Controller
     }
 
     /**
+     * @param string $type
+     * @param $data
+     * @throws \Error
+     * @throws \Exception
+     */
+
+    public function process(string $type, $data)
+    {
+
+        if( GOOGLE_ENABLED )
+            $this->addRecaptcha();
+
+        if( $type == MVC_REQUEST_POST )
+        {
+
+            if( $this->check( $data->request ) == false )
+            {
+
+                $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
+            }
+            else
+            {
+
+                $form = $this->pickKeys( $data->request );
+
+                if( GOOGLE_ENABLED )
+                {
+
+                    if( $this->checkRecaptcha( $form ) == false )
+                    {
+
+                        $this->model->formError( FORM_ERROR_GENERAL, "Google response invalid");
+                        return;
+                    }
+                }
+
+                if( empty( $form ) )
+                    throw new \Error("Form is empty");
+
+                $result = $this->checkLogin( $form );
+
+                if( is_array( $result ) )
+                    $this->model->formError($result['type'],$result['value']);
+                else
+                {
+
+                    if( is_int( $result ) == false )
+                        throw new \Error("Incorrect userid type");
+
+                    $this->session->Login( $result );
+
+                    if( $this->session->isLoggedIn()  == false )
+                        throw new \Error("Failed to login");
+
+                    $this->model->formMessage( FORM_MESSAGE_SUCCESS,"Success! Redirecting you in a few...");
+                    $this->model->redirect( COLOURSPACE_URL_ROOT, 2 );
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns an array on error, int of the userid on success
+     *
+     * @param $form
+     * @return array|int
+     */
+
+    public function checkLogin( $form )
+    {
+
+        if( $this->user->hasEmail( $form->email ) == false )
+            return([
+                "type" => FORM_ERROR_INCORRECT,
+                "value" => "Email invalid, please try again or reset your password"
+            ]);
+
+        $user = $this->user->getByEmail( $form->email );
+
+        if( $this->checkPassword( $form->password, $user->password, $user->salt ) == false  )
+            return([
+                "type" => FORM_ERROR_INCORRECT,
+                "value" => "Email invalid, please try again or reset your password"
+            ]);
+
+        return $user->userid;
+    }
+
+    /**
      * @throws \Error
      */
 
     public function before()
     {
 
-        $this->user = new User();
-        $this->session = Container::get('application')->session;
-
-        if( GOOGLE_ENABLED )
-            $this->recaptcha = new Recaptcha();
-
-
         parent::before();
+
+        $this->user = Collector::new("User");
+        $this->session = Container::get('application')->session;
     }
 
     /**

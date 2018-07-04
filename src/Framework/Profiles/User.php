@@ -35,7 +35,6 @@ class User extends Profile
     public function __construct()
     {
 
-
         parent::__construct(
             [
                 [
@@ -48,8 +47,8 @@ class User extends Profile
 
         );
 
-        $this->user = $this->getClass('User');
-        $this->group = $this->getClass('Group');
+        $this->user = $this->class('User');
+        $this->group = $this->class('Group');
     }
 
     /**
@@ -59,22 +58,20 @@ class User extends Profile
     public function create()
     {
 
-        //If we aren't logged in
         if( $this->isLoggedIn() == false )
+            $this->objects = null;
+        else
         {
 
-            $this->objects = null;
-            return;
+            $user = $this->user->get( Container::get('application')->session->userid() );
+
+            $this->objects = [
+                'username' => $user->username,
+                'userid'    => $user->userid,
+                'colour'     => "#" . $user->colour,
+                'email'    => $user->email
+            ];
         }
-
-        $user = $this->user->get( Container::get('application')->session->userid() );
-
-        $this->objects = [
-            'username' => $user->username,
-            'userid'    => $user->userid,
-            'colour'     => "#" . $user->colour,
-            'email'    => $user->email
-        ];
 
         parent::create();
     }

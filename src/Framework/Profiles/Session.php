@@ -30,6 +30,7 @@ class Session extends Profile
     {
 
         parent::__construct($classes);
+
         $this->session = Container::get('application')->session;
     }
 
@@ -48,9 +49,6 @@ class Session extends Profile
         ];
 
         if( $this->isLoggedIn() )
-        {
-
             $this->objects['userid'] = $this->session->userid();
-        }
     }
 }

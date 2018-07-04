@@ -124,4 +124,21 @@ class Model implements ModelInterface
             "value" => $value
         ];
     }
+
+    /**
+     * @param $url
+     * @param int $delay
+     */
+
+    public function redirect( $url, $delay=0 )
+    {
+
+        if( isset( $this->object->redirects ) == false )
+            $this->object->redirects = [];
+
+        $this->object->redirect[] = [
+            "url" => $url,
+            "delay" => $delay
+        ];
+    }
 }

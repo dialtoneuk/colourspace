@@ -14,6 +14,7 @@ use Colourspace\Container;
 use Colourspace\Framework\Recaptcha;
 use Colourspace\Framework\TemporaryUsername;
 use Colourspace\Framework\User;
+use Colourspace\Framework\Util\Collector;
 
 class Register extends Controller
 {
@@ -31,12 +32,6 @@ class Register extends Controller
     protected $temporaryusername;
 
     /**
-     * @var Recaptcha
-     */
-
-    protected $recaptcha;
-
-    /**
      * Annoyingly strict passwords
      *
      * @var array
@@ -49,6 +44,25 @@ class Register extends Controller
     ];
 
     /**
+     * @return array
+     */
+
+    public function keyRequirements()
+    {
+
+        $array = [
+            "email",
+            "password",
+            "confirm_password"
+        ];
+
+        if( GOOGLE_ENABLED )
+            $array[] = "g-recaptcha-response";
+
+        return( $array );
+    }
+
+    /**
      * @param string $type
      * @param $data
      * @throws \Error
@@ -59,70 +73,45 @@ class Register extends Controller
     {
 
         if (GOOGLE_ENABLED)
-            $this->model->recaptcha = [
-                'script' => $this->recaptcha->script(),
-                'html' => $this->recaptcha->html()
-            ];
+            $this->addRecaptcha();
 
         if( $type == MVC_REQUEST_POST )
         {
-
-            if( empty( $data['data'] ) )
-                return;
 
             if( $this->check( $data['data'] ) == false )
             {
 
                 $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
-                return;
             }
-
-            $form = $this->pickKeys( $data['data'] );
-
-            if( GOOGLE_ENABLED )
+            else
             {
 
-                if( $this->recaptcha->isValid( $form->recaptcha ) == false )
+                $form = $this->pickKeys( $data['data'] );
+
+                if( GOOGLE_ENABLED )
+                    if( $this->checkRecaptcha( $form ) == false )
+                    {
+
+                        $this->model->formError( FORM_ERROR_GENERAL, "Google response invalid");
+                        return;
+                    }
+
+                $result = $this->checkRegister( $form );
+
+                if( is_array( $result ) )
+                    $this->model->formError($result['type'],$result['value']);
+                else
                 {
-                    $this->model->formError(FORM_ERROR_GENERAL,"Recaptcha response is invalid");
-                    return;
+
+                    $this->user->register( $this->getTemporaryUsername(), $form->email, $form->password );
+
+                    if( $this->user->hasEmail( $form->email ) == false )
+                        throw new \Error("Failed to register");
+
+                    $this->model->formMessage( FORM_MESSAGE_SUCCESS, "Account registered! Redirecting you to the login page in a few...");
+                    $this->model->redirect( COLOURSPACE_URL_ROOT, 2 );
                 }
             }
-
-            if( $this->user->hasEmail( $form->email ) )
-            {
-
-                $this->model->formError(FORM_ERROR_INCORRECT,"Email has already been taken");
-                return;
-            }
-
-            if( $this->temporaryusername->has( session_id( ) ) == false )
-                $username = $this->temporaryusername->generate();
-            else
-                $username = $this->temporaryusername->get( session_id() );
-
-            if( $this->checkPassword( $form->password, $form->confirm_password ) == false )
-            {
-
-                if( ACCOUNT_PASSWORD_STRICT )
-                    $this->model->formError(FORM_ERROR_INCORRECT,"Either your passwords do not match, or they do not meet the requirements set by the administrator");
-                else
-                    $this->model->formError(FORM_ERROR_INCORRECT,"Either your passwords do not match, or they do not meet the requirements set by the administrator. They need to contain a capital letter, special character, a number and be above " . ACCOUNT_PASSWORD_MIN . " characters.");
-                return;
-            }
-            
-            try
-            {
-                $this->user->register($username, $form->email, $form->password );
-            }
-            catch (\Error $e)
-            {
-
-                $this->model->formError( FORM_ERROR_GENERAL, "For some reason, your register attempt has failed. Please tell a developer as this probably shouldn't have happened");
-                return;
-            }
-
-            $this->model->formMessage( FORM_MESSAGE_SUCCESS, "Account created! Please login using your email and password. Don't forget to verify your account!");
         }
     }
 
@@ -133,32 +122,10 @@ class Register extends Controller
     public function before()
     {
 
-        $this->user = new User();
-        $this->temporaryusername = new TemporaryUsername();
-
-        if( GOOGLE_ENABLED )
-            $this->recaptcha = new Recaptcha();
-
         parent::before();
-    }
 
-    /**
-     * @return array
-     */
-
-    public function keyRequirements()
-    {
-
-      $array = [
-          "email",
-          "password",
-          "confirm_password"
-      ];
-
-      if( GOOGLE_ENABLED )
-          $array[] = "g-recaptcha-response";
-
-      return( $array );
+        $this->user = Collector::new("User");
+        $this->temporaryusername = Collector::new("TemporaryUsername");
     }
 
     /**
@@ -177,6 +144,42 @@ class Register extends Controller
             return false;
 
         return true;
+    }
+
+    /**
+     * @param $form
+     * @return array|bool
+     */
+
+    private function checkRegister( $form )
+    {
+
+        if( $this->user->hasEmail( $form->email ) )
+            return([
+                "type" => FORM_ERROR_INCORRECT,
+                "value" => "Email has already been taken"
+            ]);
+
+        if( $this->checkPassword( $form->password, $form->confirm_password ) == false )
+            return([
+                "type" => FORM_ERROR_GENERAL,
+                "value" => "Your password is too weak, please revise."
+            ]);
+
+       return true;
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection|string
+     */
+
+    private function getTemporaryUsername()
+    {
+
+        if( $this->temporaryusername->has( session_id( ) ) == false )
+            return $this->temporaryusername->generate();
+        else
+            return $this->temporaryusername->get( session_id() );
     }
 
     /**

@@ -32,6 +32,9 @@ class DefaultModel extends Model
     public function startup()
     {
 
+        parent::startup();
+
+
         $profiles = [
             'session' => new Session()
         ];
@@ -54,7 +57,5 @@ class DefaultModel extends Model
             $profile->create();
             $this->object->profiles->$name = $profile->get();
         }
-
-        parent::startup();
     }
 }

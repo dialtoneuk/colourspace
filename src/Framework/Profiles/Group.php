@@ -48,8 +48,8 @@ class Group extends Profile
 
         );
 
-        $this->user = $this->getClass('User');
-        $this->group = $this->getClass('Group');
+        $this->user = $this->class('User');
+        $this->group = $this->class('Group');
     }
 
     /**
@@ -59,31 +59,27 @@ class Group extends Profile
 
     public function create()
     {
-
-        //If we aren't logged in
         if( $this->isLoggedIn() == false )
+            $this->objects = null;
+        else
         {
 
-            $this->objects = null;
-            return;
+            $user = $this->user->get( Container::get('application')->session->userid() );
+
+            if( $this->group->has($user->group ) == false )
+                $this->objects = null;
+            else
+            {
+
+                $group = $this->group->get( $user->group );
+
+                $this->objects = [
+                    'name' => $group->name,
+                    'admin' => $group->permissions->admin,
+                    'uploadtime' => $group->permissions->uploadtime
+                ];
+            }
         }
-
-        $user = $this->user->get( Container::get('application')->session->userid() );
-
-        if( $this->group->has($user->group ) == false )
-        {
-
-            $this->objects = null;
-            return;
-        }
-
-        $group = $this->group->get( $user->group );
-
-        $this->objects = [
-            'name' => $group->name,
-            'admin' => $group->permissions->admin,
-            'uploadtime' => $group->permissions->uploadtime
-        ];
 
         parent::create();
     }

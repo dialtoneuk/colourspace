@@ -12,6 +12,7 @@ namespace Colourspace\Framework;
 use Colourspace\Container;
 use Colourspace\Framework\Interfaces\ControllerInterface;
 use Colourspace\Framework\Interfaces\ModelInterface;
+use Colourspace\Framework\Util\Collector;
 use Colourspace\Framework\Util\Debug;
 
 class Controller implements ControllerInterface
@@ -22,6 +23,12 @@ class Controller implements ControllerInterface
      */
 
     public $model;
+
+    /**
+     * @var Recaptcha
+     */
+
+    protected $recaptcha;
 
     /**
      * @param ModelInterface $model
@@ -53,6 +60,9 @@ class Controller implements ControllerInterface
 
     public function before()
     {
+
+        if( GOOGLE_ENABLED )
+            $this->recaptcha = Collector::new("Recaptcha");
 
         if( DEBUG_ENABLED )
             Debug::message("Controller initiating process method");
@@ -113,6 +123,9 @@ class Controller implements ControllerInterface
     public function check( $data )
     {
 
+        if( is_object( $data ) )
+            $data = json_decode( json_encode( $data ), true );
+
         if( empty( $data ) || is_array( $data ) == false )
             return false;
 
@@ -133,6 +146,34 @@ class Controller implements ControllerInterface
     }
 
     /**
+     * @param $form
+     * @return bool
+     * @throws \Exception
+     */
+
+    public function checkRecaptcha( $form )
+    {
+
+        if( GOOGLE_ENABLED )
+        {
+
+            return ( $this->recaptcha->isValid( $form->recaptcha ) );
+        }
+        else
+            return true;
+    }
+
+    public function addRecaptcha()
+    {
+
+        if (GOOGLE_ENABLED)
+            $this->model->recaptcha = [
+                'script' => $this->recaptcha->script(),
+                'html' => $this->recaptcha->html()
+            ];
+    }
+
+    /**
      * @param $data
      * @param bool $object
      * @return array|null|\stdClass
@@ -143,6 +184,9 @@ class Controller implements ControllerInterface
 
         if( empty( $this->keyRequirements() ) )
             return null;
+
+        if( is_object( $data ) )
+            $data = json_decode( json_encode( $data ), true );
 
         if( $object == false )
             $result = [];
