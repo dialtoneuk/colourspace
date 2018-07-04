@@ -1,7 +1,7 @@
 {
-  "name":"Administrator",
-  "description":"The magicians of which run the cogs behind the curtians.",
-  "color":"ff88a4",
+  "name":"Developer",
+  "description":"Moody programmers & mad geniuses.",
+  "color":"bee687",
   "flags":{
     "uploadmaxlength":-1,
     "uploadmaxsize":-1,

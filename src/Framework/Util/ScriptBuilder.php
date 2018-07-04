@@ -91,8 +91,13 @@ class ScriptBuilder
     public function build()
     {
 
-        if( $this->check() == false )
-            return;
+        if( SCRIPT_BUILDER_FORCED == false )
+        {
+
+            if( $this->check() == false )
+                return;
+        }
+
 
         if( empty( $this->scripts ) )
             throw new \Error("Scripts have not been initialized");
@@ -108,7 +113,7 @@ class ScriptBuilder
             $contents = $contents . <<<EOD
 \n
 // $script
-\n
+// ==================================
 $content
 EOD;
         }

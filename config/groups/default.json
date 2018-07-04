@@ -1,7 +1,14 @@
 {
   "name":"Default",
-  "permissions":{
-    "uploadtime":8000,
-    "admin":false
+  "description":"A talented musician.",
+  "color":null,
+  "flags":{
+    "uploadmaxlength": 600,
+    "uploadmaxsize":250,
+    "lossless":false,
+    "signed":false,
+    "donator":false,
+    "admin":false,
+    "developer":false
   }
 }

@@ -1,22 +1,20 @@
 <div class="row">
     <?php
-    if( empty( $model["errors"] ) == false )
-    {
-        foreach( $model["errors"] as $key=>$error )
+        if( empty( $content->errors ) == false )
         {
+            $errors = json_decode ( json_encode( $content->errors ) , true);
 
-            echo("<p>" . $error['type'] . " : " . $error['value'] . "</p>" );
+            foreach(  $errors as $key=>$error )
+                echo("<p>" . $error['type'] . " : " . $error['value'] . "</p>" );
         }
-    }
 
-    if( empty( $model["messages"] ) == false )
-    {
-
-        foreach( $model["messages"] as $key=>$error )
+        if( empty( $content->messages ) == false )
         {
+            $messages = json_decode ( json_encode( $content->messages ), true);
 
-            echo("<p>" . $error['type'] . ":" . $error['value'] . "</p>" );
+            foreach(  $errors as $key=>$message )
+                echo("<p>" . $message['type'] . " : " . $message['value'] . "</p>" );
+
         }
-    }
     ?>
 </div>

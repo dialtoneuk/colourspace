@@ -70,7 +70,7 @@ class View implements ViewInterface
             $array["footer"] = [];
 
         $array["header"] = [
-                "/assets/js/" . RENDER_JQUERY
+                "/assets/js/" . FLIGHT_JQUERY_FILE
         ];
 
         return( $array );

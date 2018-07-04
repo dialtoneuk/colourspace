@@ -6,8 +6,8 @@
     <?php
 
 
-        if( isset( $model['header'] ) && empty( $model['header'] ) == false )
-            foreach( $model['header'] as $script )
+        if( isset( $content->header ) && empty( $content->header ) == false )
+            foreach( $content->header as $script )
                 echo( "<script type='text/javascript' src='$script'></script>")
     ?>
 </head>

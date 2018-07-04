@@ -48,7 +48,10 @@ define("GOOGLE_ENABLED", true );
 define("GOOGLE_SITE_KEY", null );
 define("GOOGLE_SITE_SECRET", null );
 
-define("RENDER_JQUERY", "jquery-3.3.1.min.js");
+define("FLIGHT_JQUERY_FILE", "jquery-3.3.1.min.js");
+define("FLIGHT_MODEL_OBJECT", true ); //Instead, convert the model payload into an object ( which is cleaner )
+define("FLIGHT_MODEL_DEFINITION", "content" );
+define("FLIGHT_SET_GLOBALS", true );
 
 define("MVC_NAMESPACE", "Colourspace\\Framework\\");
 define("MVC_NAMESPACE_MODELS", "Models");
@@ -94,10 +97,11 @@ define("DEBUG_WRITE_FILE", true );
 define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_TIMERS_FILE", '/config/debug/timers.json');
 
-define("SCRIPT_BUILDER_ENABLED", true );
+define("SCRIPT_BUILDER_ENABLED", true ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
 define("SCRIPT_BUILDER_ROOT", "/assets/scripts/");
 define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hours. Remove a "* 60" for minutes.
 define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
+define("SCRIPT_BUILDER_FORCED", true ) ;//Compiles a fresh build each request regardless of frequency setting.
 
 /**
  * Colourspace Initialization
@@ -191,14 +195,33 @@ try
                 if( isset( $view['model'] ) == false )
                     throw new Error('No model');
 
-                Flight::view()->set("model", array_merge( $view['model'], [
+                if( isset( $view['footer'] ) == false )
+                    $view["footer"] = [];
+
+                if( isset( $view['header'] ) == false )
+                    $view["footer"] = [];
+
+                $object = array_merge( $view['model'], [
                     "footer" => $view['footer'],
                     "header" => $view['header'],
-                ]));
+                ]);
 
-                Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
+                if( FLIGHT_MODEL_OBJECT )
+                    $object = json_decode( json_encode( $object ) );
 
-                Flight::render( $view["render"] );
+                Flight::view()->set( FLIGHT_MODEL_DEFINITION , $object );
+
+                if( FLIGHT_SET_GLOBALS )
+                {
+
+                    Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
+                    Flight::view()->set("document_root", COLOURSPACE_ROOT );
+
+                    if( DEBUG_ENABLED )
+                        Flight::view()->set("debug_messages", Debug::getMessages() );
+                }
+
+                Flight::render( $view['render'] );
             }
             else
                 Flight::redirect( COLOURSPACE_URL_ROOT );
