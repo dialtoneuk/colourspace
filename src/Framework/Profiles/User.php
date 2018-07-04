@@ -71,6 +71,8 @@ class User extends Profile
 
         $this->objects = [
             'username' => $user->username,
+            'userid'    => $user->userid,
+            'colour'     => "#" . $user->colour,
             'email'    => $user->email
         ];
 

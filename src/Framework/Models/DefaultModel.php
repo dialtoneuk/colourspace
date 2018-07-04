@@ -10,17 +10,20 @@ namespace Colourspace\Framework\Models;
 
 
 use Colourspace\Container;
-use Colourspace\Framework\Profiles\Website;
+use Colourspace\Framework\Profiles\Session;
 use Colourspace\Framework\Model;
+use Colourspace\Framework\Interfaces\ProfileInterface;
+use Colourspace\Framework\Profiles\User;
+use Colourspace\Framework\Profiles\Group;
 
 class DefaultModel extends Model
 {
 
     /**
-     * @var Website
+     * @var array
      */
 
-    protected $profile;
+    protected $profiles;
 
     /**
      * @throws \Error
@@ -29,12 +32,28 @@ class DefaultModel extends Model
     public function startup()
     {
 
-        $profile = new Website();
-        $profile->create();
-
-        $this->object->profiles = [
-            "website" => $profile->toArray()
+        $profiles = [
+            'session' => new Session()
         ];
+
+        if( Container::get('application')->session->isLoggedIn() )
+        {
+
+            $profiles['user'] = new User();
+            $profiles['group'] = new Group();
+        }
+
+        $this->object->profiles = new \stdClass();
+
+        foreach ( $profiles as $name=>$profile )
+        {
+
+            if( $profile instanceof ProfileInterface == false )
+                throw new \Error('Profile invalid');
+
+            $profile->create();
+            $this->object->profiles->$name = $profile->get();
+        }
 
         parent::startup();
     }

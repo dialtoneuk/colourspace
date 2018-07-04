@@ -10,9 +10,24 @@
             Login
         </h1>
         <form method="POST">
-            <input type="email" name="email" title="Email">
-            <input type="text" name="password" title="password">
-            <input type="submit" value="Login" title="Submit">
+            <p>
+                Email
+                <input type="email" name="email" title="Email">
+            </p>
+            <p>
+                Password
+                <input type="password" name="password" title="password">
+            </p>
+            <?php
+            if( isset( $content->recaptcha ) && empty( $content->recaptcha ) == false )
+            {
+
+                echo( $content->recaptcha->html );
+            }
+            ?>
+            <p>
+                <input type="submit" value="Login" title="Submit">
+            </p>
         </form>
         <p>
             <a href="<?=$url_root?>">Go home</a>

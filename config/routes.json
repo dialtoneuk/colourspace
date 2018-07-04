@@ -22,5 +22,13 @@
       "view":"Register",
       "controller":"Register"
     }
+  },
+  {
+    "url":"/logout",
+    "mvc":{
+      "model":"DefaultModel",
+      "view":"Blank",
+      "controller":"Logout"
+    }
   }
 ]

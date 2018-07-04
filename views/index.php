@@ -8,6 +8,19 @@
         <h1>
             COLOURSPACE
         </h1>
+
+        <?php
+
+            if( $content->profiles->session->loggedin )
+            {
+
+                ?>
+                    <h2 style="color: <?=$content->profiles->user->colour?>">
+                        HELLO <?=$content->profiles->user->username?> with the userid of <?=$content->profiles->user->userid?>
+                    </h2>
+                <?php
+            }
+        ?>
         <p>
             <marquee>
                 PREMIUM WEB DESIGN
@@ -18,6 +31,9 @@
         </p>
         <p>
             <a href="login">Logins please!</a>
+        </p>
+        <p>
+            <a href="logout">Let me leave this place</a>
         </p>
         <p>
             <a href="register">Hmm.. How about registering an account?</a>
@@ -40,6 +56,11 @@
         <p>
             <a href="settings">Fuck with some settings and change pointless things</a>
         </p>
+
+        <?php
+
+
+        ?>
     </body>
 
     <?php

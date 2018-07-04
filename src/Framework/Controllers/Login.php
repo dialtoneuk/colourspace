@@ -11,7 +11,10 @@ namespace Colourspace\Framework\Controllers;
 
 use Colourspace\Framework\Controller;
 use Colourspace\Container;
+use Colourspace\Framework\Recaptcha;
 use Colourspace\Framework\User;
+use Colourspace\Framework\Util\Format;
+use Colourspace\Framework\Session;
 
 class Login extends Controller
 {
@@ -23,13 +26,32 @@ class Login extends Controller
     protected $user;
 
     /**
+     * @var Session
+     */
+
+    protected $session;
+
+    /**
+     * @var Recaptcha
+     */
+
+    protected $recaptcha;
+
+    /**
      * @param string $type
      * @param $data
      * @throws \Error
+     * @throws \Exception
      */
 
     public function process(string $type, $data)
     {
+
+        if (GOOGLE_ENABLED)
+            $this->model->recaptcha = [
+                'script' => $this->recaptcha->script(),
+                'html' => $this->recaptcha->html()
+            ];
 
         /**
          * On Post
@@ -50,51 +72,42 @@ class Login extends Controller
 
             $form = $this->pickKeys( $data['data'] );
 
+            if( GOOGLE_ENABLED )
+            {
+
+                if( $this->recaptcha->isValid( $form->recaptcha ) == false )
+                {
+                    $this->model->formError(FORM_ERROR_GENERAL,"Recaptcha response is invalid");
+                    return;
+                }
+            }
+
             if( $this->user->hasEmail( $form->email ) == false )
             {
 
-                $this->model->formError(FORM_ERROR_INCORRECT,"Email or password invalid, please try again or reset your password");
+                $this->model->formError(FORM_ERROR_INCORRECT,"Email invalid, please try again or reset your password");
                 return;
             }
 
             $user = $this->user->getByEmail( $form->email );
 
-            if( $this->checkPassword( $form->password, $user->password, $user->salt ) == false )
+            if( $this->checkPassword( $form->password, $user->password, $user->salt ) == false  )
             {
 
-                $this->model->formError(FORM_ERROR_INCORRECT,"Email or password invalid, please try again or reset your password");
+                $this->model->formError(FORM_ERROR_INCORRECT,"Email invalid, please try again or reset your password");
                 return;
             }
 
-            Container::get('application')->session->Login( $user->userid );
+            $this->session->Login( $user->userid );
 
-            if( Container::get('application')->session->isLoggedIn()  == false )
+            if( $this->session->isLoggedIn()  == false )
             {
 
-                $this->model->formError(FORM_ERROR_GENERAL,"Email or password invalid, please try again or reset your password");
+                $this->model->formError(FORM_ERROR_GENERAL,"Failed to login");
                 return;
             }
 
             $this->model->formMessage( FORM_MESSAGE_SUCCESS,"Successfully logged in");
-        }
-
-        /**
-         * On delete
-         */
-
-        if( $type == MVC_REQUEST_DELETE )
-        {
-
-            if( Container::get('application')->session->isLoggedIn()  == false )
-            {
-
-                $this->model->formError(FORM_ERROR_GENERAL,"You need to be logged in to logout");
-                return;
-            }
-
-            Container::get('application')->session->destroy();
-
-            $this->model->formMessage( FORM_MESSAGE_SUCCESS,"You have been logged out");
         }
     }
 
@@ -105,10 +118,15 @@ class Login extends Controller
     public function keyRequirements()
     {
 
-        return ([
+        $array = [
             "email",
             "password"
-        ]);
+        ];
+
+        if( GOOGLE_ENABLED )
+            $array[] = "g-recaptcha-response";
+
+        return( $array );
     }
 
     /**
@@ -119,8 +137,12 @@ class Login extends Controller
     {
 
         $this->user = new User();
+        $this->session = Container::get('application')->session;
 
-        //Do parent call
+        if( GOOGLE_ENABLED )
+            $this->recaptcha = new Recaptcha();
+
+
         parent::before();
     }
 
@@ -134,12 +156,12 @@ class Login extends Controller
     public function authentication(string $type, $data)
     {
 
-        if ( Container::has('application') == false )
-            throw new \Error('Application has not been initialized');
+        if( empty( $this->session ) )
+            $session = Container::get('application')->session;
+        else
+            $session = $this->session;
 
-        $application = Container::get('application');
-
-        if( $application->session->isLoggedIn() )
+        if( $session->isLoggedIn() )
             return false;
 
         return true;
@@ -155,9 +177,12 @@ class Login extends Controller
     private function checkPassword( $given_password, $encrypted_password, $salt )
     {
 
-        if( sha1( $given_password . $salt ) != $encrypted_password )
-            return false;
+        if( Format::saltedPassword( $salt, $given_password ) == $encrypted_password )
+        {
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 }

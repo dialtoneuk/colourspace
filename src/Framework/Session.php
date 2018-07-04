@@ -8,6 +8,7 @@
 namespace Colourspace\Framework;
 
 use Colourspace\Database\Tables\Sessions;
+use Colourspace\Framework\Util\Format;
 
 class Session
 {
@@ -107,7 +108,7 @@ class Session
             'userid' => $userid,
             'sessionid' => session_id(),
             'ipaddress' => $_SERVER['REMOTE_ADDR'],
-            'creation' => microtime()
+            'creation' => Format::timestamp()
         ]);
 
         return true;

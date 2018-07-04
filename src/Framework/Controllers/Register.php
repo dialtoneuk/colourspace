@@ -58,15 +58,11 @@ class Register extends Controller
     public function process(string $type, $data)
     {
 
-        //TODO: Figure out if this is the best place to put this
-        if( GOOGLE_ENABLED )
-        {
-
+        if (GOOGLE_ENABLED)
             $this->model->recaptcha = [
                 'script' => $this->recaptcha->script(),
                 'html' => $this->recaptcha->html()
             ];
-        }
 
         if( $type == MVC_REQUEST_POST )
         {
@@ -174,9 +170,6 @@ class Register extends Controller
 
     public function authentication(string $type, $data)
     {
-
-        if ( Container::has('application') == false )
-            throw new \Error('Application has not been initialized');
 
         $application = Container::get('application');
 

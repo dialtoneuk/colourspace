@@ -151,25 +151,15 @@ class Controller implements ControllerInterface
 
         foreach( $this->keyRequirements() as $requirement ) {
 
-            if( GOOGLE_ENABLED )
-            {
-
-                if( $requirement = "g-recaptcha-response" )
-                {
-
-                    if( $object )
-                        $result->recaptcha = $data[ $requirement ];
-                    else
-                        $result[ "recaptcha" ] = $data[ $requirement ];
-
-                    continue;
-                }
-            }
+            if( $requirement == "g-recaptcha-response")
+                $header = "recaptcha";
+            else
+                $header = $requirement;
 
             if( $object )
-                $result->$requirement = $data[ $requirement ];
+                $result->$header = $data[ $requirement ];
             else
-                $result[ $requirement ] = $data[ $requirement ];
+                $result[ $header ] = $data[ $requirement ];
         }
 
         return $result;

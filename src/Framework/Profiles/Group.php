@@ -10,6 +10,9 @@ namespace Colourspace\Framework\Profiles;
 
 
 use Colourspace\Framework\Profile;
+use Colourspace\Container;
+use Colourspace\Framework\User as UserClass;
+use Colourspace\Framework\Group as GroupClass;
 
 class Group extends Profile
 {
@@ -20,7 +23,7 @@ class Group extends Profile
 
     protected $user;
     /**
-     * @var Group
+     * @var GroupClass
      */
     protected $group;
 
@@ -67,14 +70,14 @@ class Group extends Profile
 
         $user = $this->user->get( Container::get('application')->session->userid() );
 
-        if( $this->group->hasGroup($user->group ) == false )
+        if( $this->group->has($user->group ) == false )
         {
 
             $this->objects = null;
             return;
         }
 
-        $group = $this->group->getGroup( $user->group );
+        $group = $this->group->get( $user->group );
 
         $this->objects = [
             'name' => $group->name,
