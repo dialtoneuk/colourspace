@@ -196,6 +196,8 @@ try
                     "header" => $view['header'],
                 ]));
 
+                Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
+
                 Flight::render( $view["render"] );
             }
             else

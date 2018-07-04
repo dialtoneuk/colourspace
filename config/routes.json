@@ -14,5 +14,13 @@
       "view":"Login",
       "controller":"Login"
     }
+  },
+  {
+    "url":"/register",
+    "mvc":{
+      "model":"Register",
+      "view":"Register",
+      "controller":"Register"
+    }
   }
 ]

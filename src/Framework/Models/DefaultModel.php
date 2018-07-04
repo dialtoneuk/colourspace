@@ -10,18 +10,17 @@ namespace Colourspace\Framework\Models;
 
 
 use Colourspace\Container;
-use Colourspace\Framework\Profiles\Group;
+use Colourspace\Framework\Profiles\Website;
 use Colourspace\Framework\Model;
-use Colourspace\Framework\Profiles\User;
 
 class DefaultModel extends Model
 {
 
     /**
-     * @var User
+     * @var Website
      */
 
-    protected $profiles = [];
+    protected $profile;
 
     /**
      * @throws \Error
@@ -30,20 +29,13 @@ class DefaultModel extends Model
     public function startup()
     {
 
-        parent::startup();
+        $profile = new Website();
+        $profile->create();
 
-        if( Container::get('application')->session->isLoggedIn() == false )
-            return;
-
-        $this->profiles = [
-            'user' => new User(),
-            'group' => new Group()
+        $this->object->profiles = [
+            "website" => $profile->toArray()
         ];
 
-        $this->profiles['user']->create();
-        $this->profiles['group']->create();
-
-        $this->object->user = $this->profiles['user']->get();
-        $this->object->group = $this->profiles['group']->get();
+        parent::startup();
     }
 }

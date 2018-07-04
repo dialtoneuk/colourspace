@@ -10,8 +10,10 @@
             Login
         </h1>
         <form method="POST">
+            <input type="text" value="user00000001" name="username" disabled title="Username">
             <input type="email" name="email" title="Email">
-            <input type="text" name="password" title="password">
+            <input type="text" name="password" title="Password">
+            <input type="text" name="confirm_password" title="Confirm Password">
             <input type="submit" value="Login" title="Submit">
         </form>
         <p>
