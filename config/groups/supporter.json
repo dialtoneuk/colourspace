@@ -1,7 +1,7 @@
 {
   "name":"Supporter",
   "description":"A patreon of the arts.",
-  "color":"db9c24",
+  "colour":"db9c24",
   "flags":{
     "uploadmaxlength":-1,
     "uploadmaxsize":-1,

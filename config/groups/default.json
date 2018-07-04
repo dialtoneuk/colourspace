@@ -1,7 +1,7 @@
 {
   "name":"Default",
   "description":"A talented musician.",
-  "color":null,
+  "colour":null,
   "flags":{
     "uploadmaxlength": 600,
     "uploadmaxsize":250,

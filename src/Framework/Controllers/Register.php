@@ -114,7 +114,7 @@ class Register extends Controller
                     $this->model->formError(FORM_ERROR_INCORRECT,"Either your passwords do not match, or they do not meet the requirements set by the administrator. They need to contain a capital letter, special character, a number and be above " . ACCOUNT_PASSWORD_MIN . " characters.");
                 return;
             }
-
+            
             try
             {
                 $this->user->register($username, $form->password, $form->email);

@@ -1,7 +1,7 @@
 {
   "name":"Administrator",
   "description":"The magicians of which run the cogs behind the curtians.",
-  "color":"ff88a4",
+  "colour":"ff88a4",
   "flags":{
     "uploadmaxlength":-1,
     "uploadmaxsize":-1,

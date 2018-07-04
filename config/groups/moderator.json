@@ -1,7 +1,7 @@
 {
   "name":"Administrator",
   "description":"Volenteer supporter of music.",
-  "color":"725df1",
+  "colour":"725df1",
   "flags":{
     "uploadmaxlength":-1,
     "uploadmaxsize":-1,

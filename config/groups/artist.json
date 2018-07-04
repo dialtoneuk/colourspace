@@ -1,7 +1,7 @@
 {
   "name":"Artist",
   "description":"Land Of The Flower People Representitive & Content Producer.",
-  "color":"2b91c5",
+  "colour":"2b91c5",
   "flags":{
     "uploadmaxlength":-1,
     "uploadmaxsize":-1,

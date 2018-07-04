@@ -8,6 +8,7 @@
 namespace Colourspace\Framework;
 
 use Colourspace\Database\Tables\Users;
+use Colourspace\Framework\Util\Colours;
 use Colourspace\Framework\Util\Format;
 
 class User
@@ -113,11 +114,12 @@ class User
      * @param $password
      * @param null $salt
      * @param null $group
+     * @param null $colour
      * @return int
      * @throws \Error
      */
 
-    public function register( $username, $email, $password, $salt=null, $group=null )
+    public function register( $username, $email, $password, $salt=null, $group=null, $colour=null )
     {
 
         if( $salt == null )
@@ -126,12 +128,15 @@ class User
         if( $group == null )
             $group = GROUP_DEFAULT;
 
+        if( $colour == null )
+            $colour = Colours::generate();
 
         $array = [
             'username'  => $username,
             'password'  => Format::saltedPassword( $salt, $password ),
             'salt'      => $salt,
             'group'     => $group,
+            'colour'    => $colour,
             'creation'  => Format::timestamp()
         ];
 

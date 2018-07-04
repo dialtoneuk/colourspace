@@ -38,6 +38,7 @@ class Users extends Table
             'password'  => FIELD_TYPE_STRING,
             'salt'      => FIELD_TYPE_STRING,
             'group'     => FIELD_TYPE_STRING,
+            'colour'    => FIELD_TYPE_STRING,
             'creation'  => FIELD_TYPE_TIMESTAMP
         ];
     }
