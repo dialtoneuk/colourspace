@@ -52,7 +52,7 @@ class Table implements TableInterface
     public function search( $column, $value )
     {
 
-        return( $this->query()->where([ $column, $value ] )->get() );
+        return( $this->query()->where([ $column => $value ] )->get() );
     }
 
     /**

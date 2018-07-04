@@ -96,7 +96,7 @@ class TemporaryUsername
             "sessionid" => $sessionid,
             "username"  => $username,
             "ipaddress" => $ipaddress,
-            "creation"  => Format::Timestamp()
+            "creation"  => Format::timestamp()
         ]);
     }
 

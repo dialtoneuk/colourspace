@@ -124,6 +124,9 @@ class Controller implements ControllerInterface
 
             if( isset( $data[ $requirement ] ) == false )
                 return false;
+
+            if( empty( $data[ $requirement ] ) )
+                return false;
         }
 
         return true;
@@ -141,7 +144,7 @@ class Controller implements ControllerInterface
         if( empty( $this->keyRequirements() ) )
             return null;
 
-        if( $object )
+        if( $object == false )
             $result = [];
         else
             $result = new \stdClass();

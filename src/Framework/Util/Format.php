@@ -17,7 +17,7 @@ class Format
      * @return false|string
      */
 
-    public static function Timestamp( $time=null )
+    public static function timestamp($time=null )
     {
 
         if( $time == null )

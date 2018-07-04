@@ -1,10 +1,18 @@
 [
   {
-    "url":"/",
+    "url": "/",
+    "mvc": {
+      "model": "DefaultModel",
+      "view": "DefaultView",
+      "controller": "DefaultController"
+    }
+  },
+  {
+    "url":"/login",
     "mvc":{
-      "model":"Common",
-      "view":"Index",
-      "controller":"Index"
+      "model":"DefaultModel",
+      "view":"Login",
+      "controller":"Login"
     }
   }
 ]

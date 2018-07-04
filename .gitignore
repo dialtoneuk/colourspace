@@ -11,6 +11,7 @@ composer.phar
 
 /config/database_credentials.json
 /config/debug/
+/assets/js/
 
 # PHPStorm
 

@@ -11,20 +11,21 @@ namespace Colourspace\Framework\Views;
 
 use Colourspace\Framework\View;
 
-class Index extends View
+class DefaultView extends View
 {
+
 
     /**
      * @return array
+     * @throws \Error
      */
 
     public function get()
     {
 
-        //You do not need to append .php onto the end of the file for it to be read
-        return([
-            'index',
-            $this->model->toArray()
-        ]);
+        $array = parent::get();
+        $array["render"] = "index";
+
+        return( $array );
     }
 }

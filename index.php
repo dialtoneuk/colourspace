@@ -10,10 +10,10 @@ if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
     $_SERVER["DOCUMENT_ROOT"] = getcwd();
 
 if( version_compare(PHP_VERSION, '7.0.0') == -1 )
-    die('Please upgrade to PHP 7.0.0+ to run this web-application. Your current PHP version is ' . PHP_VERSION );
+    die('Please upgrade to PHP 7.0.0+ to run this web application. Your current PHP version is ' . PHP_VERSION );
 
 if( php_sapi_name() === 'cli' )
-    die('Please run this web application through a web-server. You are currently running PHP from CLI');
+    die('Please run this web application through a web server. You are currently running PHP from CLI');
 
 /**
  * Written by Lewis 'mkultra2018' Lancaster
@@ -48,6 +48,8 @@ define("GOOGLE_ENABLED", true );
 define("GOOGLE_SITE_KEY", null );
 define("GOOGLE_SITE_SECRET", null );
 
+define("RENDER_JQUERY", "jquery-3.3.1.min.js");
+
 define("MVC_NAMESPACE", "Colourspace\\Framework\\");
 define("MVC_NAMESPACE_MODELS", "Models");
 define("MVC_NAMESPACE_VIEWS", "Views");
@@ -55,10 +57,10 @@ define("MVC_NAMESPACE_CONTROLLERS", "Controllers");
 define("MVC_TYPE_MODEL", "model");
 define("MVC_TYPE_VIEW", "view");
 define("MVC_TYPE_CONTROLLER", "controller");
-define("MVC_REQUEST_POST", "POST");
-define("MVC_REQUEST_GET", "GET");
-define("MVC_REQUEST_PUT", "PUT");
-define("MVC_REQUEST_DELETE", "DELETE");
+define("MVC_REQUEST_POST", "post");
+define("MVC_REQUEST_GET", "get");
+define("MVC_REQUEST_PUT", "put");
+define("MVC_REQUEST_DELETE", "delete");
 define('MVC_ROUTE_FILE', '/config/routes.json');
 define("MVC_ROOT", "/src/Framework/");
 
@@ -91,6 +93,11 @@ define("DEBUG_ENABLED", true );
 define("DEBUG_WRITE_FILE", true );
 define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_TIMERS_FILE", '/config/debug/timers.json');
+
+define("SCRIPT_BUILDER_ENABLED", true );
+define("SCRIPT_BUILDER_ROOT", "/assets/scripts/");
+define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hours. Remove a "* 60" for minutes.
+define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
 
 /**
  * Colourspace Initialization
@@ -155,9 +162,10 @@ try
 
     //After the container has been globalized. We can then initiate the session from invoking it directly inside the container. We do it this way because the
     //session class by default creates a table class so it can cross reference with a database to check things such as login states and the current
-    //owner of the session. if they are logged in. The table class invokves the connection class of which is contained inside the application singleton class.
-    //So in order to access the session, we first need to globalize the application. You should take this into account when working with the session class and
-    //to make sure when working with the database component that the application has been initialized, and added to this global container.
+    //owner of the session. if they are logged in. The table class invokes the connection class to get a current active database connection.
+    //So in order to initialize the session class, we first need to globalize the application and along with it our active database connection.
+    //You should take this into account when working with the session class and to make sure when working with the database component that the application has been
+    //initialized, and added to this global container.
     Container::get('application')->session->initialize();
 
     /**
@@ -175,7 +183,21 @@ try
             $view = Container::get('application')->frontcontroller->process( $request, $payload );
 
             if ( empty( $view ) == false && is_array( $view ) )
-                Flight::render( $view[0], $view[1] );
+            {
+
+                if( isset( $view['render'] ) == false )
+                    throw new Error('No render');
+
+                if( isset( $view['model'] ) == false )
+                    throw new Error('No model');
+
+                Flight::view()->set("model", array_merge( $view['model'], [
+                    "footer" => $view['footer'],
+                    "header" => $view['header'],
+                ]));
+
+                Flight::render( $view["render"] );
+            }
             else
                 Flight::redirect( COLOURSPACE_URL_ROOT );
 

@@ -11,7 +11,7 @@ namespace Colourspace\Framework\Controllers;
 
 use Colourspace\Framework\Controller;
 
-class Index extends Controller
+class DefaultController extends Controller
 {
 
     /**

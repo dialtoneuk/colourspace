@@ -132,7 +132,7 @@ class User
             'password'  => Format::saltedPassword( $salt, $password ),
             'salt'      => $salt,
             'group'     => $group,
-            'creation'  => Format::Timestamp()
+            'creation'  => Format::timestamp()
         ];
 
         return( $this->table->insert( $array ) );

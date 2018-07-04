@@ -14,7 +14,7 @@ use Colourspace\Framework\Profiles\Group;
 use Colourspace\Framework\Model;
 use Colourspace\Framework\Profiles\User;
 
-class Common extends Model
+class DefaultModel extends Model
 {
 
     /**

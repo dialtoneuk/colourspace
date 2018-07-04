@@ -12,9 +12,9 @@ interface ModelInterface
 
     public function startup();
 
-    public function formMessage( $name, $value );
+    public function formMessage($type, $value );
 
-    public function formError( $name, $value );
+    public function formError($type, $value );
 
     public function toArray();
 }

@@ -79,7 +79,7 @@ class FrontController
                 throw new \Error('Unknown key type: ' . $key );
 
             if( $this->has( $key, $item ) == false )
-                throw new \Error('Class not found: ' , $key );
+                throw new \Error('Class not found: ' . $key );
         }
 
         if( isset( $request['method'] ) == false )
@@ -131,7 +131,7 @@ class FrontController
             'method'    => strtolower( $request->method ),
             'ip'        => $request->ip,
             'proxy'     => $request->proxy_ip,
-            'data'      => $request->data,
+            'data'      => $_POST,
             'url'       => $request->url,
             'params'    => $route->params,
             'contents'  => $route->splat

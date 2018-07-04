@@ -11,15 +11,30 @@ namespace Colourspace\Framework;
 
 use Colourspace\Framework\Interfaces\ModelInterface;
 use Colourspace\Framework\Interfaces\ViewInterface;
+use Colourspace\Framework\Util\ScriptBuilder;
 
 class View implements ViewInterface
 {
+
+    protected $script_builder;
 
     /**
      * @var ModelInterface
      */
 
     public $model;
+
+    /**
+     * View constructor.
+     * @throws \Error
+     */
+
+    public function __construct()
+    {
+
+        if( SCRIPT_BUILDER_ENABLED )
+            $this->script_builder = new ScriptBuilder();
+    }
 
     /**
      * @param ModelInterface $model
@@ -32,14 +47,55 @@ class View implements ViewInterface
 
     /**
      * @return array
+     * @throws \Error
      */
 
     public function get()
     {
 
-        return([
-           'default',
-           $this->model->toArray()
-        ]);
+        $array = [
+            "render"    => "index",
+            "model"     => $this->model->toArray()
+        ];
+
+        if( SCRIPT_BUILDER_ENABLED )
+        {
+            $this->buildScripts();
+
+            $array["footer"] = [
+                SCRIPT_BUILDER_COMPILED
+            ];
+        }
+        else
+            $array["footer"] = [];
+
+        $array["header"] = [
+                "/assets/js/" . RENDER_JQUERY
+        ];
+
+        return( $array );
+    }
+
+    /**
+     * @throws \Error
+     */
+
+    private function buildScripts()
+    {
+
+        if( SCRIPT_BUILDER_ENABLED == false )
+            return;
+
+        $this->script_builder->build();
+    }
+
+    /**
+     * @return mixed
+     */
+
+    private function model()
+    {
+
+        return( $this->model->toArray() );
     }
 }

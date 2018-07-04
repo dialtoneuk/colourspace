@@ -92,34 +92,36 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param $name
+     * @param $type
      * @param $value
      */
 
-    public function formError($name, $value)
+    public function formError($type, $value)
     {
 
         if ( isset( $this->object->errors ) == false )
             $this->object->errors = [];
 
         $this->object->errors[] = [
-            $name => $value
+            "type" => $type,
+            "value" => $value
         ];
     }
 
     /**
-     * @param $name
+     * @param $type
      * @param $value
      */
 
-    public function formMessage($name, $value)
+    public function formMessage($type, $value)
     {
 
         if ( isset( $this->object->messages ) == false )
             $this->object->messages = [];
 
         $this->object->messages[] = [
-            $name => $value
+            "type" => $type,
+            "value" => $value
         ];
     }
 }

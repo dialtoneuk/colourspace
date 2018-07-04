@@ -11,7 +11,7 @@ namespace Colourspace\Framework\Models;
 
 use Colourspace\Framework\TemporaryUsername;
 
-class Register extends Common
+class Register extends DefaultModel
 {
 
     /**
