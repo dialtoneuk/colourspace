@@ -1,6 +1,6 @@
 {
-  "name": "dialtoneuk/colourspace",
-  "description": "prototype",
+  "name": "dialtoneuk/Colourspace",
+  "description": "Music sharing website about colours.",
   "minimum-stability": "alpha",
   "license": "apache",
   "autoload": {
@@ -14,6 +14,11 @@
       "email": "hackerman@zyon.io"
     }
   ],
+  "scripts":{
+    "compile": [
+      "chmod -R 777 config/"
+    ]
+  },
   "require": {
     "php": ">=5.5.9",
     "illuminate/container": "^5.1",
