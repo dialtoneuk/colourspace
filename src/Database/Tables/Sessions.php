@@ -48,7 +48,7 @@ class Sessions extends Table
     public function exist( $sessionid )
     {
 
-        return( $this->query()->where(['sessionid' => $sessionid] )->get()->isEmpty() );
+        return( $this->query()->where(['sessionid' => $sessionid] )->get()->isNotEmpty() );
     }
 
     /**

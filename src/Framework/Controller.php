@@ -104,6 +104,8 @@ class Controller implements ControllerInterface
     public function authentication(string $type, $data)
     {
 
+        Debug::message("Authentication called in base class: " . __CLASS__ );
+
         if ( Container::has('application') == false )
             throw new \Error('Application has not been initialized');
 

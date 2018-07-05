@@ -16,10 +16,7 @@
   ],
   "scripts":{
     "compile": [
-      "chmod -R 777 var/",
-      "chmod -R 777 app/",
-      "chmod 755 etc/",
-      "chmod 644 etc/config.php"
+      "chmod -R 777 config/"
     ]
   },
   "require": {
@@ -31,6 +28,10 @@
     "mashape/unirest-php": "3.*",
     "erusev/parsedown":"*",
     "phpmailer/phpmailer": "~5.2",
-    "phelium/recaptcha": "dev-master"
+    "phelium/recaptcha": "dev-master",
+    "aws/aws-sdk-php":"*",
+    "delight-im/file-upload":"*",
+    "boyhagemann/waveform": "dev-master",
+    "boyhagemann/wave": "dev-master"
   }
 }

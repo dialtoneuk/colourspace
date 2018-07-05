@@ -44,6 +44,22 @@ define("ACCOUNT_RND_MAX", 8);
 define("ACCOUNT_PASSWORD_MIN", 8);
 define("ACCOUNT_PASSWORD_STRICT", false );
 
+define("TRACK_PRIVACY_PUBLIC", "public");
+define("TRACK_PRIVACY_PRIVATE", "private");
+define("TRACK_PRIVACY_PERSONAL", "personal");
+define("TRACK_PREFIX", "track");
+define("TRACK_DIGITS", 12);
+define("TRACK_RND_MIN", 0);
+define("TRACK_RND_MAX", 9);
+
+define("UPLOADS_TEMPORARY_DIRECTORY", "/files/temp/");
+define("UPLOADS_POST_KEY", "track");
+define("UPLOADS_ERROR_NOT_FOUND", 1 );
+define("UPLOADS_ERROR_FILENAME", 2 );
+define("UPLOADS_ERROR_EXTENSION", 3 );
+define("UPLOADS_ERROR_TOO_LARGE", 4 );
+define("UPLOADS_ERROR_CANCELLED", 5 );
+
 define("GOOGLE_ENABLED", false );
 define("GOOGLE_SITE_KEY", "6LfIbAgUAAAAABzfN4j-MrX5ndXzjIb9jFNgg7Lv" );
 define("GOOGLE_SITE_SECRET", "6LfIbAgUAAAAAKcKKopzftATinfo9vdmjgqzS77c" );

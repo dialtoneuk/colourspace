@@ -174,6 +174,18 @@ class Table implements TableInterface
     }
 
     /**
+     * @param array $where
+     * @param array $values
+     * @return int
+     */
+
+    public function update( array $where, array $values )
+    {
+
+        return( $this->query()->where( $where )->update( $values ) );
+    }
+
+    /**
      * A map used for migration, also used when verifying inserts
      *
      * @return array

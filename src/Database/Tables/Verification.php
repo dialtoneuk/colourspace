@@ -59,7 +59,7 @@ class Verification extends Table
     public function has( $verificationid )
     {
 
-        return( $this->query()->where(['verificationid' => $verificationid ] )->get()->isEmpty() );
+        return( $this->query()->where(['verificationid' => $verificationid ] )->get()->isNotEmpty() );
     }
 
     /**

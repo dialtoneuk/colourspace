@@ -51,7 +51,7 @@ class Users extends Table
     public function exist( $userid )
     {
 
-        return( $this->query()->where(['userid' => $userid])->get()->isEmpty() );
+        return( $this->query()->where(['userid' => $userid])->get()->isNotEmpty() );
     }
 
     /**

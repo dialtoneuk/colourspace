@@ -27,6 +27,28 @@ class Format
     }
 
     /**
+     * @param string $text
+     * @return string
+     */
+
+    public static function largeText( string $text )
+    {
+
+        return( base64_encode( $text ) );
+    }
+
+    /**
+     * @param string $text
+     * @return bool|string
+     */
+
+    public static function decodeLargeText( string $text )
+    {
+
+        return( base64_decode( $text ) );
+    }
+
+    /**
      * @param $salt
      * @param $password
      * @return string

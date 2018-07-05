@@ -58,7 +58,7 @@ class TemporaryUsernames extends Table
     public function has( $sessionid )
     {
 
-        return( !$this->query()->where( ['sessionid' => $sessionid ] )->get()->isEmpty() );
+        return( !$this->query()->where( ['sessionid' => $sessionid ] )->get()->isNotEmpty() );
     }
 
     /**
