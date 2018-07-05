@@ -1,0 +1,108 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: lewis
+ * Date: 05/07/2018
+ * Time: 23:37
+ */
+
+namespace Colourspace\Framework;
+
+use Aws\S3\S3Client;
+use Colourspace\Framework\Util\Format;
+
+class Amazon
+{
+
+    /**
+     * @var S3Client
+     */
+
+    protected $client;
+
+    /**
+     * Amazon constructor.
+     */
+
+    public function __construct()
+    {
+
+        $this->client = S3Client::factory([
+            'key' => AMAZON_S3_KEY,
+            'secret' => AMAZON_S3_SECRET
+        ]);
+    }
+
+    /**
+     * @param $bucket
+     * @param $filename
+     * @param $sourcefile
+     * @param array $metadata
+     * @return \Aws\Result
+     */
+
+    public function put( $bucket, $filename, $sourcefile, $metadata=[] )
+    {
+
+
+        $result = $this->client->putObject(array(
+            'Bucket'     => $bucket,
+            'Key'        => $filename,
+            'SourceFile' => $sourcefile,
+            'Metadata'   => $metadata
+        ));
+
+        $this->client->waitUntil('ObjectExists', array(
+            'Bucket' => $bucket,
+            'Key'    => $filename
+        ));
+
+        return( $result );
+    }
+
+    /**
+     * @param $bucket
+     * @param $filename
+     * @return bool
+     */
+
+    public function exists( $bucket, $filename )
+    {
+
+        if( $this->client->doesObjectExist( $bucket, $filename ) == false )
+            return false;
+
+        return true;
+    }
+
+    /**
+     * @param string $bucket
+     * @return bool
+     */
+
+    public function bucketExists( string $bucket )
+    {
+
+        if( $this->client->doesBucketExist( $bucket ) == false )
+            return false;
+
+        return true;
+    }
+
+    /**
+     * @param string $bucket
+     * @param string $region
+     */
+
+    public function createBucket( string $bucket, string $region )
+    {
+
+        $this->client->createBucket([
+            'Bucket' => $bucket,
+            'LocationConstraint' => $region
+        ]);
+
+        $this->client->waitUntil('BucketExists', array('Bucket' => $bucket));
+    }
+
+}

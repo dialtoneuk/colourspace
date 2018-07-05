@@ -48,6 +48,7 @@ define("TRACK_PRIVACY_PUBLIC", "public");
 define("TRACK_PRIVACY_PRIVATE", "private");
 define("TRACK_PRIVACY_PERSONAL", "personal");
 define("TRACK_PREFIX", "track");
+define("TRACK_NAME_MAXLENGTH", 64);
 define("TRACK_DIGITS", 12);
 define("TRACK_RND_MIN", 0);
 define("TRACK_RND_MAX", 9);
@@ -59,6 +60,18 @@ define("UPLOADS_ERROR_FILENAME", 2 );
 define("UPLOADS_ERROR_EXTENSION", 3 );
 define("UPLOADS_ERROR_TOO_LARGE", 4 );
 define("UPLOADS_ERROR_CANCELLED", 5 );
+
+define("AMAZON_S3_KEY", "AKIAI4OVOACWWUQ2C5AA");
+define("AMAZON_S3_SECRET", "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");
+define("AMAZON_S3_BUCKET", "colourspace");
+define("AMAZON_LOCATION_US_WEST", "us-west-1");
+define("AMAZON_LOCATION_US_WEST_2", "us-west-2");
+define("AMAZON_LOCATION_US_EAST", "us-east-1");
+define("AMAZON_LOCATION_US_EAST_2", "us-east-2");
+define("AMAZON_LOCATION_CA_CENTRAL", "ca-central-1");
+define("AMAZON_LOCATION_EU_WEST", "eu-west-1");
+define("AMAZON_LOCATION_EU_WEST_2", "eu-west-2");
+define("AMAZON_LOCATION_EU_CENTRAL", "eu-central-1");
 
 define("GOOGLE_ENABLED", false );
 define("GOOGLE_SITE_KEY", "6LfIbAgUAAAAABzfN4j-MrX5ndXzjIb9jFNgg7Lv" );
@@ -107,6 +120,11 @@ define("DATABASE_CREDENTIALS", "/config/database_credentials.json");
 
 define("GROUP_ROOT", "/config/groups/");
 define("GROUP_DEFAULT", "default");
+define("GROUPS_FLAG_MAXLENGTH", "uploadmaxlength");
+define("GROUPS_FLAG_MAXSIZE", "uploadmaxsize");
+define("GROUPS_FLAG_LOSSLESS", "lossless");
+
+define("STREAMS_MP3", "mp3");
 
 define("DEBUG_ENABLED", true );
 define("DEBUG_WRITE_FILE", true );

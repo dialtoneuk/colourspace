@@ -16,7 +16,9 @@
   ],
   "scripts":{
     "compile": [
-      "chmod -R 777 config/"
+      "chmod -R 777 config/",
+      "chmod -R 777 assets/",
+      "chmod -R 777 src/"
     ]
   },
   "require": {

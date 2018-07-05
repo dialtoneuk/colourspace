@@ -52,6 +52,17 @@ class Track
     }
 
     /**
+     * @param $trackname
+     * @return \Illuminate\Support\Collection
+     */
+
+    public function find( $trackname )
+    {
+
+        return( $this->table->find( $trackname) );
+    }
+
+    /**
      * @param $trackid
      * @param bool $object
      * @return mixed

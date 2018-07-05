@@ -56,6 +56,17 @@ class Tracks extends Table
     }
 
     /**
+     * @param $trackname
+     * @return \Illuminate\Support\Collection
+     */
+
+    public function find( $trackname )
+    {
+
+        return( $this->query()->where(['trackname' => $trackname ] )->get() );
+    }
+
+    /**
      * @param $trackid
      * @return bool
      */

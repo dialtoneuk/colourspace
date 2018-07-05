@@ -89,9 +89,6 @@ class Login extends Controller
                     }
                 }
 
-                if( empty( $form ) )
-                    throw new \Error("Form is empty");
-
                 $result = $this->checkLogin( $form );
 
                 if( is_array( $result ) )
