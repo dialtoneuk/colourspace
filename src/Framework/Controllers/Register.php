@@ -78,7 +78,7 @@ class Register extends Controller
         if( $type == MVC_REQUEST_POST )
         {
 
-            if( $this->check( $data['data'] ) == false )
+            if( $this->check( $data->request) == false )
             {
 
                 $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
@@ -86,7 +86,7 @@ class Register extends Controller
             else
             {
 
-                $form = $this->pickKeys( $data['data'] );
+                $form = $this->pickKeys( $data->request );
 
                 if( GOOGLE_ENABLED )
                     if( $this->checkRecaptcha( $form ) == false )
@@ -176,10 +176,10 @@ class Register extends Controller
     private function getTemporaryUsername()
     {
 
-        if( $this->temporaryusername->has( session_id( ) ) == false )
+        if( $this->temporaryusername->has( session_id() ) == false )
             return $this->temporaryusername->generate();
         else
-            return $this->temporaryusername->get( session_id() );
+            return "fuc";
     }
 
     /**
