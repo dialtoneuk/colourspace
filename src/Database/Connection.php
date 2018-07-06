@@ -15,10 +15,6 @@ use Illuminate\Database\Capsule\Manager;
 class Connection
 {
 
-    /**
-     * @var OpenSSL
-     */
-    protected $openssl;
     //Location of the keys to cross reference our database settings with for verification
     private $verification = '/config/database_verification.json';
     /**
@@ -31,7 +27,8 @@ class Connection
      * @var \Illuminate\Database\Connection
      */
     public $connection;
-    //The settings object
+
+
     public $settings;
 
     /**
@@ -46,7 +43,6 @@ class Connection
         Debug::message("Created connection class");
 
         $this->settings = $this->getSettings();
-        $this->openssl = new OpenSSL();
 
         if ( $auto_create )
             $this->create();
@@ -126,6 +122,8 @@ class Connection
         if( DATABASE_ENCRYPTION )
         {
 
+            $openssl = new OpenSSL();
+
             if ( file_exists( COLOURSPACE_ROOT . DATABASE_CREDENTIALS ) == false )
                 throw new \Error('Database credentials file missing');
 
@@ -134,7 +132,7 @@ class Connection
             if( isset( $object['info'] ) == false )
                 throw new \Error("No decryption keys found");
 
-            $decrypted = $this->openssl->decrypt( $object, $object['info']['key'], $object['info']['iv'] );
+            $decrypted = $openssl->decrypt( $object, $object['info']['key'], base64_decode( $object['info']['iv'] ) );
 
             if( $this->verify( $decrypted ) == false )
                 throw new \Error('Database credentials are invalid');

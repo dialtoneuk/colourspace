@@ -146,7 +146,7 @@ define("TABLES_NAMESPACE", "Colourspace\\Database\\Tables\\");
 define("TABLES_ROOT", "src/Database/Tables/");
 
 //Database Settings
-define("DATABASE_ENCRYPTION", false );
+define("DATABASE_ENCRYPTION", false);
 define("DATABSAE_ENCRYPTION_KEY", null ); //Replace null with a string of a key to not use a rand gen key.
 define("DATABASE_CREDENTIALS", "config/database_credentials.json");
 

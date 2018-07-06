@@ -1,15 +1,10 @@
 {
   "name": "Colourspace",
-  "description": "Music website all about colours",
+  "description": "Music website all about colours.",
   "scripts": {
+    "postdeploy": "php -f cmd/deploy.php username=colourspace password=password database=colourspace host=localhost driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
   },
-  "env": {
-    "test": {
-      "scripts": {
-        "test-setup": "gem install rubocop",
-        "test": "rubocop"
-      }
-    }
+  "env":{
   },
   "formation": {
     "web": {

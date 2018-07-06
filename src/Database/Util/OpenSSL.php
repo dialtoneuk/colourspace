@@ -13,7 +13,7 @@ class OpenSSL
      * @throws \Error
      */
 
-    public function __construct( $cipher="aes-128-gcm" )
+    public function __construct( $cipher="AES-128-CBC" )
     {
 
         if( $this->check( $cipher ) == false )
@@ -38,13 +38,13 @@ class OpenSSL
         foreach( $json as $index=>$value )
         {
 
-            $array[ $this->encryptText( $index, $key, $iv ) ] = $this->encryptText( $value, $key, $iv );
+            $array[ $this->encryptText( $index, $key, $iv )  ] =  $this->encryptText( $value, $key, $iv );
         }
 
         if ( $add_decrypt_info )
             $array["info"] = [
                 "key"   => $key,
-                "iv"    => $iv
+                "iv"    => base64_encode( $iv )
             ];
 
         return $array;
@@ -65,10 +65,11 @@ class OpenSSL
         foreach( $json as $index=>$value )
         {
 
-            if( index == "info" )
+
+            if( $index == "info" )
                 continue;
 
-            $array[ $this->decryptText( $index, $key, $iv ) ] = $this->decryptText( $value, $key, $iv );
+            $array[ $this->decryptText( $index, $key, $iv )  ] = $this->decryptText( $value, $key, $iv );
         }
 
         return $array;
@@ -97,7 +98,7 @@ class OpenSSL
     private function decryptText( string $text, string $key, $iv )
     {
 
-        return( openssl_decrypt( $text, $this->cipher, $key, $options=0, $iv) );
+        return( openssl_decrypt( $text, $this->cipher, $key, OPENSSL_RAW_DATA, $iv) );
     }
 
     /**
