@@ -12,7 +12,7 @@ if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
 if( version_compare(PHP_VERSION, '7.0.0') == -1 )
     die('Please upgrade to PHP 7.0.0+ to run this web application. Your current PHP version is ' . PHP_VERSION );
 
-if( php_sapi_name() === 'cli' )
+if( php_sapi_name() === 'cli' && defined( "CMD" ) == false )
     die('Please run this web application through a web server. You are currently running PHP from CLI');
 
 /**
@@ -35,7 +35,11 @@ use Colourspace\Framework\Util\Debug;
  */
 
 //Colourspace
-define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
+if( defined( "CMD" ) )
+    define("COLOURSPACE_ROOT",  $_SERVER["DOCUMENT_ROOT"] . '/../'  );
+else
+    define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
+
 define("COLOURSPACE_URL_ROOT", "/");
 
 //User Accounts
@@ -111,6 +115,14 @@ define("FORM_ERROR_MISSING", "missing_information");
 define("FORM_MESSAGE_SUCCESS", "success_message");
 define("FORM_MESSAGE_INFO", "info_message");
 
+//Resource combiner
+
+define("RESOURCE_COMBINER_ROOT", "config/");
+define("RESOURCE_COMBINER_CHMOD", true );
+define("RESOURCE_COMBINER_CHMOD_PERM", 0777 );
+define("RESOURCE_COMBINER_PRETTY", true );
+define("RESOURCE_COMBINER_FILEPATH", "config/resources.json" );
+
 //Database Fields for tables
 define("FIELD_TYPE_INCREMENTS","increments");
 define("FIELD_TYPE_STRING","string");
@@ -168,157 +180,165 @@ define("COLOURS_OUTPUT_RGB", 2);
  * =======================================
  */
 
-try
+if( defined( "CMD" ) == false )
 {
 
-    /**
-     * Debug Timers
-     * =======================
-     */
-
-
-    if( DEBUG_ENABLED )
+    try
     {
 
-        //This will automatically allow all the debug methods in the application to function
-        Debug::initialization();
-
-        Debug::message("Started");
-        Debug::setStartTime('application');
-    }
-
-    /**
-     * Initialization
-     * =======================
-     */
-
-    $application = new Application();
-
-    //This must be initiated and created first as some core functions require access to a database.
-    $application->connection = new Connection( true );
-
-    //We then run a test of the database connection. This simply pulls the database name from the database which will return an error if it fails
-    if( $application->connection->test() == false )
-        throw new Error("Failed connection test, check settings");
-
-    //We then initiate the front controller. This loads all of our MVC classes into memory so there are no load times when we process the request. It is all live from memory.
-    $application->frontcontroller = new FrontController( true );
-
-    //We then test this by simply querying the stacks of Views, Models and Controllers and checking if any one of them are empty.
-    if( $application->frontcontroller->test() == false )
-        throw new Error("Failed to initiate front controller, check your files");
-
-    //The router file is what is then fed into Flight. Our microframework for easy http routing ( read more up on this at flightphp.com ). All this really does is read from a json file
-    //a list of arrays with a url of which to match and initiate this perticular set of MVC classes, and the prementioned MVC classes them selves. You can check out the file
-    //for how this works.
-    $application->router = new Router( true );
-
-    //Same as the previous test, if we are empty. Error.
-    if( $application->router->test() == false )
-        throw new Error('Router failed to initiate, check your router files');
-
-    //We then create the session class, but we do not initialize. Read below for more info on this.
-    $application->session = new Session( false );
-
-    //After everything is done, we globalize the application class to be accessible where ever we are in the web-application. Saving on CPU overhead and memory and time
-    //when accessing these heavily used components.
-    Container::add("application", $application );
-
-    //After the container has been globalized. We can then initiate the session from invoking it directly inside the container. We do it this way because the
-    //session class by default creates a table class so it can cross reference with a database to check things such as login states and the current
-    //owner of the session. if they are logged in. The table class invokes the connection class to get a current active database connection.
-    //So in order to initialize the session class, we first need to globalize the application and along with it our active database connection.
-    //You should take this into account when working with the session class and to make sure when working with the database component that the application has been
-    //initialized, and added to this global container.
-    Container::get('application')->session->initialize();
-
-    /**
-     * Flight
-     * =======================
-     */
-
-    foreach( $application->router->live_routes as $url=>$payload )
-    {
-
-        Flight::route( $url, function( $route ) use ( $payload ){
-
-            $request = Container::get('application')->frontcontroller->buildRequest( $route );
-
-            $view = Container::get('application')->frontcontroller->process( $request, $payload );
-
-            if ( empty( $view ) == false && is_array( $view ) )
-            {
-
-                if( isset( $view['render'] ) == false )
-                    throw new Error('No render');
-
-                if( isset( $view['model'] ) == false )
-                    throw new Error('No model');
-
-                if( isset( $view['footer'] ) == false )
-                    $view["footer"] = [];
-
-                if( isset( $view['header'] ) == false )
-                    $view["footer"] = [];
-
-                $object = array_merge( $view['model'], [
-                    "footer" => $view['footer'],
-                    "header" => $view['header'],
-                ]);
-
-                if( FLIGHT_MODEL_OBJECT )
-                    $object = json_decode( json_encode( $object ) );
-
-                Flight::view()->set( FLIGHT_MODEL_DEFINITION , $object );
-
-                if( FLIGHT_SET_GLOBALS )
-                {
-
-                    Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
-                    Flight::view()->set("document_root", COLOURSPACE_ROOT );
-
-                    if( DEBUG_ENABLED )
-                        Flight::view()->set("debug_messages", Debug::getMessages() );
-                }
-
-                Flight::render( $view['render'] );
-            }
-            else
-                Flight::redirect( COLOURSPACE_URL_ROOT );
-
-        }, true );
-    }
-
-    Flight::before('start', function(){
+        /**
+         * Debug Timers
+         * =======================
+         */
 
 
-        if ( DEBUG_ENABLED )
-            Debug::setStartTime('flight_route');
-    });
-
-    Flight::after('start', function()
-    {
-        if( DEBUG_ENABLED  )
+        if( DEBUG_ENABLED )
         {
-            Debug::setEndTime('flight_route' );
 
-            if( DEBUG_WRITE_FILE )
-                Debug::stashMessages();
-                Debug::stashTimers();
+            //This will automatically allow all the debug methods in the application to function
+            Debug::initialization();
+
+            Debug::message("Started");
+            Debug::setStartTime('application');
         }
 
-    });
+        /**
+         * Initialization
+         * =======================
+         */
 
-    Debug::message("Finished application loading");
-    Debug::setEndTime('application');
+        $application = new Application();
 
-    //This is actually where the application starts
-    Flight::start();
+        //This must be initiated and created first as some core functions require access to a database.
+        $application->connection = new Connection( true );
+
+        //We then run a test of the database connection. This simply pulls the database name from the database which will return an error if it fails
+        if( $application->connection->test() == false )
+            throw new Error("Failed connection test, check settings");
+
+        //We then initiate the front controller. This loads all of our MVC classes into memory so there are no load times when we process the request. It is all live from memory.
+        $application->frontcontroller = new FrontController( true );
+
+        //We then test this by simply querying the stacks of Views, Models and Controllers and checking if any one of them are empty.
+        if( $application->frontcontroller->test() == false )
+            throw new Error("Failed to initiate front controller, check your files");
+
+        //The router file is what is then fed into Flight. Our microframework for easy http routing ( read more up on this at flightphp.com ). All this really does is read from a json file
+        //a list of arrays with a url of which to match and initiate this perticular set of MVC classes, and the prementioned MVC classes them selves. You can check out the file
+        //for how this works.
+        $application->router = new Router( true );
+
+        //Same as the previous test, if we are empty. Error.
+        if( $application->router->test() == false )
+            throw new Error('Router failed to initiate, check your router files');
+
+        //We then create the session class, but we do not initialize. Read below for more info on this.
+        $application->session = new Session( false );
+
+        //After everything is done, we globalize the application class to be accessible where ever we are in the web-application. Saving on CPU overhead and memory and time
+        //when accessing these heavily used components.
+        Container::add("application", $application );
+
+        //After the container has been globalized. We can then initiate the session from invoking it directly inside the container. We do it this way because the
+        //session class by default creates a table class so it can cross reference with a database to check things such as login states and the current
+        //owner of the session. if they are logged in. The table class invokes the connection class to get a current active database connection.
+        //So in order to initialize the session class, we first need to globalize the application and along with it our active database connection.
+        //You should take this into account when working with the session class and to make sure when working with the database component that the application has been
+        //initialized, and added to this global container.
+        Container::get('application')->session->initialize();
+
+        /**
+         * Flight
+         * =======================
+         */
+
+        foreach( $application->router->live_routes as $url=>$payload )
+        {
+
+            Flight::route( $url, function( $route ) use ( $payload ){
+
+                $request = Container::get('application')->frontcontroller->buildRequest( $route );
+
+                $view = Container::get('application')->frontcontroller->process( $request, $payload );
+
+                if ( empty( $view ) == false && is_array( $view ) )
+                {
+
+                    if( isset( $view['render'] ) == false )
+                        throw new Error('No render');
+
+                    if( isset( $view['model'] ) == false )
+                        throw new Error('No model');
+
+                    if( isset( $view['footer'] ) == false )
+                        $view["footer"] = [];
+
+                    if( isset( $view['header'] ) == false )
+                        $view["footer"] = [];
+
+                    $object = array_merge( $view['model'], [
+                        "footer" => $view['footer'],
+                        "header" => $view['header'],
+                    ]);
+
+                    if( FLIGHT_MODEL_OBJECT )
+                        $object = json_decode( json_encode( $object ) );
+
+                    Flight::view()->set( FLIGHT_MODEL_DEFINITION , $object );
+
+                    if( FLIGHT_SET_GLOBALS )
+                    {
+
+                        Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
+                        Flight::view()->set("document_root", COLOURSPACE_ROOT );
+
+                        if( DEBUG_ENABLED )
+                            Flight::view()->set("debug_messages", Debug::getMessages() );
+                    }
+
+                    Flight::render( $view['render'] );
+                }
+                else
+                    Flight::redirect( COLOURSPACE_URL_ROOT );
+
+            }, true );
+        }
+
+        Flight::before('start', function(){
+
+
+            if ( DEBUG_ENABLED )
+                Debug::setStartTime('flight_route');
+        });
+
+        Flight::after('start', function()
+        {
+            if( DEBUG_ENABLED  )
+            {
+                Debug::setEndTime('flight_route' );
+
+                if( DEBUG_WRITE_FILE )
+                    Debug::stashMessages();
+                Debug::stashTimers();
+            }
+
+        });
+
+        Debug::message("Finished application loading");
+        Debug::setEndTime('application');
+
+        //This is actually where the application starts
+        Flight::start();
+    }
+    catch ( Error $error )
+    {
+
+        //TODO: Advanced Error Screen
+        die( print_r( $error ) );
+    }
 }
-catch ( Error $error )
+else
 {
-
-    //TODO: Advanced Error Screen
-    die( print_r( $error ) );
+    echo( "Application quit because CMD mode has been defined as a global constant \n");
 }
 

@@ -57,6 +57,30 @@ class DirectoryOperator
     }
 
     /**
+     * @param $path
+     * @param bool $reread
+     */
+
+    public function setPath( $path, $reread=true )
+    {
+
+        $this->path = $path;
+
+        if( $reread )
+            $this->read();
+    }
+
+    /**
+     * @return string
+     */
+
+    public function path()
+    {
+
+        return( $this->path );
+    }
+
+    /**
      * @return array|null
      */
 
@@ -67,23 +91,35 @@ class DirectoryOperator
     }
 
     /**
-     * @param string $extension
+     * @param array $extension
      * @return array
+     * @throws \Error
      */
 
-    public function search( $extension=".js" )
+    public function search( array $extension=[".js"] )
     {
+
+        if( is_array( $extension ) == false )
+            throw new \Error();
+
 
         if( $this->hasContents() == false )
             $this->read();
 
+        if( empty( $this->contents ) )
+            return;
+
         $results = [];
 
-        foreach( $this->contents as $path )
+        foreach( $this->contents as $path=>$content )
         {
 
-            if( str_contains( $path, $extension ) )
-                $results[] = $path;
+            foreach( $extension as $item )
+            {
+
+                if( str_contains( $content, $item ) )
+                    $results[] = $content;
+            }
         }
 
         return( $results );
