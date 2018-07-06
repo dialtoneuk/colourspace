@@ -7,7 +7,13 @@ require_once( "vendor/autoload.php" );
  */
 
 if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
+{
     $_SERVER["DOCUMENT_ROOT"] = getcwd();
+}
+
+if( substr( $_SERVER["DOCUMENT_ROOT"], -1 ) !== DIRECTORY_SEPARATOR )
+    $_SESSION['DOCUMENT_ROOT'] .= DIRECTORY_SEPARATOR;
+
 
 if( version_compare(PHP_VERSION, '7.0.0') == -1 )
     die('Please upgrade to PHP 7.0.0+ to run this web application. Your current PHP version is ' . PHP_VERSION );
