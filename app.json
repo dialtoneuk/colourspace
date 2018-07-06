@@ -1,0 +1,22 @@
+{
+  "name": "Colourspace",
+  "description": "",
+  "scripts": {
+    "postdeploy": "php -f cmd/dyno"
+  },
+  "env": {
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    }
+  ]
+}
