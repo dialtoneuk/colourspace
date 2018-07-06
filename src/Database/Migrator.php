@@ -43,8 +43,8 @@ class Migrator
         if( file_exists( COLOURSPACE_ROOT . TABLES_ROOT ) == false )
             throw new \Error("Tables do not exist");
 
-        if( is_file( COLOURSPACE_ROOT . TABLES_ROOT  ) == false )
-            throw new \Error("Tables do not exist");
+        if( is_file( COLOURSPACE_ROOT . TABLES_ROOT  ) )
+            throw new \Error("Must be the locaiton of a folder");
 
         $this->constructor->createAll();
     }
@@ -116,7 +116,7 @@ class Migrator
                         $table->ipAddress( $coloum );
                         break;
                     case FIELD_TYPE_JSON:
-                        $table->json( $coloum );
+                        $table->longText( $coloum );
                         break;
                 }
             }
@@ -131,7 +131,7 @@ class Migrator
     private function tableExists( $table_name )
     {
 
-        iF( $this->connection->table( $table_name )->exists() )
+        iF( $this->connection->getSchemaBuilder()->hasTable( $table_name ) )
             return true;
 
         return false;

@@ -31,7 +31,7 @@ class Debug
             return;
 
         if( self::isInit() == false )
-            throw new \Error('Please enable error debugging');
+            self::initialization();
 
         if( isset( self::$objects->messages ) == false )
             self::$objects->messages = [];

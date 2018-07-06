@@ -21,7 +21,7 @@ if( version_compare(PHP_VERSION, '7.0.0') == -1 )
     die('Please upgrade to PHP 7.0.0+ to run this web application. Your current PHP version is ' . PHP_VERSION );
 
 if( php_sapi_name() === 'cli' && defined( "CMD" ) == false )
-    die('Please run this web application through a web server. You are currently running PHP from CLI');
+    die('Please run this web application through your web browser. It wont work via the console! (Muh live programs)');
 
 /**
  * Written by Lewis 'mkultra2018' Lancaster
@@ -142,7 +142,7 @@ define("FIELD_TYPE_JSON","json");
 define("FIELD_TYPE_IPADDRESS","ipAddress");
 
 //Tables
-define("TABLES_NAMESPACE", "Colourspace\\Framework\\Tables\\");
+define("TABLES_NAMESPACE", "Colourspace\\Database\\Tables\\");
 define("TABLES_ROOT", "src/Database/Tables/");
 
 //Database Settings
@@ -206,7 +206,7 @@ if( defined( "CMD" ) == false )
             //This will automatically allow all the debug methods in the application to function
             Debug::initialization();
 
-            Debug::message("Started");
+            Debug::message("Request initiated");
             Debug::setStartTime('application');
         }
 
@@ -323,11 +323,17 @@ if( defined( "CMD" ) == false )
         {
             if( DEBUG_ENABLED  )
             {
+
+                Debug::message("Request Complete");
                 Debug::setEndTime('flight_route' );
 
                 if( DEBUG_WRITE_FILE )
+                {
+
                     Debug::stashMessages();
-                Debug::stashTimers();
+                    Debug::stashTimers();
+                }
+
             }
 
         });
