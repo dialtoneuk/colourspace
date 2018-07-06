@@ -39,11 +39,7 @@ use Colourspace\Framework\Util\Debug;
  * document root to look down a level when dealing with CMD mode.
  */
 
-if( defined( "CMD" ) )
-    define("COLOURSPACE_ROOT",  $_SERVER["DOCUMENT_ROOT"] . '/../'  );
-else
-    define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
-
+define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
 define("COLOURSPACE_URL_ROOT", "/");
 
 //User Accounts
