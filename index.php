@@ -34,7 +34,11 @@ use Colourspace\Framework\Util\Debug;
  * =======================================
  */
 
-//Colourspace
+/**
+ * Since all scripts you run via cli should be in the cmd folder, which should be just one folder up. We can simply extend the
+ * document root to look down a level when dealing with CMD mode.
+ */
+
 if( defined( "CMD" ) )
     define("COLOURSPACE_ROOT",  $_SERVER["DOCUMENT_ROOT"] . '/../'  );
 else
