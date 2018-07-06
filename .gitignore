@@ -10,7 +10,7 @@ composer.phar
 # Colourspace
 
 /config/*
-!/config/resources.json
+!/config/resources
 
 /assets/js/
 

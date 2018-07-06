@@ -20,7 +20,7 @@ try
 
     $unpacker->process();
 
-    echo("Complete!");
+    echo("Complete! Feel free to delete your resources.json");
 }
 catch( Error $error )
 {

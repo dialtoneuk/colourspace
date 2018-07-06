@@ -125,7 +125,7 @@ define("RESOURCE_COMBINER_ROOT", "config/");
 define("RESOURCE_COMBINER_CHMOD", true );
 define("RESOURCE_COMBINER_CHMOD_PERM", 0777 );
 define("RESOURCE_COMBINER_PRETTY", true );
-define("RESOURCE_COMBINER_FILEPATH", "config/resources.json" );
+define("RESOURCE_COMBINER_FILEPATH", "config/resources" );
 
 //Database Fields for tables
 define("FIELD_TYPE_INCREMENTS","increments");
