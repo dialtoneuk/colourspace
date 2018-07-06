@@ -8,11 +8,13 @@ require_once( "vendor/autoload.php" );
 
 if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
 {
-    $_SERVER["DOCUMENT_ROOT"] = getcwd();
+    $root = getcwd();
 }
+else
+    $root = $_SERVER["DOCUMENT_ROOT"];
 
-if( substr( $_SERVER["DOCUMENT_ROOT"], -1 ) !== DIRECTORY_SEPARATOR )
-    $_SESSION['DOCUMENT_ROOT'] .= DIRECTORY_SEPARATOR;
+if( substr( $root, -1 ) !== DIRECTORY_SEPARATOR )
+    $root = $root . DIRECTORY_SEPARATOR;
 
 
 if( version_compare(PHP_VERSION, '7.0.0') == -1 )
@@ -45,7 +47,7 @@ use Colourspace\Framework\Util\Debug;
  * document root to look down a level when dealing with CMD mode.
  */
 
-define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
+define("COLOURSPACE_ROOT", $root );
 define("COLOURSPACE_URL_ROOT", "/");
 
 //User Accounts
@@ -67,7 +69,7 @@ define("TRACK_RND_MIN", 0);
 define("TRACK_RND_MAX", 9);
 
 //Global Upload Settings
-define("UPLOADS_TEMPORARY_DIRECTORY", "/files/temp/");
+define("UPLOADS_TEMPORARY_DIRECTORY", "files/temp/");
 define("UPLOADS_POST_KEY", "track");
 define("UPLOADS_ERROR_NOT_FOUND", 1 );
 define("UPLOADS_ERROR_FILENAME", 2 );
@@ -111,8 +113,8 @@ define("MVC_REQUEST_POST", "post");
 define("MVC_REQUEST_GET", "get");
 define("MVC_REQUEST_PUT", "put");
 define("MVC_REQUEST_DELETE", "delete");
-define('MVC_ROUTE_FILE', '/config/routes.json');
-define("MVC_ROOT", "/src/Framework/");
+define('MVC_ROUTE_FILE', 'config/routes.json');
+define("MVC_ROOT", "src/Framework/");
 
 //Form
 define("FORM_ERROR_GENERAL", "general_error");
@@ -146,7 +148,7 @@ define("TABLES_ROOT", "src/Database/Tables/");
 //Database Settings
 define("DATABASE_ENCRYPTION", false );
 define("DATABSAE_ENCRYPTION_KEY", null ); //Replace null with a string of a key to not use a rand gen key.
-define("DATABASE_CREDENTIALS", "/config/database_credentials.json");
+define("DATABASE_CREDENTIALS", "config/database_credentials.json");
 
 //Groups
 define("GROUP_ROOT", "/config/groups/");
@@ -164,15 +166,15 @@ define("STREAMS_WAV", "wav");
 //Debugging Options
 define("DEBUG_ENABLED", true );
 define("DEBUG_WRITE_FILE", true );
-define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
-define("DEBUG_TIMERS_FILE", '/config/debug/timers.json');
+define("DEBUG_MESSAGES_FILE", 'config/debug/messages.json');
+define("DEBUG_TIMERS_FILE", 'config/debug/timers.json');
 
 //Javascript Builder
-define("SCRIPT_BUILDER_ENABLED", false ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
-define("SCRIPT_BUILDER_ROOT", "/assets/scripts/");
+define("SCRIPT_BUILDER_ENABLED", true ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
+define("SCRIPT_BUILDER_ROOT", "assets/scripts/");
 define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hours. Remove a "* 60" for minutes.
-define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
-define("SCRIPT_BUILDER_FORCED", false ) ;//Compiles a fresh build each request regardless of frequency setting.
+define("SCRIPT_BUILDER_COMPILED", "assets/js/compiled.js");
+define("SCRIPT_BUILDER_FORCED", true ) ;//Compiles a fresh build each request regardless of frequency setting.
 
 //Misc
 define("COLLECTOR_DEFAULT_NAMESPACE", "Colourspace\\Framework\\");
