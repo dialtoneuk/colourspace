@@ -1,34 +1,30 @@
 <?php
-require_once "../vendor/autoload.php";
+require_once "vendor/autoload.php";
 
-/**
- * SCRIPTS WHICH ARE INVOKVED VIA CLI MUST DEFINE CMD ELSE THE APPLICATION WILL BOOT AS A WEB APPLICATION!
- */
+define("CMD", true ); //Scripts which run in CMD environment must define CMD to true.
 
-define("CMD", true );
+include_once "index.php";
 
-//We can then include the regular index, defining our needed globals for settings.
-include_once "../index.php";
-
-//We can then launch the softwares
-echo( "Combining config files into one... \n");
+echo( "Colourspace Config Pack Script \n");
 
 try
 {
 
+    echo( " - Starting \n");
     $combiner = new \Colourspace\Framework\Util\ResourceCombiner(RESOURCE_COMBINER_ROOT );
-
     $build = $combiner->build();
 
     if( empty( $build ) )
         throw new Error("Build returned null \n");
 
+    echo( " - Files Packed \n");
     $combiner->save( $build );
-
-    echo("Complete!");
+    echo( " - Saved To File \n");
 }
 catch( Error $error )
 {
 
-    echo( "ERROR:" . $error->getMessage() );
+    echo( "Critical Error:" . $error->getMessage() );
 }
+
+echo("Complete!");

@@ -1,29 +1,26 @@
 <?php
-require_once "../vendor/autoload.php";
-
-/**
- * SCRIPTS WHICH ARE INVOKVED VIA CLI MUST DEFINE CMD ELSE THE APPLICATION WILL BOOT AS A WEB APPLICATION!
- */
+require_once "vendor/autoload.php";
 
 define("CMD", true );
 
-//We can then include the regular index, defining our needed globals for settings.
-include_once "../index.php";
+include_once "index.php";
 
-//We can then launch the softwares
-echo( "Combining config files into one... \n");
+echo( "Colourspace Config Unpack Script \n");
 
 try
 {
 
+    echo( " - Starting \n");
     $unpacker = new \Colourspace\Framework\Util\ResourceUnpacker();
-
     $unpacker->process();
-
-    echo("Complete! Feel free to delete your resources.json");
+    echo( " - Files created \n");
+    unlink( COLOURSPACE_ROOT . RESOURCE_COMBINER_FILEPATH );
+    echo( " - Deleted Resource File \n");
 }
 catch( Error $error )
 {
 
-    echo( "ERROR:" . $error->getMessage() );
+    echo( "Critical Error:" . $error->getMessage() );
 }
+
+echo( "Complete \n");

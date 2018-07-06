@@ -343,6 +343,6 @@ if( defined( "CMD" ) == false )
 }
 else
 {
-    echo( "Application quit because CMD mode has been defined as a global constant \n");
+    echo( "! Application quit because global CMD has been defined ! \n");
 }
 

@@ -18,7 +18,8 @@
     "compile": [
       "chmod -R 777 config/",
       "chmod -R 777 assets/",
-      "chmod -R 777 src/"
+      "chmod -R 777 src/",
+      "php cmd/unpack.php"
     ]
   },
   "require": {
