@@ -30,13 +30,15 @@ use Colourspace\Framework\Router;
 use Colourspace\Framework\Util\Debug;
 
 /**
- * Globals
+ * Application Settings
  * =======================================
  */
 
+//Colourspace
 define("COLOURSPACE_ROOT", $_SERVER["DOCUMENT_ROOT"] );
 define("COLOURSPACE_URL_ROOT", "/");
 
+//User Accounts
 define("ACCOUNT_PREFIX", "user");
 define("ACCOUNT_DIGITS", 8);
 define("ACCOUNT_RND_MIN", 1);
@@ -44,6 +46,7 @@ define("ACCOUNT_RND_MAX", 8);
 define("ACCOUNT_PASSWORD_MIN", 8);
 define("ACCOUNT_PASSWORD_STRICT", false );
 
+//Tracks
 define("TRACK_PRIVACY_PUBLIC", "public");
 define("TRACK_PRIVACY_PRIVATE", "private");
 define("TRACK_PRIVACY_PERSONAL", "personal");
@@ -53,6 +56,7 @@ define("TRACK_DIGITS", 12);
 define("TRACK_RND_MIN", 0);
 define("TRACK_RND_MAX", 9);
 
+//Global Upload Settings
 define("UPLOADS_TEMPORARY_DIRECTORY", "/files/temp/");
 define("UPLOADS_POST_KEY", "track");
 define("UPLOADS_ERROR_NOT_FOUND", 1 );
@@ -61,6 +65,7 @@ define("UPLOADS_ERROR_EXTENSION", 3 );
 define("UPLOADS_ERROR_TOO_LARGE", 4 );
 define("UPLOADS_ERROR_CANCELLED", 5 );
 
+//Amazon
 define("AMAZON_S3_KEY", "AKIAI4OVOACWWUQ2C5AA");
 define("AMAZON_S3_SECRET", "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");
 define("AMAZON_S3_BUCKET", "colourspace");
@@ -73,15 +78,18 @@ define("AMAZON_LOCATION_EU_WEST", "eu-west-1");
 define("AMAZON_LOCATION_EU_WEST_2", "eu-west-2");
 define("AMAZON_LOCATION_EU_CENTRAL", "eu-central-1");
 
+//Google
 define("GOOGLE_ENABLED", false );
 define("GOOGLE_SITE_KEY", "6LfIbAgUAAAAABzfN4j-MrX5ndXzjIb9jFNgg7Lv" );
 define("GOOGLE_SITE_SECRET", "6LfIbAgUAAAAAKcKKopzftATinfo9vdmjgqzS77c" );
 
+//Flight
 define("FLIGHT_JQUERY_FILE", "jquery-3.3.1.min.js");
 define("FLIGHT_MODEL_OBJECT", true ); //Instead, convert the model payload into an object ( which is cleaner )
 define("FLIGHT_MODEL_DEFINITION", "content" );
 define("FLIGHT_SET_GLOBALS", true );
 
+//MVC
 define("MVC_NAMESPACE", "Colourspace\\Framework\\");
 define("MVC_NAMESPACE_MODELS", "Models");
 define("MVC_NAMESPACE_VIEWS", "Views");
@@ -96,12 +104,14 @@ define("MVC_REQUEST_DELETE", "delete");
 define('MVC_ROUTE_FILE', '/config/routes.json');
 define("MVC_ROOT", "/src/Framework/");
 
+//Form
 define("FORM_ERROR_GENERAL", "general_error");
 define("FORM_ERROR_INCORRECT", "incorrect_information");
 define("FORM_ERROR_MISSING", "missing_information");
 define("FORM_MESSAGE_SUCCESS", "success_message");
 define("FORM_MESSAGE_INFO", "info_message");
 
+//Database Fields for tables
 define("FIELD_TYPE_INCREMENTS","increments");
 define("FIELD_TYPE_STRING","string");
 define("FIELD_TYPE_INT","integer");
@@ -111,34 +121,45 @@ define("FIELD_TYPE_DECIMAL","decimal");
 define("FIELD_TYPE_JSON","json");
 define("FIELD_TYPE_IPADDRESS","ipAddress");
 
+//Tables
 define("TABLES_NAMESPACE", "Colourspace\\Framework\\Tables\\");
 define("TABLES_ROOT", "src/Database/Tables/");
 
+//Database Settings
 define("DATABASE_ENCRYPTION", false );
 define("DATABSAE_ENCRYPTION_KEY", null ); //Replace null with a string of a key to not use a rand gen key.
 define("DATABASE_CREDENTIALS", "/config/database_credentials.json");
 
+//Groups
 define("GROUP_ROOT", "/config/groups/");
 define("GROUP_DEFAULT", "default");
 define("GROUPS_FLAG_MAXLENGTH", "uploadmaxlength");
 define("GROUPS_FLAG_MAXSIZE", "uploadmaxsize");
 define("GROUPS_FLAG_LOSSLESS", "lossless");
 
+//Stream audio codec types
 define("STREAMS_MP3", "mp3");
+define("STREAMS_FLAC", "flac");
+define("STREAMS_OGG", "ogg");
+define("STREAMS_WAV", "wav");
 
+//Debugging Options
 define("DEBUG_ENABLED", true );
 define("DEBUG_WRITE_FILE", true );
 define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_TIMERS_FILE", '/config/debug/timers.json');
 
+//Javascript Builder
 define("SCRIPT_BUILDER_ENABLED", true ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
 define("SCRIPT_BUILDER_ROOT", "/assets/scripts/");
 define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hours. Remove a "* 60" for minutes.
 define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
 define("SCRIPT_BUILDER_FORCED", true ) ;//Compiles a fresh build each request regardless of frequency setting.
 
+//Misc
 define("COLLECTOR_DEFAULT_NAMESPACE", "Colourspace\\Framework\\");
 
+//Colours
 define("COLOURS_OUTPUT_HEX", 1);
 define("COLOURS_OUTPUT_RGB", 2);
 
@@ -297,6 +318,7 @@ try
 catch ( Error $error )
 {
 
+    //TODO: Advanced Error Screen
     die( print_r( $error ) );
 }
 

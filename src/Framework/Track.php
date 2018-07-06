@@ -143,6 +143,17 @@ class Track
     }
 
     /**
+     * @param $userid
+     * @return \Illuminate\Support\Collection
+     */
+
+    public function user( $userid )
+    {
+
+        return( $this->table->userTracks( $userid ) );
+    }
+
+    /**
      * @param $trackid
      * @param $streamtype
      * @param $streamurl

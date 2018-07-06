@@ -14,16 +14,6 @@ class Users extends Table
 {
 
     /**
-     * @return string
-     */
-
-    public function name()
-    {
-
-        return "users";
-    }
-
-    /**
      * The map for the users table
      *
      * @return array
@@ -42,6 +32,17 @@ class Users extends Table
             'creation'  => FIELD_TYPE_TIMESTAMP
         ];
     }
+
+    /**
+     * @return string
+     */
+
+    public function name()
+    {
+
+        return "users";
+    }
+
 
     /**
      * @param $userid

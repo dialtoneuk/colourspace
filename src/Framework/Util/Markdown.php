@@ -1,0 +1,52 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: lewis
+ * Date: 06/07/2018
+ * Time: 01:20
+ */
+
+namespace Colourspace\Framework\Util;
+
+use Parsedown;
+
+class Markdown
+{
+
+    /**
+     * @var Parsedown
+     */
+
+    protected $parsedown;
+
+    /**
+     * Markdown constructor.
+     */
+
+    public function __construct()
+    {
+
+        $this->parsedown = new Parsedown();
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+
+    public function markup( string $text )
+    {
+
+        return( $this->parsedown->text( $text ) );
+    }
+
+    /**
+     * @param bool $switch
+     */
+
+    public function safeMode( $switch=true )
+    {
+
+        $this->parsedown->setSafeMode( $switch );
+    }
+}

@@ -50,5 +50,7 @@ class Session extends Profile
 
         if( $this->isLoggedIn() )
             $this->objects['userid'] = $this->session->userid();
+
+        parent::create();
     }
 }

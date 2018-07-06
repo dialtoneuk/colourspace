@@ -29,7 +29,6 @@ class Verification extends Table
             "creation"          => FIELD_TYPE_TIMESTAMP
         ]);
     }
-
     /**
      * @return string
      */
@@ -39,7 +38,6 @@ class Verification extends Table
 
         return "verification";
     }
-
     /**
      * @param $verificationid
      * @return \Illuminate\Support\Collection
