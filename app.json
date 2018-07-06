@@ -1,19 +1,19 @@
 {
   "name": "Colourspace",
-  "description": "",
-  "scripts": {
-    "postdeploy": "php -f cmd/dyno"
-  },
-  "env": {
-  },
+  "description": "Music website all about colours",
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-connection": "php cmd/testconnection.php"
+      }
+    }
+  }
   "formation": {
     "web": {
       "quantity": 1
     }
   },
-  "addons": [
-
-  ],
+  "addons": [],
   "buildpacks": [
     {
       "url": "heroku/php"
