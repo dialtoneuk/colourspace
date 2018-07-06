@@ -1,13 +1,16 @@
 {
   "name": "Colourspace",
   "description": "Music website all about colours",
-  "environments": {
+  "scripts": {
+  },
+  "env": {
     "test": {
       "scripts": {
-        "test-connection": "php cmd/testconnection.php"
+        "test-setup": "gem install rubocop",
+        "test": "rubocop"
       }
     }
-  }
+  },
   "formation": {
     "web": {
       "quantity": 1
