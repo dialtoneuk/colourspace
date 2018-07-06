@@ -66,8 +66,6 @@ class ResourceCombiner
                 foreach( $files as $file )
                 {
 
-                    echo( "adding file " . $file . "\n");
-
                     $operator = new FileOperator( $this->directory->path() . $file );
 
                     if( $operator->isJson() == false )
@@ -78,11 +76,6 @@ class ResourceCombiner
 
                     $result[ $this->directory->path() . $file ] = $operator->decodeJSON( true );
                 }
-            }
-            else
-            {
-
-                print_r( $this->directory->path() . "\n" );
             }
 
             if( $last == true )
