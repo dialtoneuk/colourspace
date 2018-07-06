@@ -166,11 +166,11 @@ define("DEBUG_MESSAGES_FILE", '/config/debug/messages.json');
 define("DEBUG_TIMERS_FILE", '/config/debug/timers.json');
 
 //Javascript Builder
-define("SCRIPT_BUILDER_ENABLED", true ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
+define("SCRIPT_BUILDER_ENABLED", false ); //It isnt recommended you turn this on unless your compiled.js for some reason is missing or you are developing.
 define("SCRIPT_BUILDER_ROOT", "/assets/scripts/");
 define("SCRIPT_BUILDER_FREQUENCY", 60 * 60 * 2); //Change the last digit for hours. Remove a "* 60" for minutes.
 define("SCRIPT_BUILDER_COMPILED", "/assets/js/compiled.js");
-define("SCRIPT_BUILDER_FORCED", true ) ;//Compiles a fresh build each request regardless of frequency setting.
+define("SCRIPT_BUILDER_FORCED", false ) ;//Compiles a fresh build each request regardless of frequency setting.
 
 //Misc
 define("COLLECTOR_DEFAULT_NAMESPACE", "Colourspace\\Framework\\");

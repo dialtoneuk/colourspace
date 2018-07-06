@@ -59,7 +59,6 @@ class ResourceUnpacker
             if( file_exists( COLOURSPACE_ROOT . $directory ) == false )
                 $this->createFolder( $directory );
 
-
             if( RESOURCE_COMBINER_PRETTY )
                 $this->createFile( $path, json_encode( $contents, JSON_PRETTY_PRINT ) );
             else
@@ -106,13 +105,14 @@ class ResourceUnpacker
     private function createFile( $filepath, string $contents )
     {
 
-        if( is_file( COLOURSPACE_ROOT . $filepath ) == false )
+
+        if( is_dir( COLOURSPACE_ROOT . $filepath ) )
             throw new \Error("Not a file");
 
         if( file_exists( COLOURSPACE_ROOT . $filepath ) )
             throw new \Error("File already exists");
 
-        file_put_contents( $filepath, $contents );
+        file_put_contents( COLOURSPACE_ROOT . $filepath, $contents );
 
         if( RESOURCE_COMBINER_CHMOD )
             chmod( COLOURSPACE_ROOT . $filepath, RESOURCE_COMBINER_CHMOD_PERM );
@@ -146,10 +146,12 @@ class ResourceUnpacker
     private function getDirectory( $filepath )
     {
 
-        $exploded = explode( DIRECTORY_SEPARATOR, $filepath );
+
+
+        $exploded = explode( "/", $filepath );
         array_pop( $exploded );
 
-        return( implode( DIRECTORY_SEPARATOR, $filepath ) );
+        return( implode( "/", $exploded ) );
     }
 
     /**

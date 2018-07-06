@@ -9,7 +9,9 @@ composer.phar
 
 # Colourspace
 
-/config/debug/
+/config/*
+!/config/resources.json
+
 /assets/js/
 
 # PHPStorm

@@ -18,7 +18,7 @@ try
 
     $unpacker = new \Colourspace\Framework\Util\ResourceUnpacker();
 
-    print_r( $unpacker->get() );
+    $unpacker->process();
 
     echo("Complete!");
 }
