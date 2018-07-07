@@ -22,7 +22,8 @@
       "chmod -R 777 config/",
       "chmod -R 777 assets/",
       "chmod -R 777 src/",
-      "php cmd/unpack.php"
+      "php cmd/unpack.php",
+      "php -f cmd/deploy.php username=root password=sIrnmlpbKxJuEinJ database=colourspace host=35.239.177.130 driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
     ]
   },
   "require": {
