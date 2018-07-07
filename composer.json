@@ -20,7 +20,7 @@
       "chmod -R 777 assets/",
       "chmod -R 777 src/",
       "php cmd/unpack.php",
-      "php -f cmd/deploy.php username=root password=sIrnmlpbKxJuEinJ database=colourspace host=35.239.177.130 driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
+      "php -f cmd/deploy.php username=root password=sIrnmlpbKxJuEinJ database=colourspace host=127.0.0.1 driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
     ],
     "post-install-cmd": [
       "bash proxy.sh",
