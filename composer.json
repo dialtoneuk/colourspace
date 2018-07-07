@@ -16,7 +16,7 @@
   ],
   "scripts":{
     "post-install-cmd": [
-      "bash bin/google.sh"
+      "bash google.sh"
     ],
     "compile": [
       "chmod -R 777 config/",
