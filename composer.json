@@ -15,6 +15,9 @@
     }
   ],
   "scripts":{
+    "post-install-cmd": [
+      "bash bin/google.sh"
+    ],
     "compile": [
       "chmod -R 777 config/",
       "chmod -R 777 assets/",

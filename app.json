@@ -1,11 +1,10 @@
 {
   "name": "Colourspace",
-  "description": "Music website all about colours.",
+  "description": "Music sharing platform",
   "scripts": {
-    "postdeploy": "php -f cmd/deploy.php username=colourspace password=password database=colourspace host=localhost driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
+    "postdeploy": "php -f cmd/deploy.php username=root password= database=colourspace host=localhost driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
   },
-  "env":{
-  },
+  "env":{},
   "formation": {
     "web": {
       "quantity": 1

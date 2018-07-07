@@ -9,7 +9,7 @@ composer.phar
 # Colourspace
 
 /config/*
-/bin/*
+/bin/connections/
 /assets/js/*
 !/config/resources
 !/assets/js/compiled.js
