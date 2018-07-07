@@ -2,7 +2,7 @@
   "name": "Colourspace",
   "description": "Music sharing platform",
   "scripts": {
-    "postdeploy": "php -f cmd/deploy.php username=root password= database=colourspace host=localhost driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
+    "postdeploy": ""
   },
   "env":{},
   "formation": {
