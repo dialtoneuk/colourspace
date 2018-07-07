@@ -26,6 +26,7 @@ class Users extends Table
             'userid'    => FIELD_TYPE_INCREMENTS,
             'username'  => FIELD_TYPE_STRING,
             'password'  => FIELD_TYPE_STRING,
+            'email'     => FIELD_TYPE_STRING,
             'salt'      => FIELD_TYPE_STRING,
             'group'     => FIELD_TYPE_STRING,
             'colour'    => FIELD_TYPE_STRING,
