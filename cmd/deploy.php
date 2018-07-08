@@ -65,6 +65,9 @@ try
 
     echo( "- Writing to file \n");
 
+    if( file_exists( COLOURSPACE_ROOT . DATABASE_CREDENTIALS ) )
+        unlink( COLOURSPACE_ROOT . DATABASE_CREDENTIALS );
+
     file_put_contents( COLOURSPACE_ROOT . DATABASE_CREDENTIALS, json_encode( $result ) );
 }
 catch( Error $error )
