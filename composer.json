@@ -16,11 +16,10 @@
   ],
   "scripts":{
     "compile": [
+      "php cmd/unpack.php",
       "chmod -R 777 config/",
       "chmod -R 777 assets/",
-      "chmod -R 777 src/",
-      "php cmd/unpack.php"
-
+      "chmod -R 777 src/"
     ]
   },
   "require": {
