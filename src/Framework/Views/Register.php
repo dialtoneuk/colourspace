@@ -22,9 +22,9 @@ class Register extends View
 
     public function get()
     {
-
+        
         $array = parent::get();
-        $array->setArray(["file" => "register"]);
+        $array->add(["file" => "register"]);
 
         return( $array );
     }
