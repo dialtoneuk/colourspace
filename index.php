@@ -127,7 +127,7 @@ define("FORM_MESSAGE_INFO", "info_message");
 
 define("RESOURCE_COMBINER_ROOT", "config/");
 define("RESOURCE_COMBINER_CHMOD", true );
-define("RESOURCE_COMBINER_CHMOD_PERM", 0777 );
+define("RESOURCE_COMBINER_CHMOD_PERM", 0755 );
 define("RESOURCE_COMBINER_PRETTY", true );
 define("RESOURCE_COMBINER_FILEPATH", "config/resources" );
 
@@ -317,6 +317,7 @@ if( defined( "CMD" ) == false )
 }
 else
 {
-    echo( "! Application quit because global CMD has been defined ! \n");
+    echo("-> HEADS UP! <- \n");
+    echo( "[ !Application quit because CMD is defined! ] \n\n");
 }
 

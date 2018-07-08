@@ -59,6 +59,9 @@ class Migrator
         foreach ( $this->constructor->getAll() as $name=>$class )
         {
 
+            if( defined("CMD") )
+                echo( " --> Using class: $name \n");
+
             if( DEBUG_ENABLED )
                 Debug::message('Creating table for ' . $name );
 
@@ -93,6 +96,9 @@ class Migrator
 
             foreach ( $table_map as $coloum=>$type )
             {
+
+                if( defined("CMD") )
+                    echo( " ---> Create column: $coloum with type $type \n");
 
                 switch ( $type )
                 {
@@ -131,7 +137,10 @@ class Migrator
     private function tableExists( $table_name )
     {
 
-        iF( $this->connection->getSchemaBuilder()->hasTable( $table_name ) )
+        if( defined("CMD") )
+            echo( " ---> Table exists: $table_name \n");
+
+        if( $this->connection->getSchemaBuilder()->hasTable( $table_name ) )
             return true;
 
         return false;

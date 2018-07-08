@@ -48,8 +48,14 @@ class ResourceUnpacker
         if( empty( $resources ) )
             throw new \Error("Resources are empty");
 
+        if( defined("CMD") )
+            echo( "      Total Packed Json Objects: " . count( $resources ) . "\n");
+
         foreach( $resources as $path=>$contents )
         {
+
+            if( defined("CMD") )
+                echo( "  --> Upacking File: " . $path . "\n");
 
             if( file_exists( COLOURSPACE_ROOT . $path ) )
                 continue;

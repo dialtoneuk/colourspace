@@ -96,7 +96,7 @@ class Connection
         try
         {
 
-            $this->connection->getDatabaseName();
+            $this->connection->getPdo();
         }
         catch ( \Error $error )
         {

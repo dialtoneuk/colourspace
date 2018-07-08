@@ -5,7 +5,7 @@ define("CMD", true ); //Scripts which run in CMD environment must define CMD to 
 
 include_once "index.php";
 
-echo( "Colourspace Config Pack Script \n");
+echo( "Colourspace Resource Packer \n");
 
 try
 {
@@ -24,7 +24,7 @@ try
 catch( Error $error )
 {
 
-    echo( "Critical Error:" . $error->getMessage() );
+    echo( "[Critical Error] : " . $error->getMessage() . "\n" );
 }
 
-echo("Complete!");
+echo("Finished");

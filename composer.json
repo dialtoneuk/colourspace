@@ -15,10 +15,10 @@
     }
   ],
   "scripts":{
-    "compile": [
+    "post-install-cmd": [
       "php cmd/unpack.php"
     ],
-    "post-install-cmd":[
+    "compile":[
       "chmod -R 777 config/",
       "chmod -R 777 assets/",
       "chmod -R 777 src/"

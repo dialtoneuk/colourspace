@@ -74,6 +74,9 @@ class ResourceCombiner
                     if( isset( $result[ $this->directory->path() . $file ] ) )
                         continue;
 
+                    if( defined( "CMD" ) )
+                        echo( "  --> Packing file: " . $this->directory->path() . $file  . "\n" );
+
                     $result[ $this->directory->path() . $file ] = $operator->decodeJSON( true );
                 }
             }
@@ -110,6 +113,9 @@ class ResourceCombiner
                 }
             }
         }
+
+        if( defined("CMD") )
+            echo( "      Total Packed Json Objects: " . count( $result ) . "\n");
 
         return( $result );
     }

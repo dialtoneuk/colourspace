@@ -32,18 +32,31 @@ class Session
     }
 
     /**
+     * @param bool $auto_start
      * @throws \Error
      */
 
-    public function initialize()
+    public function initialize( $auto_start=true )
     {
 
         $this->table = new Sessions();
 
-        if( session_status() == PHP_SESSION_ACTIVE )
+        if( session_status() == PHP_SESSION_ACTIVE)
             throw new \Error('Session has already been initiated');
 
-        session_start();
+        if( $auto_start )
+            session_start();
+    }
+
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+
+    public function all()
+    {
+
+        return( $this->table->all() );
     }
 
     /**

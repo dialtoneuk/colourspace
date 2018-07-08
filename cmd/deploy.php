@@ -5,12 +5,14 @@ define("CMD", true );
 
 include_once "index.php";
 
-echo( "Colourspace Connection Deploy \n");
-
+echo( "Colourspace Credential Deployer \n\n");
+echo( " Note: This script is the same as cmd/credentials but instead takes database credentials through the \n");
+echo( "       command line arguments. Please rever to the database_verification file inside your config \n");
+echo( "       folder for help in regards to entering the correct arguments for your connection file. \n\n");
 try
 {
 
-    if( empty( $argv ) )
+    if( count( $argv ) == 1 )
         throw new Error("Please enter arguments");
 
     if( file_exists( COLOURSPACE_ROOT . "config/database_verification.json" ) == false )
@@ -33,9 +35,7 @@ try
     }
 
     echo( "- Getting base \n");
-
     $array = json_decode( file_get_contents( COLOURSPACE_ROOT . "config/database_verification.json" ), true );
-
     echo( "- Checking user inputs \n");
 
     if( count( $result ) !== count( $array ) )
@@ -54,10 +54,8 @@ try
     {
 
         echo( "- Encryption Enabled \n");
-
         $opensll = new \Colourspace\Database\Util\OpenSSL();
         $key = $opensll->generateKey();
-
         $result = $opensll->encrypt( $result, $key, $opensll->iv(), true );
 
         echo( "- Array Encrypted \n");
@@ -73,7 +71,7 @@ try
 catch( Error $error )
 {
 
-    echo( "Critical Error:" . $error->getMessage() );
+    echo( "[Critical Error] : " . $error->getMessage() . "\n" );
 }
 
-echo("Complete!");
+echo("Finished");

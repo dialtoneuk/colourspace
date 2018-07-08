@@ -5,7 +5,7 @@ define("CMD", true );
 
 include_once "index.php";
 
-echo( "Colourspace Config Unpack Script \n");
+echo( "Colourspace Resource Unpacker \n");
 
 try
 {
@@ -20,7 +20,7 @@ try
 catch( Error $error )
 {
 
-    echo( "Critical Error:" . $error->getMessage() );
+    echo( "Critical Error: " . $error->getMessage() . "\n"  );
 }
 
-echo( "Complete \n");
+echo("Finished");
