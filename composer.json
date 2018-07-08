@@ -19,11 +19,8 @@
       "chmod -R 777 config/",
       "chmod -R 777 assets/",
       "chmod -R 777 src/",
-      "php cmd/unpack.php",
-      "php -f cmd/deploy.php username=root password=sIrnmlpbKxJuEinJ database=colourspace host=localhost driver=mysql charset=utf8 collation=utf8_unicode_ci prefix="
-    ],
-    "post-install-cmd": [
-      "bash proxy.sh"
+      "php cmd/unpack.php"
+
     ]
   },
   "require": {
