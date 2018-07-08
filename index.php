@@ -36,7 +36,7 @@ use Colourspace\Framework\FrontController;
 use Colourspace\Framework\Session;
 use Colourspace\Framework\Router;
 use Colourspace\Framework\Util\Debug;
-
+use Colourspace\Framework\Interfaces\ReturnsInterface;
 /**
  * Application Settings
  * =======================================
@@ -269,46 +269,10 @@ if( defined( "CMD" ) == false )
 
                 $view = Container::get('application')->frontcontroller->process( $request, $payload );
 
-                if ( empty( $view ) == false && is_array( $view ) )
-                {
+                if( $view instanceof ReturnsInterface == false )
+                    throw new Error("View must return a valid class which implements the return interface");
 
-                    if( isset( $view['render'] ) == false )
-                        throw new Error('No render');
-
-                    if( isset( $view['model'] ) == false )
-                        throw new Error('No model');
-
-                    if( isset( $view['footer'] ) == false )
-                        $view["footer"] = [];
-
-                    if( isset( $view['header'] ) == false )
-                        $view["footer"] = [];
-
-                    $object = array_merge( $view['model'], [
-                        "footer" => $view['footer'],
-                        "header" => $view['header'],
-                    ]);
-
-                    if( FLIGHT_MODEL_OBJECT )
-                        $object = json_decode( json_encode( $object ) );
-
-                    Flight::view()->set( FLIGHT_MODEL_DEFINITION , $object );
-
-                    if( FLIGHT_SET_GLOBALS )
-                    {
-
-                        Flight::view()->set("url_root", COLOURSPACE_URL_ROOT );
-                        Flight::view()->set("document_root", COLOURSPACE_ROOT );
-
-                        if( DEBUG_ENABLED )
-                            Flight::view()->set("debug_messages", Debug::getMessages() );
-                    }
-
-                    Flight::render( $view['render'] );
-                }
-                else
-                    Flight::redirect( COLOURSPACE_URL_ROOT );
-
+                $view->process();
             }, true );
         }
 

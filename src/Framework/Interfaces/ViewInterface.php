@@ -13,5 +13,9 @@ interface ViewInterface
 
     public function setModel( ModelInterface $model );
 
+    /**
+     * @return ReturnsInterface
+     */
+
     public function get();
 }

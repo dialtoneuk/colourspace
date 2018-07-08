@@ -10,20 +10,21 @@ namespace Colourspace\Framework\Views;
 
 
 use Colourspace\Framework\View;
+use Colourspace\Framework\Returns\Page;
 
 class Login extends View
 {
 
     /**
-     * @return array
+     * @return Page
      * @throws \Error
      */
-
+    
     public function get()
     {
 
         $array = parent::get();
-        $array["render"] = "login";
+        $array->add(["file" => "login"]);
 
         return( $array );
     }

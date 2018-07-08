@@ -9,6 +9,7 @@
 namespace Colourspace\Framework\Views;
 
 
+use Colourspace\Framework\Returns\Json;
 use Colourspace\Framework\View;
 
 class Blank extends View
@@ -16,13 +17,15 @@ class Blank extends View
 
 
     /**
-     * @return array
-     * @throws \Error
+     * @return Json|\Colourspace\Framework\Returns\Page
      */
 
     public function get()
     {
 
-        return null;
+        $array = new Json();
+        $array->setArray(["status" => true ] );
+
+        return ( $array );
     }
 }

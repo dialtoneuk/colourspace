@@ -10,12 +10,13 @@ namespace Colourspace\Framework\Views;
 
 
 use Colourspace\Framework\View;
+use Colourspace\Framework\Returns\Page;
 
 class Register extends View
 {
 
     /**
-     * @return array
+     * @return Page
      * @throws \Error
      */
 
@@ -23,7 +24,7 @@ class Register extends View
     {
 
         $array = parent::get();
-        $array["render"] = "register";
+        $array->setArray(["file" => "register"]);
 
         return( $array );
     }

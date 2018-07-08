@@ -10,13 +10,14 @@ namespace Colourspace\Framework\Views;
 
 
 use Colourspace\Framework\View;
+use Colourspace\Framework\Returns\Page;
 
 class DefaultView extends View
 {
 
 
     /**
-     * @return array
+     * @return Page
      * @throws \Error
      */
 
@@ -24,7 +25,7 @@ class DefaultView extends View
     {
 
         $array = parent::get();
-        $array["render"] = "index";
+        $array->add(["file" => "index"]);
 
         return( $array );
     }

@@ -9,7 +9,9 @@ namespace Colourspace\Framework;
 
 use Colourspace\Framework\Interfaces\ControllerInterface;
 use Colourspace\Framework\Interfaces\ModelInterface;
+use Colourspace\Framework\Interfaces\ReturnsInterface;
 use Colourspace\Framework\Interfaces\ViewInterface;
+use Colourspace\Framework\Returns\Redirect;
 use Colourspace\Framework\Util\Constructor;
 use Colourspace\Framework\Util\Debug;
 
@@ -29,9 +31,16 @@ class FrontController
      */
     protected $views;
 
-    //Namespace root for the MVC
+    /**
+     * @var null
+     */
+
     public $namespace;
-    //Filepath to the PHP classes for the MVC
+
+    /**
+     * @var null
+     */
+
     public $filepath;
 
     /**
@@ -62,7 +71,7 @@ class FrontController
     /**
      * @param $request
      * @param $payload
-     * @return mixed
+     * @return ReturnsInterface
      * @throws \Error
      */
 
@@ -97,8 +106,12 @@ class FrontController
         $controller->setModel( $model );
 
         if( $controller->authentication( $request->method, $request ) == false )
-            return null;
+        {
 
+            $redirect = new Redirect();
+            $redirect->setArray([ "url" => COLOURSPACE_URL_ROOT ]);
+            return $redirect;
+        }
 
         $controller->before();
         $controller->process( $request->method, $request );
