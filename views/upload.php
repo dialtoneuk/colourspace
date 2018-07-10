@@ -23,7 +23,6 @@
                 </select>
             </p>
             <p>
-                <input type="hidden" name="MAX_FILE_SIZE" value="1048576">
                 <input type="file" name="track" accept=".mp3,.wav,.flac">
             </p>
             <p>

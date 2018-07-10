@@ -58,9 +58,8 @@ class Amazon
             'Bucket'     => $bucket,
             'Key'        => $filename,
             'Body'       => $contents,
-            'Metadata'   => array_merge( $metainfo, [
-                "Content-Type" => $content_type
-            ]),
+            'Metadata'   => $metainfo,
+            "ContentType" => $content_type
         ));
 
         $this->client->waitUntil('ObjectExists', array(

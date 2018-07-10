@@ -300,9 +300,7 @@ class Upload extends DefaultController
                     throw new \Error("File too long");
             }
 
-            $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath(), null, [
-                "Content-Type" => $this->getContentType( $result->getExtension() )
-            ]);
+            $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath(), null, [], $this->getContentType( $result->getExtension() ));
 
             if( $this->amazon->exists( AMAZON_S3_BUCKET, $result->getFilenameWithExtension() ) == false )
                 throw new \Error("Amazon failed to put object in bucket");
@@ -338,9 +336,10 @@ class Upload extends DefaultController
      * @param $sourcefile
      * @param null $bucket
      * @param array $metadata
+     * @param null $content_type
      */
 
-    private function put( $userid, $trackname, $filename, $sourcefile, $bucket=null, $metadata=[] )
+    private function put( $userid, $trackname, $filename, $sourcefile, $bucket=null, $metadata=[], $content_type = null )
     {
 
         $metadata = array_merge( $metadata, [
@@ -353,7 +352,7 @@ class Upload extends DefaultController
         if( $bucket == null )
             $bucket = AMAZON_S3_BUCKET;
 
-        $this->amazon->put( $bucket, $filename, $sourcefile, $metadata );
+        $this->amazon->put( $bucket, $filename, $sourcefile, $metadata, $content_type );
     }
 
     /**

@@ -35,7 +35,7 @@ use Colourspace\Framework\Util\Format;
                             if( $metainfo->waveform !== null )
                             {
                                 ?>
-                                <img src="<?=$metainfo->waveform?>" height="248" alt="Waveform"><br>
+                                <img src="<?=$metainfo->waveform?>" height="248" width="812" alt="Waveform"><br>
                                 <?php
                             }
 
