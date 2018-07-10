@@ -1,5 +1,5 @@
-#Colourspace
-###Colours have never been so exciting!
+# Colourspace
+### Colours have never been so exciting!
 
 Colourspace is a unique music sharing website with a non-ordinary concept. Instead of conventional
 sites like Soundcloud, Bandcamp and others alike. A lot of the aspects of Colourspace are randomly
