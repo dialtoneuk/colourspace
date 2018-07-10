@@ -17,11 +17,11 @@ use Colourspace\Framework\User;
 use Colourspace\Framework\Session;
 use Colourspace\Framework\Track;
 use Colourspace\Container;
-use Colourspace\Framework\Util\FileOperator;
+use Colourspace\Framework\Util\Converter;
 use Colourspace\Framework\Util\Format;
 use Colourspace\Framework\WaveForm;
 use Delight\FileUpload\Throwable\Error;
-use flight\net\Request;
+use Colourspace\Framework\Util\Markdown;
 use Colourspace\Framework\Util\Mp3Parser;
 
 class Upload extends DefaultController
@@ -64,6 +64,12 @@ class Upload extends DefaultController
     protected $session;
 
     /**
+     * @var Markdown
+     */
+
+    protected $markdown;
+
+    /**
      * @throws \Error
      */
 
@@ -96,6 +102,7 @@ class Upload extends DefaultController
         $this->group = Collector::new("Group");
         $this->user = Collector::new("User");
         $this->track = Collector::new("Track");
+        $this->markdown = Collector::new("Markdown", "Colourspace\\Framework\\Util\\");
         $this->session = Container::get('application')->session;
     }
 
@@ -156,10 +163,6 @@ class Upload extends DefaultController
                         return;
                     }
 
-
-
-
-
                     $streams = [
                         $result["type"] => $result["key"]
                     ];
@@ -167,7 +170,7 @@ class Upload extends DefaultController
                     $trackid = $this->track->create(
                         $result['userid'],
                         $streams, $form->name,
-                        $this->track->getMetadataArray( null, $form->description, [], null )
+                        $this->track->getMetadataArray( null, $this->markdown->markup( $form->description ), [], null, $result['type'] )
                     );
 
                     if( $this->track->find( $form->name ) == false )
@@ -177,8 +180,8 @@ class Upload extends DefaultController
 
                     unlink( COLOURSPACE_ROOT . $result["temp"] );
 
-                    $this->model->formMessage( FORM_MESSAGE_SUCCESS, "Track uploaded! Redirecting you in a few");
-                    $this->model->redirect(COLOURSPACE_URL_ROOT . "tracks/" . $form->name, 3 );
+                    $this->model->formMessage( FORM_MESSAGE_SUCCESS,"Success! Redirecting you to your tracks");
+                    $this->model->redirect( COLOURSPACE_URL_ROOT . "tracks", 2 );
                 }
             }
         }
@@ -193,11 +196,33 @@ class Upload extends DefaultController
     public function doPostUploadWaveform( $trackid, $result )
     {
 
-        $waveform = $this->generateWaveform( $result["temp"], true );
-        $this->saveWaveform( $waveform, $result['filename'] . ".svg", $trackid );
+        if( $result['type'] !== "wav" )
+        {
+
+            $converter = new Converter( $result['temp'] );
+
+            if( file_exists( COLOURSPACE_ROOT . "files/converted/" ) == false )
+                mkdir( COLOURSPACE_ROOT . "files/converted/");
+
+            $path = "files/converted/" . $result['filename'] . ".wav";
+
+
+            if( file_exists( COLOURSPACE_ROOT . $path ) == false )
+                $converter->toWAV( $path );
+        }
+        else
+            $path = $result["temp"];
+
+        $waveform = $this->generateWaveform( $path, true );
+        $this->saveWaveform( $waveform, $result['filename'] . ".svg", $trackid, UPLOADS_WAVEFORMS_LOCAL );
+
+        if( UPLOADS_WAVEFORMS_LOCAL )
+            $path = "files/waveforms/" . $result['filename'] . ".svg";
+        else
+            $path = AMAZON_BUCKET_URL . $result['filename'] . ".svg";
 
         $this->track->updateMetadata( $trackid, [
-            "waveform" =>  "files/waveforms/" . $result['filename']
+            "waveform" =>  $path
         ]);
     }
 
@@ -241,7 +266,7 @@ class Upload extends DefaultController
             {
 
                 if( $limits[ GROUPS_FLAG_MAXSIZE ] != -1 )
-                    //$this->uploads->setMaxFilesize( 10 );
+                    $this->uploads->setMaxFilesize( $limits[ GROUPS_FLAG_MAXSIZE ] );
 
                 $allowed=[];
 
@@ -275,7 +300,9 @@ class Upload extends DefaultController
                     throw new \Error("File too long");
             }
 
-            $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath() );
+            $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath(), null, [
+                "Content-Type" => $this->getContentType( $result->getExtension() )
+            ]);
 
             if( $this->amazon->exists( AMAZON_S3_BUCKET, $result->getFilenameWithExtension() ) == false )
                 throw new \Error("Amazon failed to put object in bucket");
@@ -310,20 +337,40 @@ class Upload extends DefaultController
      * @param $filename
      * @param $sourcefile
      * @param null $bucket
+     * @param array $metadata
      */
 
-    private function put( $userid, $trackname, $filename, $sourcefile, $bucket=null )
+    private function put( $userid, $trackname, $filename, $sourcefile, $bucket=null, $metadata=[] )
     {
 
-        if( $bucket == null )
-            $bucket = AMAZON_S3_BUCKET;
-
-        $this->amazon->put( $bucket, $filename, $sourcefile, [
+        $metadata = array_merge( $metadata, [
             "userid"        => $userid,
             "trackname"     => $trackname,
             "uploadtime"    => Format::timestamp(),
             "ipaddress"     => $_SERVER["REMOTE_ADDR"]
         ]);
+
+        if( $bucket == null )
+            $bucket = AMAZON_S3_BUCKET;
+
+        $this->amazon->put( $bucket, $filename, $sourcefile, $metadata );
+    }
+
+    /**
+     * @param $type
+     * @return mixed
+     */
+
+    private function getContentType( $type )
+    {
+
+        $types = [
+            "mp3"   => "audio/mp3",
+            "wav"   => "audio/wav",
+            "flac"  => "audio/flac"
+        ];
+
+        return( $types[ $type ] );
     }
 
     /**
@@ -344,12 +391,12 @@ class Upload extends DefaultController
         else
         {
 
-            $path = COLOURSPACE_ROOT . "files/waveforms/" . $filename;
-            file_put_contents( COLOURSPACE_ROOT . "files/waveforms/" . $filename, $waveform );
+            $path = "files/waveforms/" . $filename;
+            file_put_contents( COLOURSPACE_ROOT . $path , $waveform );
 
-            $this->amazon->put( AMAZON_S3_BUCKET, $filename, $path, [
-                "trackid" => $trackid,
-            ]);
+            $this->amazon->put( AMAZON_S3_BUCKET, $filename, COLOURSPACE_ROOT . $path, [], "image/svg+xml" );
+
+            unlink( COLOURSPACE_ROOT . $path  );
         }
     }
 

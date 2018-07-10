@@ -24,31 +24,48 @@ use Colourspace\Framework\Util\Format;
                     {
 
                         ?>
-
-                            <h1 style="color: #<?=$track->colour?>"><?=$track->trackname?></h1>
+                            <div style="width: 200px; height:200px; background-color: #<?=$track->colour?>"></div>
+                            <h1><?=$track->trackname?></h1>
                         <?php
 
                             $streams = json_decode( Format::decodeLargeText( $track->streams ), true );
 
-                            foreach( $streams as $type=>$stream )
+                            $metainfo = json_decode( Format::decodeLargeText( $track->metainfo ) );
+
+                            if( $metainfo->waveform !== null )
                             {
                                 ?>
-                                    <audio controls>
-                                        <source src="<?=AMAZON_BUCKET_URL . $stream?>" type="audio/<?=$type?>">
-                                    </audio>
+                                <img src="<?=$metainfo->waveform?>" height="248" alt="Waveform"><br>
                                 <?php
                             }
 
+                        foreach( $streams as $type=>$stream )
+                        {
+                            ?>
+                            <audio controls>
+                                <source src="<?=AMAZON_BUCKET_URL . $stream?>" type="audio/<?=$type?>">
+                            </audio>
 
+                            <?php
+                        }
+
+                        if( $metainfo->description !== null )
+                            {
+
+                                $markdown = new \Colourspace\Framework\Util\Markdown();
+                                echo( $markdown->markdown( $metainfo->description ) );
+                            }
                         ?>
-                            <p>
-                                <?=Format::decodeLargeText( $track->metainfo )?>
-                            </p>
+
                         <?php
                     }
                 }
             ?>
         </section>
+
+        <p>
+            <a href="upload">Upload a track</a>
+        </p>
 
     <?php
         Flight::render("components/footer");

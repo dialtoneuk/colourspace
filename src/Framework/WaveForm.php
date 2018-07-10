@@ -77,7 +77,9 @@ class WaveForm
     public function generate( $height=218, $width=1024 )
     {
 
-        $waveform = $this->waveform->setGenerator( new Generator\Png )
+        $generator = new Generator\Html();
+
+        $waveform = $this->waveform->setGenerator( $generator )
             ->setHeight( $height )
             ->setWidth( $width );
 

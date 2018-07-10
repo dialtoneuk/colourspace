@@ -44,6 +44,9 @@
         <p>
             <a href="space">Or how about some random users colourspace?</a>
         </p>
+        <p>
+            <a href="upload">Test uploads</a>
+        </p>
         <h2>
             SUPER SECRET DEBUG AREA
         </h2>

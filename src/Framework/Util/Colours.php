@@ -18,7 +18,11 @@ class Colours
         {
 
             case COLOURS_OUTPUT_HEX:
-                return dechex(rand(0x000000, 0xFFFFFF));
+                $color = dechex(rand(0x000000, 0xFFFFFF));
+                if( strlen( $color ) !== 6 )
+                    return( $color . "4" );
+                else
+                    return( $color );
                 break;
             case COLOURS_OUTPUT_RGB:
                 return ( rand(0,255) . "," . rand(0,255) . "," . rand(0,255) );

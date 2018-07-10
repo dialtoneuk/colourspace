@@ -41,6 +41,17 @@ class Markdown
     }
 
     /**
+     * @param string $text
+     * @return string
+     */
+
+    public function markdown( string $text )
+    {
+
+        return( $this->parsedown->parse( $text ) );
+    }
+
+    /**
      * @param bool $switch
      */
 

@@ -44,11 +44,12 @@ class Amazon
      * @param $bucket
      * @param $filename
      * @param $sourcefile
-     * @param array $metadata
+     * @param array $metainfo
+     * @param null $content_type
      * @return \Aws\Result
      */
 
-    public function put( $bucket, $filename, $sourcefile, $metadata=[] )
+    public function put( $bucket, $filename, $sourcefile, $metainfo=[], $content_type=null )
     {
 
         $contents = file_get_contents( $sourcefile );
@@ -56,8 +57,10 @@ class Amazon
         $result = $this->client->putObject(array(
             'Bucket'     => $bucket,
             'Key'        => $filename,
-            'body' => $contents,
-            'Metadata'   => $metadata
+            'Body'       => $contents,
+            'Metadata'   => array_merge( $metainfo, [
+                "Content-Type" => $content_type
+            ]),
         ));
 
         $this->client->waitUntil('ObjectExists', array(

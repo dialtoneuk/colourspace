@@ -69,18 +69,18 @@ class Track
      * @throws \Error
      */
 
-    public function metadata( $trackid, $object=true )
+    public function metainfo( $trackid, $object=true )
     {
 
         $track = $this->get( $trackid );
-
-        if( isset( $track->metadata ) == false )
+        
+        if( isset( $track->metainfo ) == false )
             throw new \Error("Invalid key");
 
-        $json = Format::decodeLargeText( $track->metadata );
+        $json = Format::decodeLargeText( $track->metainfo );
 
         if( empty( $json ) )
-            throw new \Error("Invalid metadata");
+            throw new \Error("Invalid metainfo");
 
         $json = json_decode( $json, $object );
 
@@ -93,20 +93,21 @@ class Track
     /**
      * @param $knownas
      * @param $description
-     * @param array $credits
-     * @param string $waveform
+     * @param $credits
+     * @param $waveform
+     * @param $type
      * @return array
+     * @throws \Error
      */
 
-    public function getMetadataArray( $knownas, $description, $credits, $waveform )
+    public function getMetadataArray( $knownas, $description, $credits, $waveform, $type )
     {
-
 
         return([
             "aka"           => $knownas,
             "description"   => $description,
             "credits"       => $credits,
-            "waveform"      => $waveform
+            "waveform"      => $waveform,
         ]);
     }
 
@@ -119,15 +120,15 @@ class Track
     public function updateMetadata( $trackid, array $values )
     {
 
-        $metadata = $this->metadata( $trackid, false );
+        $metainfo = $this->metainfo( $trackid, false );
 
-        if( empty( $metadata ) )
-            throw new \Error("Invalid metadata");
+        if( empty( $metainfo ) )
+            throw new \Error("Invalid metainfo");
 
         foreach( $values as $key=>$value )
-            $metadata[ $key ] = $value;
+            $metainfo->$key = $value;
 
-        $this->table->updateMetadata( $trackid, json_encode( $metadata ) );
+        $this->table->updateMetadata( $trackid, json_encode( $metainfo ) );
     }
 
     /**

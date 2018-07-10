@@ -78,6 +78,8 @@ define("UPLOADS_ERROR_TOO_LARGE", 4 );
 define("UPLOADS_ERROR_CANCELLED", 5 );
 define("UPLOADS_WAVEFORMS_LOCAL", false );
 
+define("FFMPEG_FOLDER","bin/");
+
 //Amazon
 define("AMAZON_BUCKET_URL", "https://s3.eu-west-2.amazonaws.com/colourspace/");
 define("AMAZON_CREDENTIALS_FILE", "aws.json");

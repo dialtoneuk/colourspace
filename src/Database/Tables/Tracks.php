@@ -102,7 +102,7 @@ class Tracks extends Table
         if( json_last_error() !== JSON_ERROR_NONE )
             throw new \Error("Json invalid: " . json_last_error_msg() );
 
-        $this->query()->where( [ "trackid" => $trackid ] )->update(["metadata" => Format::largeText( $data ) ] );
+        $this->query()->where( [ "trackid" => $trackid ] )->update(["metainfo" => Format::largeText( $data ) ] );
     }
 
     /**
