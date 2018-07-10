@@ -10,6 +10,7 @@ composer.phar
 
 /config/*
 /bin/*
+/files/*
 /assets/js/*
 !/config/resources
 !/assets/js/compiled.js

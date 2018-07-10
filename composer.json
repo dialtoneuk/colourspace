@@ -37,6 +37,7 @@
     "aws/aws-sdk-php":"*",
     "delight-im/file-upload":"*",
     "boyhagemann/waveform": "dev-master",
-    "boyhagemann/wave": "dev-master"
+    "boyhagemann/wave": "dev-master",
+    "php-ffmpeg/php-ffmpeg": "dev-master"
   }
 }

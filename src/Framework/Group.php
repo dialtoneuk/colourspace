@@ -147,14 +147,13 @@ class Group
     private function crawlGroups()
     {
 
-        $files = glob( GROUP_ROOT );
-
+        $files = glob( COLOURSPACE_ROOT . GROUP_ROOT . "*.json" );
 
         foreach( $files as $key=>$file )
         {
 
             $file = $this->trim( $file );
-            $file = new FileOperator( GROUP_ROOT . $file );
+            $file = new FileOperator(  GROUP_ROOT . $file  . ".json" );
 
             if( $file->isJSON() == false )
                 throw new \Error('Group file is incorrect');
@@ -205,8 +204,9 @@ class Group
 
         $exploded = explode("/", $filename );#
         $file = end( $exploded );
+        $exploded = explode( ".", $file );
 
-        return( $file);
+        return( $exploded[0] );
     }
 
 }

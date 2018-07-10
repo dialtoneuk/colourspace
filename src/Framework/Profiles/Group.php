@@ -74,9 +74,10 @@ class Group extends Profile
                 $group = $this->group->get( $user->group );
 
                 $this->objects = [
-                    'name' => $group->name,
-                    'admin' => $group->permissions->admin,
-                    'uploadtime' => $group->permissions->uploadtime
+                    'name' => $group["name"],
+                    'admin' => $group["flags"]["admin"],
+                    GROUPS_FLAG_MAXLENGTH => $group["flags"][ GROUPS_FLAG_MAXLENGTH ],
+                    GROUPS_FLAG_MAXSIZE => $group["flags"][ GROUPS_FLAG_MAXSIZE ]
                 ];
             }
         }

@@ -10,6 +10,7 @@ namespace Colourspace\Framework\Models;
 
 
 use Colourspace\Framework\TemporaryUsername;
+use Colourspace\Framework\Util\Collector;
 
 class Register extends DefaultModel
 {
@@ -29,7 +30,7 @@ class Register extends DefaultModel
 
         parent::startup();
 
-        $this->temporaryusername = new TemporaryUsername();
+        $this->temporaryusername = Collector::new("TemporaryUsername");
 
         if( $this->temporaryusername->has( session_id() ) )
             $this->object->temporaryusername = $this->temporaryusername->get( session_id() );

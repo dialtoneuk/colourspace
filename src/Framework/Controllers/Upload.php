@@ -17,9 +17,12 @@ use Colourspace\Framework\User;
 use Colourspace\Framework\Session;
 use Colourspace\Framework\Track;
 use Colourspace\Container;
+use Colourspace\Framework\Util\FileOperator;
 use Colourspace\Framework\Util\Format;
+use Colourspace\Framework\WaveForm;
 use Delight\FileUpload\Throwable\Error;
 use flight\net\Request;
+use Colourspace\Framework\Util\Mp3Parser;
 
 class Upload extends DefaultController
 {
@@ -68,7 +71,6 @@ class Upload extends DefaultController
     {
 
         $array = [
-            UPLOADS_POST_KEY,
             "name",
             "description",
             "privacy"
@@ -128,51 +130,75 @@ class Upload extends DefaultController
                 if( GOOGLE_ENABLED )
                 {
 
-                    if( $this->checkRecaptcha( $form ) == false )
+                    if ($this->checkRecaptcha($form) == false) {
+
+                        $this->model->formError(FORM_ERROR_GENERAL, "Google response invalid");
+                        return;
+                    }
+                }
+
+                $result = $this->verify( $form );
+
+                if( is_array( $result ) )
+                    $this->model->formError($result['type'],$result['value']);
+                else
+                {
+
+                    try
                     {
 
-                        $this->model->formError( FORM_ERROR_GENERAL, "Google response invalid");
+                        $result = $this->upload( $form );
+                    }
+                    catch ( \Error $error )
+                    {
+
+                        $this->model->formError( FORM_ERROR_GENERAL, $error->getMessage() );
                         return;
                     }
 
-                    $result = $this->verify( $form );
 
-                    if( is_array( $result ) )
-                        $this->model->formError($result['type'],$result['value']);
-                    else
-                    {
 
-                        try
-                        {
 
-                            $result = $this->upload( $form );
-                        }
-                        catch ( \Error $error )
-                        {
 
-                            $this->model->formError( FORM_ERROR_GENERAL, $error->getMessage() );
-                            return;
-                        }
+                    $streams = [
+                        $result["type"] => $result["key"]
+                    ];
 
-                        $streams = [
-                            $result["type"] => $result["key"]
-                        ];
+                    $trackid = $this->track->create(
+                        $result['userid'],
+                        $streams, $form->name,
+                        $this->track->getMetadataArray( null, $form->description, [], null )
+                    );
 
-                        $this->track->create(
-                            $result['userid'],
-                            $streams, $form->name,
-                            $this->track->getMetadataArray( null, $form->description, [], null )
-                        );
+                    if( $this->track->find( $form->name ) == false )
+                        throw new Error("Failed to add track");
 
-                        if( $this->track->find( $form->name ) == false )
-                            throw new Error("Failed to add track");
+                    $this->doPostUploadWaveform( $trackid, $result );
 
-                        $this->model->formMessage( FORM_MESSAGE_SUCCESS, "Track uploaded! Redirecting you in a few");
-                        $this->model->redirect(COLOURSPACE_URL_ROOT . "tracks/" . $form->name, 3 );
-                    }
+                    unlink( COLOURSPACE_ROOT . $result["temp"] );
+
+                    $this->model->formMessage( FORM_MESSAGE_SUCCESS, "Track uploaded! Redirecting you in a few");
+                    $this->model->redirect(COLOURSPACE_URL_ROOT . "tracks/" . $form->name, 3 );
                 }
             }
         }
+    }
+
+    /**
+     * @param $trackid
+     * @param $result
+     * @throws \Error
+     */
+
+    public function doPostUploadWaveform( $trackid, $result )
+    {
+
+        $waveform = $this->generateWaveform( $result["temp"], true );
+        $this->saveWaveform( $waveform, $result['filename'] . ".svg", $trackid );
+
+        $this->track->updateMetadata( $trackid, [
+            "waveform" =>  "files/waveforms/" . $result['filename']
+        ]);
     }
 
     /**
@@ -190,63 +216,92 @@ class Upload extends DefaultController
     /**
      * @param $form
      * @return array
-     * @throws \Delight\FileUpload\Throwable\Error
+     * @throws Error
      * @throws \Delight\FileUpload\Throwable\InputNotSpecifiedError
      * @throws \Delight\FileUpload\Throwable\TempDirectoryNotFoundError
      * @throws \Delight\FileUpload\Throwable\TempFileWriteError
      * @throws \Delight\FileUpload\Throwable\UploadCancelledException
      * @throws \Error
+     * @throws \ErrorException
      */
 
     private function upload( $form )
     {
 
-        $user = $this->user->get( $this->session->userid() );
+        $result = null;
 
-        $limits = $this->getGroupLimits();
-
-        if( $limits !== null )
+        try
         {
 
-            if( $limits[ GROUPS_FLAG_MAXSIZE ] != -1 )
-                $this->uploads->setMaxFilesize( $limits[ GROUPS_FLAG_MAXSIZE ] );
+            $user = $this->user->get( $this->session->userid() );
+            $limits = $this->getGroupLimits();
+            $this->uploads->setHeader();
 
-            if( $limits[ GROUPS_FLAG_LOSSLESS ] )
-                $allowed = [
-                    "mp3", "wav", "flac"
-                ];
+            if( $limits !== null )
+            {
+
+                if( $limits[ GROUPS_FLAG_MAXSIZE ] != -1 )
+                    //$this->uploads->setMaxFilesize( 10 );
+
+                $allowed=[];
+
+                if( $limits[ GROUPS_FLAG_LOSSLESS ] )
+                    $allowed = [
+                        "mp3", "wav", "flac"
+                    ];
+                else
+                    $allowed = [
+                        "mp3"
+                    ];
+
+                $this->uploads->setAllowedExtensions( $allowed );
+            }
             else
-                $allowed = [
-                    "mp3"
-                ];
+                $this->uploads->setAllowedExtensions( ["mp3"] );
 
-            $this->uploads->setAllowedExtensions( $allowed );
+            $this->uploads->setFileName( $this->generate() );
+            $result = $this->uploads->save();
+
+            if( is_int( $result ) )
+                throw new \Error( "Error: " . $result );
+
+            if( $limits !== null && $limits[ GROUPS_FLAG_MAXLENGTH] != -1 )
+            {
+
+                $parser = new Mp3Parser( COLOURSPACE_ROOT . UPLOADS_TEMPORARY_DIRECTORY . $result->getFilenameWithExtension() );
+                $parser->setFileInfoExact();
+
+                if( $parser->time > $limits[ GROUPS_FLAG_MAXLENGTH] )
+                    throw new \Error("File too long");
+            }
+
+            $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath() );
+
+            if( $this->amazon->exists( AMAZON_S3_BUCKET, $result->getFilenameWithExtension() ) == false )
+                throw new \Error("Amazon failed to put object in bucket");
+
+            $return = [
+                "userid"    => $user->userid,
+                "temp"      => UPLOADS_TEMPORARY_DIRECTORY . $result->getFilenameWithExtension(),
+                "type"      => $result->getExtension(),
+                "filename"  => $result->getFilename(),
+                "key"       => $result->getFilenameWithExtension()
+            ];
+
+            return( $return );
         }
-        else
-            $this->uploads->setAllowedExtensions( ["mp3"] );
+        catch ( \ErrorException $error )
+        {
 
+            if( $result == null || is_int( $result ) )
+                throw $error;
+            else
+            {
 
-        $this->uploads->setFileName( $this->generate() );
-
-        $result = $this->uploads->save();
-
-        if( is_int( $result ) )
-            throw new \Error( "Error");
-
-        $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath() );
-
-        if( $this->amazon->exists( AMAZON_S3_BUCKET, $result->getFilenameWithExtension() ) == false )
-            throw new \Error("Amazon failed to put object in bucket");
-
-       $return = [
-           "userid" => $user->userid,
-           "type"   => $result->getExtension(),
-           "key"    => $result->getFilenameWithExtension()
-        ];
-
-        unlink( $result->getPath() );
-
-        return( $return );
+                @unlink( $result->getPath() );
+                throw $error;
+            }
+        }
     }
 
     /**
@@ -272,13 +327,58 @@ class Upload extends DefaultController
     }
 
     /**
+     * @param $waveform
+     * @param $filename
+     * @param $trackid
+     * @param bool $local
+     */
+
+    private function saveWaveform( $waveform, $filename, $trackid, $local=true )
+    {
+
+        if( file_exists( COLOURSPACE_ROOT . "files/waveforms/") == false )
+            mkdir( COLOURSPACE_ROOT . "files/waveforms/");
+
+        if( $local == true )
+            file_put_contents( COLOURSPACE_ROOT . "files/waveforms/" . $filename, $waveform );
+        else
+        {
+
+            $path = COLOURSPACE_ROOT . "files/waveforms/" . $filename;
+            file_put_contents( COLOURSPACE_ROOT . "files/waveforms/" . $filename, $waveform );
+
+            $this->amazon->put( AMAZON_S3_BUCKET, $filename, $path, [
+                "trackid" => $trackid,
+            ]);
+        }
+    }
+
+    /**
+     * @param $path
+     * @param bool $svg
+     * @return mixed
+     * @throws \Error
+     */
+
+    private function generateWaveform( $path, $svg=true )
+    {
+
+        $waveform = new WaveForm( $path );
+
+        if( $svg )
+            return( $waveform->svg() );
+        else
+            return( $waveform->generate() );
+    }
+
+    /**
      * @return string
      */
 
     private function generate()
     {
 
-        return( base64_encode( openssl_random_pseudo_bytes(16) ) . time() );
+        return( uniqid(rand(), true) );
     }
 
     /**
@@ -322,10 +422,10 @@ class Upload extends DefaultController
         if( $this->checkName( $form->name ) == false )
             return([
                 "type" => FORM_ERROR_INCORRECT,
-                "value" => "Your name cannot contain any special characters"
+                "value" => "Your name cannot contain any special characters. This also includes spaces"
             ]);
 
-        if( strlen( $form->name ) < TRACK_NAME_MAXLENGTH )
+        if( strlen( $form->name ) > TRACK_NAME_MAXLENGTH )
             return([
                 "type" => FORM_ERROR_INCORRECT,
                 "value" => "Your name is too long! Shorten it down below 64 characters."
@@ -337,7 +437,7 @@ class Upload extends DefaultController
                 "value" => "Name is already taken, track names need to be unique!"
             ]);
 
-        if( $form->privacy !== ( TRACK_PRIVACY_PUBLIC || TRACK_PRIVACY_PRIVATE || TRACK_PRIVACY_PERSONAL ) )
+        if( $form->privacy != ( TRACK_PRIVACY_PUBLIC || TRACK_PRIVACY_PRIVATE || TRACK_PRIVACY_PERSONAL ) )
             return([
                 "type" => FORM_ERROR_INCORRECT,
                 "value" => "Unknown privacy type"
@@ -354,7 +454,7 @@ class Upload extends DefaultController
     private function checkName( $name )
     {
 
-        if( preg_match("/[\W]+/", $name ) == 0 )
+        if( preg_match("/[\W]+/", $name ) )
             return false;
 
         return true;

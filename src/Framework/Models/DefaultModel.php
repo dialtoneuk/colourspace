@@ -15,6 +15,7 @@ use Colourspace\Framework\Model;
 use Colourspace\Framework\Interfaces\ProfileInterface;
 use Colourspace\Framework\Profiles\User;
 use Colourspace\Framework\Profiles\Group;
+use Colourspace\Framework\Util\Collector;
 
 class DefaultModel extends Model
 {
@@ -36,14 +37,15 @@ class DefaultModel extends Model
 
 
         $profiles = [
-            'session' => new Session()
+            'session' => Collector::new("Session", "Colourspace\\Framework\\Profiles\\")
         ];
 
         if( Container::get('application')->session->isLoggedIn() )
         {
 
-            $profiles['user'] = new User();
-            $profiles['group'] = new Group();
+            $profiles['user'] = Collector::new("User", "Colourspace\\Framework\\Profiles\\");
+            $profiles['group'] = Collector::new("Group", "Colourspace\\Framework\\Profiles\\");
+            $profiles['tracks'] = Collector::new("Tracks", "Colourspace\\Framework\\Profiles\\");
         }
 
         $this->object->profiles = new \stdClass();
@@ -52,7 +54,11 @@ class DefaultModel extends Model
         {
 
             if( $profile instanceof ProfileInterface == false )
-                throw new \Error('Profile invalid');
+            {
+
+                die( print_r( $profile ) );
+            }
+
 
             $profile->create();
             $this->object->profiles->$name = $profile->get();

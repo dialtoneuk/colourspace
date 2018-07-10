@@ -76,10 +76,11 @@ define("UPLOADS_ERROR_FILENAME", 2 );
 define("UPLOADS_ERROR_EXTENSION", 3 );
 define("UPLOADS_ERROR_TOO_LARGE", 4 );
 define("UPLOADS_ERROR_CANCELLED", 5 );
+define("UPLOADS_WAVEFORMS_LOCAL", false );
 
 //Amazon
-define("AMAZON_S3_KEY", "AKIAI4OVOACWWUQ2C5AA");
-define("AMAZON_S3_SECRET", "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");
+define("AMAZON_BUCKET_URL", "https://s3.eu-west-2.amazonaws.com/colourspace/");
+define("AMAZON_CREDENTIALS_FILE", "aws.json");
 define("AMAZON_S3_BUCKET", "colourspace");
 define("AMAZON_LOCATION_US_WEST", "us-west-1");
 define("AMAZON_LOCATION_US_WEST_2", "us-west-2");

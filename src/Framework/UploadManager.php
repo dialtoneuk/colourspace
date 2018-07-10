@@ -11,6 +11,7 @@ namespace Colourspace\Framework;
 use Delight\FileUpload\FileUpload;
 use Delight\FileUpload\Throwable\FileTooLargeException;
 use Delight\FileUpload\Throwable\InputNotFoundException;
+use Delight\FileUpload\Throwable\InputNotSpecifiedError;
 use Delight\FileUpload\Throwable\InvalidExtensionException;
 use Delight\FileUpload\Throwable\InvalidFilenameException;
 use Delight\FileUpload\Throwable\UploadCancelledError;
@@ -85,7 +86,7 @@ class UploadManager
     public function setHeader( $header=null )
     {
 
-        if( $header=null )
+        if( $header === null )
             $header = UPLOADS_POST_KEY;
 
         $this->upload->from( $header );
@@ -109,9 +110,11 @@ class UploadManager
             return( $this->upload->save() );
         }
         catch ( InputNotFoundException  $e) {
+
             return( UPLOADS_ERROR_NOT_FOUND );
         }
         catch ( InvalidFilenameException $e) {
+
             return( UPLOADS_ERROR_FILENAME );
         }
         catch ( InvalidExtensionException  $e) {
@@ -122,6 +125,10 @@ class UploadManager
         }
         catch ( UploadCancelledError $e) {
             return( UPLOADS_ERROR_CANCELLED );
+        }
+        catch( InputNotSpecifiedError $e )
+        {
+            throw $e;
         }
     }
 
@@ -134,7 +141,7 @@ class UploadManager
     private function generate()
     {
 
-        return( base64_encode( openssl_random_pseudo_bytes( 32 ) ) );
+        return( uniqid(rand(), true) );
     }
 
     /**
@@ -144,7 +151,18 @@ class UploadManager
     private function checkDir()
     {
 
-        if( file_exists( COLOURSPACE_ROOT . UPLOADS_TEMPORARY_DIRECTORY ) == false )
-            mkdir( COLOURSPACE_ROOT . UPLOADS_TEMPORARY_DIRECTORY );
+        $path = UPLOADS_TEMPORARY_DIRECTORY;
+        $exploded = explode("/", $path );
+
+        $seed = "";
+
+        foreach( $exploded as $dir )
+        {
+
+            $seed = $seed . $dir . "/";
+
+            if( file_exists( COLOURSPACE_ROOT . $seed ) == false )
+                mkdir( COLOURSPACE_ROOT . $seed );
+        }
     }
 }

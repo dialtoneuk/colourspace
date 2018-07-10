@@ -21,7 +21,7 @@ class Collector
         if( DEBUG_ENABLED )
             Debug::message("Collector intialized");
 
-        self::$classes = new \stdClass();
+        self::$classes = [];
     }
 
     /**
@@ -43,36 +43,40 @@ class Collector
         if( self::exists( $namespace, $class ) == false )
             throw new \Error("Namespace does not exist: " . $namespace . $class );
 
-        if( isset( self::$classes->$class ) )
+        if( isset( self::$classes[ $namespace . $class ] ) )
         {
 
             Debug::message("Collector returning pre created class: " . $class );
 
-            return( self::$classes->$class );
+            return( self::$classes[ $namespace . $class ]  );
         }
 
 
         $full_namespace = $namespace . $class;
-        self::$classes->$class = new $full_namespace;
+        self::$classes[ $full_namespace ] = new $full_namespace;
 
         Debug::message("Collector returning newly created class: " . $class );
 
-        return( self::$classes->$class );
+        return( self::$classes[ $full_namespace  ]);
     }
 
     /**
      * @param $class
+     * @param null $namespace
      * @return mixed
      * @throws \Error
      */
 
-    public static function get( $class )
+    public static function get( $class, $namespace=null )
     {
+
+        if( $namespace == null )
+            $namespace = COLLECTOR_DEFAULT_NAMESPACE;
 
         if( self::hasInitialized() == false )
             throw new \Error("Initialize first");
 
-        return( self::$classes->$class );
+        return( self::$classes[ $namespace . $class ] );
     }
 
     /**
@@ -99,22 +103,23 @@ class Collector
             throw new \Error("Namespace does not exist: " . $namespace . $class );
 
         $full_namespace = $namespace . $class;
-        self::$classes->$as = new $full_namespace;
+        self::$classes[ $as ] = new $full_namespace;
 
         Debug::message("Collector returning newly created class which is refered to as: " . $as . " ( actual name is " . $class . " )" );
 
-        return( self::$classes->$as );
+        return( self::$classes[ $as ] );
     }
 
     /**
      * @param $class
+     * @param null $namespace
      * @return bool
      */
 
-    public static function has( $class )
+    public static function has( $class, $namespace=null )
     {
 
-        return( isset( self::$classes->$class ) );
+        return( isset( self::$classes[ $namespace ]) );
     }
 
 

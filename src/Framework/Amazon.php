@@ -22,14 +22,21 @@ class Amazon
 
     /**
      * Amazon constructor.
+     * @throws \Error
      */
 
     public function __construct()
     {
 
+        $credentials = $this->getCredentials();
+
         $this->client = S3Client::factory([
-            'key' => AMAZON_S3_KEY,
-            'secret' => AMAZON_S3_SECRET
+            "credentials" => [
+                'key' => $credentials->key,
+                'secret' => $credentials->secret,
+            ],
+            'region' => AMAZON_LOCATION_EU_WEST_2,
+            'version' => 'latest'
         ]);
     }
 
@@ -44,11 +51,12 @@ class Amazon
     public function put( $bucket, $filename, $sourcefile, $metadata=[] )
     {
 
+        $contents = file_get_contents( $sourcefile );
 
         $result = $this->client->putObject(array(
             'Bucket'     => $bucket,
             'Key'        => $filename,
-            'SourceFile' => $sourcefile,
+            'body' => $contents,
             'Metadata'   => $metadata
         ));
 
@@ -105,4 +113,18 @@ class Amazon
         $this->client->waitUntil('BucketExists', array('Bucket' => $bucket));
     }
 
+    /**
+     * @return mixed
+     * @throws \Error
+     */
+
+    public function getCredentials()
+    {
+
+        if( file_exists( COLOURSPACE_ROOT . "config/" . AMAZON_CREDENTIALS_FILE ) == false )
+            throw new \Error("Incorrect credentials");
+
+        return( json_decode( file_get_contents( COLOURSPACE_ROOT . "config/" . AMAZON_CREDENTIALS_FILE ) ) );
+
+    }
 }

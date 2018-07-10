@@ -9,6 +9,8 @@
 namespace Colourspace\Framework\Util;
 
 
+use function GuzzleHttp\Psr7\mimetype_from_filename;
+
 class FileOperator
 {
 
@@ -145,5 +147,55 @@ class FileOperator
     {
 
         $this->contents = file_get_contents( COLOURSPACE_ROOT . $this->path );
+    }
+
+    /**
+     * @param $filepath
+     * @param array $extensions
+     * @return bool
+     * @throws \Error
+     */
+
+    public static function checkExtension( $filepath, $extensions=["mp3"] )
+    {
+
+        if( file_exists( COLOURSPACE_ROOT . $filepath ) == false )
+            throw new \Error("File must exist");
+
+        $file_parts = pathinfo(COLOURSPACE_ROOT . $filepath);
+
+        foreach( $extensions as $extension )
+        {
+
+            if(  $file_parts["extension"] == $extension )
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $filepath
+     * @param array $mimes
+     * @return bool
+     * @throws \Error
+     */
+
+    public static function checkMimeType($filepath, $mimes=["mp3"] )
+    {
+
+        if( file_exists( COLOURSPACE_ROOT . $filepath ) == false )
+            throw new \Error("File must exist");
+
+        $mimetype = mimetype_from_filename(COLOURSPACE_ROOT . $filepath);
+
+        foreach($mimes as $mime )
+        {
+
+            if( $mimetype == $mime )
+                return true;
+        }
+
+        return false;
     }
 }

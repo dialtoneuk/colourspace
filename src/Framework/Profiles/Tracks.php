@@ -69,7 +69,12 @@ class Tracks extends Profile
     {
 
         if( $this->session->isLoggedIn() == false )
+        {
+
+
+
             $this->objects = null;
+        }
         else
         {
 
