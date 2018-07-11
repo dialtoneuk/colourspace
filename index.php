@@ -1,21 +1,20 @@
 <?php
 require_once( "vendor/autoload.php" );
 
+//<editor-fold defaultstate="collapsed" desc="PHP pre checks">
+
 /**
- * Pre Checks
+ * PHP pre checks
  * =======================================
  */
 
 if (empty( $_SERVER["DOCUMENT_ROOT"] ) )
-{
     $root = getcwd();
-}
 else
     $root = $_SERVER["DOCUMENT_ROOT"];
 
 if( substr( $root, -1 ) !== DIRECTORY_SEPARATOR )
     $root = $root . DIRECTORY_SEPARATOR;
-
 
 if( version_compare(PHP_VERSION, '7.0.0') == -1 )
     die('Please upgrade to PHP 7.0.0+ to run this web application. Your current PHP version is ' . PHP_VERSION );
@@ -24,10 +23,26 @@ if( php_sapi_name() === 'cli' && defined( "CMD" ) == false )
     die('Please run this web application through your web browser. It wont work via the console! (Muh live programs)');
 
 /**
+ * Do not touch
+ */
+
+if( $setini = true )
+   if( $setini )
+       include "cmd/ini.php";
+
+if( $forceinfo = false )
+    if( $forceinfo )
+        die("<pre>" . @shell_exec("php cmd/info.php") . "</pre>" );
+
+/**
  * Written by Lewis 'mkultra2018' Lancaster
  * in 2018 (June to August)
  * =======================================
  */
+
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Namespaces">
 
 use Colourspace\Application;
 use Colourspace\Database\Connection;
@@ -37,6 +52,11 @@ use Colourspace\Framework\Session;
 use Colourspace\Framework\Router;
 use Colourspace\Framework\Util\Debug;
 use Colourspace\Framework\Interfaces\ReturnsInterface;
+
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Application Settings">
+
 /**
  * Application Settings
  * =======================================
@@ -186,6 +206,10 @@ define("COLLECTOR_DEFAULT_NAMESPACE", "Colourspace\\Framework\\");
 define("COLOURS_OUTPUT_HEX", 1);
 define("COLOURS_OUTPUT_RGB", 2);
 
+//</editor-fold>
+
+//<editor-fold desc="Initialization">
+
 /**
  * Colourspace Initialization
  * =======================================
@@ -324,3 +348,4 @@ else
     echo( "[ !Application quit because CMD is defined! ] \n\n");
 }
 
+//</editor-fold>
