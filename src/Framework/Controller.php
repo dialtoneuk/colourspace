@@ -119,10 +119,11 @@ class Controller implements ControllerInterface
 
     /**
      * @param $data
+     * @param bool $empty_check
      * @return bool
      */
 
-    public function check( $data )
+    public function check( $data, $empty_check=true )
     {
 
         if( is_object( $data ) )
@@ -140,7 +141,7 @@ class Controller implements ControllerInterface
             if( isset( $data[ $requirement ] ) == false )
                 return false;
 
-            if( empty( $data[ $requirement ] ) )
+            if( empty( $data[ $requirement ] ) && $empty_check )
                 return false;
         }
 
@@ -178,10 +179,11 @@ class Controller implements ControllerInterface
     /**
      * @param $data
      * @param bool $object
+     * @param bool $escape
      * @return array|null|\stdClass
      */
 
-    public function pickKeys( $data, $object=true )
+    public function pickKeys( $data, $object=true, $escape=true )
     {
 
         if( empty( $this->keyRequirements() ) )
@@ -201,6 +203,9 @@ class Controller implements ControllerInterface
                 $header = "recaptcha";
             else
                 $header = $requirement;
+
+            if( $escape )
+                $data[$requirement] = htmlspecialchars( $data[ $requirement ] );
 
             if( $object )
                 $result->$header = $data[ $requirement ];

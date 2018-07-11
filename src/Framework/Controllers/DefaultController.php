@@ -10,6 +10,7 @@ namespace Colourspace\Framework\Controllers;
 
 
 use Colourspace\Framework\Controller;
+use Colourspace\Framework\Util\Debug;
 
 class DefaultController extends Controller
 {
@@ -17,12 +18,14 @@ class DefaultController extends Controller
     /**
      * @param string $type
      * @param $data
+     * @throws \Error
      */
 
     public function process(string $type, $data)
     {
 
-
+        if( DEBUG_ENABLED )
+            Debug::message("Default contrller process called");
     }
 
     /**

@@ -24,8 +24,7 @@ use Colourspace\Framework\Util\Format;
                     {
 
                         ?>
-                            <div style="width: 200px; height:200px; background-color: #<?=$track->colour?>"></div>
-                            <h1><?=$track->trackname?></h1>
+                                                        <h1><?=$track->trackname?></h1>
                         <?php
 
                             $streams = json_decode( Format::decodeLargeText( $track->streams ), true );
@@ -35,7 +34,7 @@ use Colourspace\Framework\Util\Format;
                             if( $metainfo->waveform !== null )
                             {
                                 ?>
-                                <img src="<?=$metainfo->waveform?>" height="248" width="812" alt="Waveform"><br>
+                                <img style="background-color: #<?=$track->colour?>;" src="<?=$metainfo->waveform?>" height="248" width="812" alt="Waveform"><br>
                                 <?php
                             }
 

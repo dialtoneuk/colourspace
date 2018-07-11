@@ -127,12 +127,21 @@ class Upload extends DefaultController
         if( $type == MVC_REQUEST_POST )
         {
 
-            if( $this->check( $data->request ) == false )
-                $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
+            if( $this->check( $data->request, false ) == false )
+            {
+
+                $this->model->formError(FORM_ERROR_MISSING, "Please fill out all the missing fields");
+            }
             else
             {
 
                 $form = $this->pickKeys( $data->request );
+
+                if( empty( $form->name ) )
+                    $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
+
+                if( empty( $form->privacy ) )
+                    $this->model->formError(FORM_ERROR_MISSING,"Please fill out all the missing fields");
 
                 if( GOOGLE_ENABLED )
                 {
@@ -170,15 +179,20 @@ class Upload extends DefaultController
                     $trackid = $this->track->create(
                         $result['userid'],
                         $streams, $form->name,
-                        $this->track->getMetadataArray( null, $this->markdown->markup( $form->description ), [], null, $result['type'] )
+                        $this->track->getMetadataArray(
+                            null,
+                            $this->markdown->markup( $form->description ),
+                            [], null, $result['type'] )
                     );
+
 
                     if( $this->track->find( $form->name ) == false )
                         throw new Error("Failed to add track");
 
                     $this->doPostUploadWaveform( $trackid, $result );
 
-                    unlink( COLOURSPACE_ROOT . $result["temp"] );
+                    @unlink( COLOURSPACE_ROOT . $result["temp"] );
+                    @unlink( COLOURSPACE_ROOT . "files/converted/" . $result["filename"] . ".wav");
 
                     $this->model->formMessage( FORM_MESSAGE_SUCCESS,"Success! Redirecting you to your tracks");
                     $this->model->redirect( COLOURSPACE_URL_ROOT . "tracks", 2 );
@@ -186,6 +200,18 @@ class Upload extends DefaultController
             }
         }
     }
+    /**
+     * @param string $type
+     * @param $data
+     * @return bool
+     */
+
+    public function authentication(string $type, $data)
+    {
+
+        return parent::authentication($type, $data);
+    }
+
 
     /**
      * @param $trackid
@@ -206,9 +232,10 @@ class Upload extends DefaultController
 
             $path = "files/converted/" . $result['filename'] . ".wav";
 
-
             if( file_exists( COLOURSPACE_ROOT . $path ) == false )
                 $converter->toWAV( $path );
+
+            unset( $converter );
         }
         else
             $path = $result["temp"];
@@ -224,18 +251,6 @@ class Upload extends DefaultController
         $this->track->updateMetadata( $trackid, [
             "waveform" =>  $path
         ]);
-    }
-
-    /**
-     * @param string $type
-     * @param $data
-     * @return bool
-     */
-
-    public function authentication(string $type, $data)
-    {
-
-        return parent::authentication($type, $data);
     }
 
     /**
@@ -288,16 +303,17 @@ class Upload extends DefaultController
             $result = $this->uploads->save();
 
             if( is_int( $result ) )
-                throw new \Error( "Error: " . $result );
-
-            if( $limits !== null && $limits[ GROUPS_FLAG_MAXLENGTH] != -1 )
             {
 
-                $parser = new Mp3Parser( COLOURSPACE_ROOT . UPLOADS_TEMPORARY_DIRECTORY . $result->getFilenameWithExtension() );
-                $parser->setFileInfoExact();
+                $errors = [
+                    UPLOADS_ERROR_NOT_FOUND => "File not found",
+                    UPLOADS_ERROR_FILENAME  => "Filename is invalid",
+                    UPLOADS_ERROR_TOO_LARGE => "File is over the permitted maximum allowance",
+                    UPLOADS_ERROR_EXTENSION => "Files extension is not permissed",
+                    UPLOADS_ERROR_CANCELLED => "Upload was cancelled",
+                ];
 
-                if( $parser->time > $limits[ GROUPS_FLAG_MAXLENGTH] )
-                    throw new \Error("File too long");
+                throw new \Error( $errors[ $result ] );
             }
 
             $this->put( $user->userid, $form->name, $result->getFilenameWithExtension(), $result->getPath(), null, [], $this->getContentType( $result->getExtension() ));
@@ -468,7 +484,7 @@ class Upload extends DefaultController
         if( $this->checkName( $form->name ) == false )
             return([
                 "type" => FORM_ERROR_INCORRECT,
-                "value" => "Your name cannot contain any special characters. This also includes spaces"
+                "value" => "Your name cannot contain any special characters"
             ]);
 
         if( strlen( $form->name ) > TRACK_NAME_MAXLENGTH )
@@ -500,7 +516,7 @@ class Upload extends DefaultController
     private function checkName( $name )
     {
 
-        if( preg_match("/[\W]+/", $name ) )
+        if( preg_match("'/[\'^£$%&*()}{@#~?><>,|=_+¬-]/'", $name ) )
             return false;
 
         return true;

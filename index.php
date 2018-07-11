@@ -94,7 +94,7 @@ define("AMAZON_LOCATION_EU_WEST_2", "eu-west-2");
 define("AMAZON_LOCATION_EU_CENTRAL", "eu-central-1");
 
 //Google
-define("GOOGLE_ENABLED", false );
+define("GOOGLE_ENABLED", true );
 define("GOOGLE_SITE_KEY", "6LfIbAgUAAAAABzfN4j-MrX5ndXzjIb9jFNgg7Lv" );
 define("GOOGLE_SITE_SECRET", "6LfIbAgUAAAAAKcKKopzftATinfo9vdmjgqzS77c" );
 

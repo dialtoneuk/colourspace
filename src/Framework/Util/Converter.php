@@ -49,6 +49,12 @@ class Converter
         $this->filepath = $filepath;
     }
 
+    public function __destruct()
+    {
+
+        unset( $this->ffmpeg );
+    }
+
     /**
      * @param $filepath
      * @throws \Error

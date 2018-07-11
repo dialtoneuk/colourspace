@@ -25,6 +25,13 @@
             <p>
                 <input type="file" name="track" accept=".mp3,.wav,.flac">
             </p>
+            <?php
+            if( isset( $content->recaptcha ) && empty( $content->recaptcha ) == false )
+            {
+
+                echo( $content->recaptcha->html );
+            }
+            ?>
             <p>
                 <input type="submit">
             </p>
