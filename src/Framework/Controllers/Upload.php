@@ -17,7 +17,7 @@ use Colourspace\Framework\User;
 use Colourspace\Framework\Session;
 use Colourspace\Framework\Track;
 use Colourspace\Container;
-use Colourspace\Framework\Util\Converter;
+use Colourspace\Framework\Util\MediaOperator;
 use Colourspace\Framework\Util\Format;
 use Colourspace\Framework\WaveForm;
 use Delight\FileUpload\Throwable\Error;
@@ -222,31 +222,15 @@ class Upload extends DefaultController
     public function doPostUploadWaveform( $trackid, $result )
     {
 
-        if( $result['type'] !== "wav" )
-        {
+        $media = new MediaOperator( $result["temp"] );
+        $wave = $media->getWaveform();
 
-            $converter = new Converter( $result['temp'] );
-
-            if( file_exists( COLOURSPACE_ROOT . "files/converted/" ) == false )
-                mkdir( COLOURSPACE_ROOT . "files/converted/");
-
-            $path = "files/converted/" . $result['filename'] . ".wav";
-
-            if( file_exists( COLOURSPACE_ROOT . $path ) == false )
-                $converter->toWAV( $path );
-
-            unset( $converter );
-        }
-        else
-            $path = $result["temp"];
-
-        $waveform = $this->generateWaveform( $path, true );
-        $this->saveWaveform( $waveform, $result['filename'] . ".svg", $trackid, UPLOADS_WAVEFORMS_LOCAL );
+        $this->saveWaveform( $wave, $result['filename'] . ".png", $trackid, UPLOADS_WAVEFORMS_LOCAL );
 
         if( UPLOADS_WAVEFORMS_LOCAL )
-            $path = "files/waveforms/" . $result['filename'] . ".svg";
+            $path = "files/waveforms/" . $result['filename'] . ".png";
         else
-            $path = AMAZON_BUCKET_URL . $result['filename'] . ".svg";
+            $path = AMAZON_BUCKET_URL . $result['filename'] . ".png";
 
         $this->track->updateMetadata( $trackid, [
             "waveform" =>  $path
@@ -389,27 +373,27 @@ class Upload extends DefaultController
     }
 
     /**
-     * @param $waveform
+     * @param $wave
      * @param $filename
      * @param $trackid
      * @param bool $local
      */
 
-    private function saveWaveform( $waveform, $filename, $trackid, $local=true )
+    private function saveWaveform( $wave, $filename, $trackid, $local=true )
     {
 
         if( file_exists( COLOURSPACE_ROOT . "files/waveforms/") == false )
             mkdir( COLOURSPACE_ROOT . "files/waveforms/");
 
+        $path = "files/waveforms/" . $filename;
+
         if( $local == true )
-            file_put_contents( COLOURSPACE_ROOT . "files/waveforms/" . $filename, $waveform );
+            $wave->save( COLOURSPACE_ROOT . $path );
         else
         {
 
-            $path = "files/waveforms/" . $filename;
-            file_put_contents( COLOURSPACE_ROOT . $path , $waveform );
-
-            $this->amazon->put( AMAZON_S3_BUCKET, $filename, COLOURSPACE_ROOT . $path, [], "image/svg+xml" );
+            $wave->save( COLOURSPACE_ROOT . $path );
+            $this->amazon->put( AMAZON_S3_BUCKET, $filename, COLOURSPACE_ROOT . $path, ["trackid" => $trackid], "image/png" );
 
             unlink( COLOURSPACE_ROOT . $path  );
         }

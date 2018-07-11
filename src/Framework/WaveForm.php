@@ -50,6 +50,10 @@ class WaveForm
             $this->create();
     }
 
+    /**
+     * Creates the waveform
+     */
+
     public function create()
     {
 

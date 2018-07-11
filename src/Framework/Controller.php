@@ -205,7 +205,7 @@ class Controller implements ControllerInterface
                 $header = $requirement;
 
             if( $escape )
-                $data[$requirement] = htmlspecialchars( $data[ $requirement ] );
+                $data[ $requirement] = htmlspecialchars( $data[ $requirement ] );
 
             if( $object )
                 $result->$header = $data[ $requirement ];

@@ -26,9 +26,9 @@ if( php_sapi_name() === 'cli' && defined( "CMD" ) == false )
  * Do not touch
  */
 
-if( $setini = true )
+if( $setini = false )
    if( $setini )
-       include "cmd/ini.php";
+       @include("cmd/ini.php");
 
 if( $forceinfo = false )
     if( $forceinfo )

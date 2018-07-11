@@ -76,7 +76,7 @@ class Login extends Controller
             else
             {
 
-                $form = $this->pickKeys( $data->request, false  );
+                $form = $this->pickKeys( $data->request, true );
 
                 if( GOOGLE_ENABLED )
                 {

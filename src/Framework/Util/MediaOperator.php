@@ -12,7 +12,7 @@ use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 use FFMpeg\Format\Audio\Wav;
 
-class Converter
+class MediaOperator
 {
 
     /**
@@ -28,7 +28,7 @@ class Converter
     protected $filepath;
 
     /**
-     * Converter constructor.
+     * MediaOperator constructor.
      * @param $filepath
      * @throws \Error
      */
@@ -48,6 +48,23 @@ class Converter
 
         $this->filepath = $filepath;
     }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @return \FFMpeg\Media\Waveform
+     */
+
+    public function getWaveform( $width=1024, $height=248)
+    {
+
+        $audio = $this->ffmpeg->open( COLOURSPACE_ROOT . $this->filepath );
+        return( $audio->waveform( $width, $height ) );
+    }
+
+    /**
+     * Desctruct
+     */
 
     public function __destruct()
     {
