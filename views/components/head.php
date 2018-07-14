@@ -1,5 +1,7 @@
 <head>
 
+    <!--Test-->
+
     <!--TODO: Custom Page Titles-->
     <title>Colourspace</title>
 
@@ -9,7 +11,7 @@
             foreach( $content->header as $script )
                 echo( "<script type='text/javascript' src='$script'></script>")
     ?>
-    <!--Google Recaptcha-->
+
     <?php
         if( isset( $content->recaptcha ) && empty( $content->recaptcha ) == false )
         {
