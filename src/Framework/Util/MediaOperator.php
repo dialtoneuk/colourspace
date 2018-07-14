@@ -39,12 +39,25 @@ class MediaOperator
         if( file_exists( COLOURSPACE_ROOT . $filepath ) == false )
             throw new \Error("File does not exist");
 
-        $this->ffmpeg = FFMpeg::create(array(
-            'ffmpeg.binaries'  => COLOURSPACE_ROOT . FFMPEG_FOLDER . 'ffmpeg.exe',
-            'ffprobe.binaries' => COLOURSPACE_ROOT . FFMPEG_FOLDER  . 'ffprobe.exe',
-            'timeout'          => 3600,
-            'ffmpeg.threads'   => 12
-        ));
+        if( windows_os() )
+        {
+
+            $this->ffmpeg = FFMpeg::create(array(
+                'ffmpeg.binaries'  => COLOURSPACE_ROOT . FFMPEG_FOLDER . 'ffmpeg.exe',
+                'ffprobe.binaries' => COLOURSPACE_ROOT . FFMPEG_FOLDER  . 'ffprobe.exe',
+                'timeout'          => 3600,
+                'ffmpeg.threads'   => 12
+            ));
+        }
+        else
+            $this->ffmpeg = FFMpeg::create(array(
+                'ffmpeg.binaries'  => COLOURSPACE_ROOT . FFMPEG_FOLDER . 'ffmpeg',
+                'ffprobe.binaries' => COLOURSPACE_ROOT . FFMPEG_FOLDER  . 'ffprobe',
+                'timeout'          => 3600,
+                'ffmpeg.threads'   => 12
+            ));
+
+
 
         $this->filepath = $filepath;
     }

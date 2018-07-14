@@ -27,38 +27,65 @@ class DefaultModel extends Model
     protected $profiles;
 
     /**
+     * @param bool $doprofiles
      * @throws \Error
      */
 
-    public function startup()
+    public function startup( $doprofiles=true )
     {
 
         parent::startup();
 
+        $this->object->profiles = new \stdClass();
 
-        $profiles = [
-            'session' => Collector::new("Session", "Colourspace\\Framework\\Profiles\\")
-        ];
+        $this->addProfile("Session");
 
         if( Container::get('application')->session->isLoggedIn() )
         {
 
-            $profiles['user'] = Collector::new("User", "Colourspace\\Framework\\Profiles\\");
-            $profiles['group'] = Collector::new("Group", "Colourspace\\Framework\\Profiles\\");
-            $profiles['tracks'] = Collector::new("Tracks", "Colourspace\\Framework\\Profiles\\");
+            $this->addProfile("User");
+            $this->addProfile("Group");
         }
 
-        $this->object->profiles = new \stdClass();
+        if( $doprofiles )
+            $this->doProfiles();
+    }
 
-        foreach ( $profiles as $name=>$profile )
+    /**
+     * @param $profile
+     * @param string $namespace
+     */
+
+    public function addProfile( $profile, $namespace="Colourspace\\Framework\\Profiles\\")
+    {
+
+        $this->profiles[ $profile ] = $namespace;
+    }
+
+    /**
+     * @return null
+     * @throws \Error
+     */
+
+    public function doProfiles()
+    {
+
+        if( empty( $this->profiles ) )
+            return null;
+
+        foreach( $this->profiles as $key=>$value )
         {
+
+            $profile = Collector::new( $key, $value );
+
 
             if( $profile instanceof ProfileInterface == false )
             {
 
-                die( print_r( $profile ) );
+                die("Profile is invalid");
             }
 
+            $name = strtolower( $key );
 
             $profile->create();
             $this->object->profiles->$name = $profile->get();

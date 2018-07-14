@@ -22,17 +22,10 @@ if( version_compare(PHP_VERSION, '7.0.0') == -1 )
 if( php_sapi_name() === 'cli' && defined( "CMD" ) == false )
     die('Please run this web application through your web browser. It wont work via the console! (Muh live programs)');
 
-/**
- * Do not touch
- */
-
-if( $setini = false )
-   if( $setini )
-       @include("cmd/ini.php");
-
 if( $forceinfo = false )
     if( $forceinfo )
         die("<pre>" . @shell_exec("php cmd/info.php") . "</pre>" );
+
 
 /**
  * Written by Lewis 'mkultra2018' Lancaster
@@ -102,7 +95,7 @@ define("FFMPEG_FOLDER","bin/");
 
 //Amazon
 define("AMAZON_BUCKET_URL", "https://s3.eu-west-2.amazonaws.com/colourspace/");
-define("AMAZON_CREDENTIALS_FILE", "aws.json");
+define("AMAZON_CREDENTIALS_FILE", "config/framework/aws.json");
 define("AMAZON_S3_BUCKET", "colourspace");
 define("AMAZON_LOCATION_US_WEST", "us-west-1");
 define("AMAZON_LOCATION_US_WEST_2", "us-west-2");
@@ -136,7 +129,7 @@ define("MVC_REQUEST_POST", "post");
 define("MVC_REQUEST_GET", "get");
 define("MVC_REQUEST_PUT", "put");
 define("MVC_REQUEST_DELETE", "delete");
-define('MVC_ROUTE_FILE', 'config/routes.json');
+define('MVC_ROUTE_FILE', 'config/framework/routes.json');
 define("MVC_ROOT", "src/Framework/");
 
 //Form
@@ -171,7 +164,8 @@ define("TABLES_ROOT", "src/Database/Tables/");
 //Database Settings
 define("DATABASE_ENCRYPTION", false);
 define("DATABSAE_ENCRYPTION_KEY", null ); //Replace null with a string of a key to not use a rand gen key.
-define("DATABASE_CREDENTIALS", "config/database_credentials.json");
+define("DATABASE_CREDENTIALS", "config/database/credentials.json");
+define("DATABASE_MAP", "config/database/map.json");
 
 //Groups
 define("GROUP_ROOT", "/config/groups/");

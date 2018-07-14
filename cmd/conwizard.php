@@ -5,16 +5,16 @@ define("CMD", true );
 
 include_once "index.php";
 
-echo( "Colourspace Credentials Creator \n");
+echo( "Colourspace Credentials Wizard \n");
 
 try
 {
 
-    if( file_exists( COLOURSPACE_ROOT . "config/database_verification.json" ) == false )
+    if( file_exists( COLOURSPACE_ROOT . "config/map.json" ) == false )
         throw new Error("Verification file missing");
 
     echo( "- Getting base \n");
-    $array = json_decode( file_get_contents( COLOURSPACE_ROOT . "config/database_verification.json" ), true );
+    $array = json_decode( file_get_contents( COLOURSPACE_ROOT . DATABASE_MAP ), true );
     $inputs = [];
     echo( "- Getting user inputs \n");
 

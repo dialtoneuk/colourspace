@@ -22,13 +22,15 @@ class Register extends DefaultModel
     protected $temporaryusername;
 
     /**
+     * @param bool $doprofiles
      * @throws \Error
      */
 
-    public function startup()
+    public function startup( $doprofiles=true )
     {
 
-        parent::startup();
+        //Disable do profiles if you are adding profiles after this line
+        parent::startup( $doprofiles );
 
         $this->temporaryusername = Collector::new("TemporaryUsername");
 

@@ -123,10 +123,10 @@ class Amazon
     public function getCredentials()
     {
 
-        if( file_exists( COLOURSPACE_ROOT . "config/" . AMAZON_CREDENTIALS_FILE ) == false )
+        if( file_exists( COLOURSPACE_ROOT . AMAZON_CREDENTIALS_FILE ) == false )
             throw new \Error("Incorrect credentials");
 
-        return( json_decode( file_get_contents( COLOURSPACE_ROOT . "config/" . AMAZON_CREDENTIALS_FILE ) ) );
+        return( json_decode( file_get_contents( COLOURSPACE_ROOT . AMAZON_CREDENTIALS_FILE ) ) );
 
     }
 }

@@ -10,7 +10,7 @@ define("CMD", true );
 
 include_once "index.php";
 
-echo( "Colourspace Connection Returner \n");
+echo( "Colourspace File Purger \n");
 
 try {
 
@@ -57,6 +57,29 @@ try {
     }
 
     echo("\n- Completed. Deleted total: " . $count2 );
+
+    echo("- Getting files in waveforms folder");
+
+    $files = glob(COLOURSPACE_ROOT . "files/waveforms/" . "*" );
+
+    $count3 = 0;
+
+    foreach( $files as $file )
+    {
+
+        if( is_dir( $file ) )
+            continue;
+
+        echo( "\n --> Removing file: " . $file );
+
+        if(@unlink( $file ) == false )
+            echo( "  \n[Error] Couldnt remove file: " . $file );
+
+        $count3++;
+    }
+
+    echo("\n- Completed. Deleted total: " . $count3 );
+
 
     echo("\n- All files removed. Total removed: " . ( $count + $count2 ) );
 }

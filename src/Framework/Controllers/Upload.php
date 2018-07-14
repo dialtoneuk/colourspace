@@ -19,7 +19,7 @@ use Colourspace\Framework\Track;
 use Colourspace\Container;
 use Colourspace\Framework\Util\MediaOperator;
 use Colourspace\Framework\Util\Format;
-use Colourspace\Framework\WaveForm;
+use Colourspace\Framework\Wave;
 use Delight\FileUpload\Throwable\Error;
 use Colourspace\Framework\Util\Markdown;
 use Colourspace\Framework\Util\Mp3Parser;
@@ -409,7 +409,7 @@ class Upload extends DefaultController
     private function generateWaveform( $path, $svg=true )
     {
 
-        $waveform = new WaveForm( $path );
+        $waveform = new Wave( $path );
 
         if( $svg )
             return( $waveform->svg() );

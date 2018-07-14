@@ -16,7 +16,8 @@ class Connection
 {
 
     //Location of the keys to cross reference our database settings with for verification
-    private $verification = '/config/database_verification.json';
+    private $verification = DATABASE_MAP;
+
     /**
      * @var \Illuminate\Database\Capsule\Manager
      */

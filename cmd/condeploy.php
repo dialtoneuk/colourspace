@@ -15,7 +15,7 @@ try
     if( count( $argv ) == 1 )
         throw new Error("Please enter arguments");
 
-    if( file_exists( COLOURSPACE_ROOT . "config/database_verification.json" ) == false )
+    if( file_exists( COLOURSPACE_ROOT . "config/map.json" ) == false )
         throw new Error("Verification file missing");
 
     $result = [];
@@ -35,7 +35,7 @@ try
     }
 
     echo( "- Getting base \n");
-    $array = json_decode( file_get_contents( COLOURSPACE_ROOT . "config/database_verification.json" ), true );
+    $array = json_decode( file_get_contents( COLOURSPACE_ROOT . "config/map.json" ), true );
     echo( "- Checking user inputs \n");
 
     if( count( $result ) !== count( $array ) )

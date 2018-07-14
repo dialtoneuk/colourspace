@@ -8,13 +8,11 @@
 
 namespace Colourspace\Framework;
 
-use BoyHagemann\Wave\Wave;
-use BoyHagemann\Waveform\Generator\Png;
 use BoyHagemann\Waveform\Waveform as WaveFormClass;
 use Colourspace\Framework\Util\FileOperator;
 use BoyHagemann\Waveform\Generator;
 
-class WaveForm
+class Wave
 {
 
     /**
@@ -29,7 +27,7 @@ class WaveForm
     protected $filepath;
 
     /**
-     * WaveForm constructor.
+     * Wave constructor.
      * @param $filepath
      * @param bool $auto_create
      * @throws \Error
